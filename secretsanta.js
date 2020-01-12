@@ -1,9 +1,9 @@
-$(document).ready(function(){
+$(document).ready(function () {
 	var request;
 	// send a username and password, get the santa name and address and display it
-	$("form").submit(function(){
-		request = $.get("getsanta.php?santa=" + $('#santa').val().toLowerCase() + "&pwd=" + $('#pwd').val(), function(data, status) {
-			if (status === 'success' && data.indexOf("Warning") == -1) {
+	$("form").submit(function () {
+		request = $.get("getsanta.php?santa=" + $('#santa').val().toLowerCase() + "&pwd=" + $('#pwd').val(), function (data, status) {
+			if (status === 'success' && data.indexOf("Warning") === -1) {
 				if (data.indexOf("successfully") >= 0) {
 					$("#santa-display").empty();
 					$("#santa-display").append('<div class="alert alert-success">' + data + '</div>');
@@ -26,13 +26,13 @@ $(document).ready(function(){
 		$("#santa-display").empty();
 		$("#santa-display").append('<div class="loader"></div>');
 		request.abort();
-	})
+	});
 
 	// if enter is pressed submit click event
 	$('.textfield').keypress(function (e) {
 		var key = e.which;
 		// the enter key code
-		if(key == 13) {
+		if (key == 13) {
 			$("#santa").click();
 		}
 	});
