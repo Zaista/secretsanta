@@ -3,7 +3,7 @@ image: samueldebruyn/debian-git
 pipelines:
   default:
     - step:
-        name: Deploy to secretsanta production
+        name: Deploy to production
         deployment: production
         script:
           - apt-get update
