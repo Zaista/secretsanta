@@ -17,7 +17,7 @@
 
 	// DATABASE CONNECTION
 	$hostname = 'db18.cpanelhosting.rs';
-	$username = 'zaista_santa';
+	$username = 'zaista_secretsanta';
 	$password = 'Aven.021';
 	$database = 'zaista_secretsanta';
 
