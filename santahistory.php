@@ -38,6 +38,66 @@
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3 col-xs-12">
 					<div class="panel-group" id="accordion">
+
+
+                    <?php
+
+                        session_start();
+
+                        function connect($xml) {
+                            // create connection
+                            $mysqli = new mysqli($xml->database->hostname, $xml->database->username, $xml->database->password, $xml->database->database);
+                            // check connection
+                            if ($mysqli->connect_error) {
+                                die("Connection failed: " . $mysqli->connect_error);
+                            }
+
+                            // this will make sure cyrilic letters are displayed properly
+                            $mysqli->query("SET NAMES utf8");
+
+                            return $mysqli;
+                        }
+
+                        function get_config($config) {
+                            // load configuration file
+                            $xml = simplexml_load_file($config) or die("Error: Cannot load configuration file");
+                            return $xml;
+                        }
+
+                        $xml = get_config('config.xml');
+                        $mysqli = connect($xml);
+
+                        // protection from sql injection
+                        $sql = "SELECT * FROM archive WHERE id=1";
+
+                        // perform the SQL query to get the quote by id
+                        if (!$result = $mysqli->query($sql)) {
+                            echo "Error. Code 4";
+                            exit;
+                        }
+
+                        // check if any result is returned
+                        if ($result->num_rows === 0) {
+                            echo "Error. Invalid ID";
+                            exit;
+                        }
+
+                        // get total number
+                        $row = $result->fetch_assoc();
+
+                        $quote = $row['santa'];
+                        $author = $row['child'];
+
+                        // return it as json object
+                        echo $quote;
+
+                        $result->free();
+                        $mysqli->close();
+
+                        exit();
+                    ?>
+
+
 						<div class="panel panel-default">
 							<a data-toggle="collapse" data-parent="#accordion" href="#archive2012">
 								<div class="panel-heading">
@@ -105,6 +165,11 @@
 								</div>
 							</div>
 						</div>
+
+
+
+                        <!--
+
 						<div class="panel panel-default">
 							<a data-toggle="collapse" data-parent="#accordion" href="#archive2014">
 								<div class="panel-heading">
@@ -544,7 +609,7 @@
 								</div>
 							</div>
 						</div>
-
+                        -->
 
 					</div>
 					<a href="secretsanta.html">
