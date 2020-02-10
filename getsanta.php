@@ -17,9 +17,9 @@
 
 	// DATABASE CONNECTION
 	$hostname = 'db18.cpanelhosting.rs';
-	$username = 'aven_santa';
+	$username = 'zaista_santa';
 	$password = 'Aven.021';
-	$database = 'aven_secretsanta';
+	$database = 'zaista_secretsanta';
 
 	$mysqli = new mysqli($hostname, $username, $password, $database);
 
