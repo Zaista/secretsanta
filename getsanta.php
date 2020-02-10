@@ -16,7 +16,7 @@
 	$pwd = $_GET['pwd'];
 
 	// DATABASE CONNECTION
-	$hostname = 'cp36.cpanelhosting.rs';
+	$hostname = '169.254.0.2';
 	$username = 'zaista_secretsanta';
 	$password = 'Aven.021';
 	$database = 'zaista_secretsanta';
