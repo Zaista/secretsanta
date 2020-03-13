@@ -2,7 +2,7 @@ $(document).ready(function () {
 	var request;
 	// send a username and password, get the santa name and address and display it
 	$("form").submit(function () {
-		request = $.get("getsanta.php?santa=" + $('#santa').val().toLowerCase() + "&pwd=" + $('#pwd').val(), function (data, status) {
+		request = $.get("getSanta.php?santa=" + $('#santa').val().toLowerCase() + "&pwd=" + $('#pwd').val(), function (data, status) {
 			if (status === 'success' && data.indexOf("Warning") === -1) {
 				if (data.indexOf("successfully") >= 0) {
 					$("#santa-display").empty();
@@ -11,7 +11,7 @@ $(document).ready(function () {
 					var result = JSON.parse(data);
 					$("#santa-display").empty();
 					$("#santa-display").append('<p style="font-size: 30px;"><strong>' + result[0] + '</p></strong>');
-					$("#santa-display").append('<img src="images/' + result[1] + '">');
+					$("#santa-display").append('<img src="resources/images/' + result[1] + '">');
 				}
 			} else {
 				$("#santa-display").empty();
@@ -40,7 +40,7 @@ $(document).ready(function () {
 	// if present picture is open
 	$("#present").on('show.bs.modal', function(event) {
 		var picture = $(event.relatedTarget).data('picture');
-		$('#image').attr('src', 'images/' + picture);
+		$('#image').attr('src', 'resources/images/' + picture);
 	});
 
 	// if present picture is closed
@@ -53,7 +53,7 @@ $(document).ready(function () {
 	// if friend sheet is open
 	$("#friend").on('show.bs.modal', function(event) {
 		var picture = $(event.relatedTarget).data('picture');
-		$('#sheet').attr('src', 'images/' + picture);
+		$('#sheet').attr('src', 'resources/images/' + picture);
 	});
 
 	// if friend sheet is closed

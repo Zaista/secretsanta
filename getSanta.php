@@ -14,25 +14,29 @@
 
 	// store password from url parameter in variable
 	$pwd = $_GET['pwd'];
-
-	// DATABASE CONNECTION
-	$hostname = '169.254.0.2';
-	$username = 'zaista_secretsanta';
-	$password = 'Aven.021#';
-	$database = 'zaista_secretsanta';
-
-	$mysqli = new mysqli($hostname, $username, $password, $database);
-
-	// check connection
-	if ($mysqli->connect_error) {
-		die("Connection failed: " . $mysqli->connect_error);
-		echo "Warning. Connection to database failed!";
-		exit;
+	
+	function connect($xml) {
+	    // create connection
+	    $mysqli = new mysqli($xml->database->hostname, $xml->database->username, $xml->database->password, $xml->database->database);
+	    // check connection
+	    if ($mysqli->connect_error) {
+	        die("Connection failed: " . $mysqli->connect_error);
+	    }
+	    
+	    // this will make sure cyrilic letters are displayed properly
+	    $mysqli->query("SET NAMES utf8");
+	    
+	    return $mysqli;
+	}
+	
+	function get_config($config) {
+	    // load configuration file
+	    $xml = simplexml_load_file($config) or die("Error: Cannot load configuration file");
+	    return $xml;
 	}
 
-	// this will make sure cyrilic letters are displayed properly
-	$mysqli->query("SET NAMES utf8");
-
+	$xml = get_config('private/config.xml');
+	$mysqli = connect($xml);
 
 	if ($santa === 'joca_santa' && $pwd ==='santa_seed') {
 		// this will reset santa pairs

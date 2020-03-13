@@ -27,589 +27,116 @@
 		<meta property="og:title"        content="Secret Santa Archive" />
 		<meta property="og:type"         content="website" />
 		<meta property="og:description"  content="Secret Santa archive for my friends!" />
+		
+		<script id="year_template" type="template">
+            <div class="panel panel-default">
+				<a data-toggle="collapse" data-parent="#accordion" href="#archive{{year}}">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<b>{{year}}</b>
+						</h4>
+					</div>
+				</a>
+			    <div id="archive{{year}}" class="panel-collapse collapse">
+					<div class="panel-body">
+                        <table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Santa</th>
+									<th>Child</th>
+									<th>Gift</th>
+									<th>Image</th>
+								</tr>
+							</thead>
+                            <tbody id="table_body">
+							</tbody>
+						</table>
+						<p class="location"><b>Location:</b> <span id="label"></span> <span id="location_image" class="glyphicon glyphicon-picture picture-disabled pull-right" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture=""></span></p>
+					</div>
+			    </div>
+			</div>
+        </script>
+        
+        <script id="row_template" type="template">
+			<tr>
+				<td>{{santa}}</td>
+				<td>{{child}}</td>
+				<td>{{gift}}</td>
+				<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" onclick="return false;" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="{{Year}}/{{image}}"></span></td>
+			</tr>
+        </script>
+		
+		<script type="text/javascript">
+    		$.getJSON( "getHistory.php", function( data ) {
+
+				$.each(data, function(archiveYear, archiveData ) {
+
+					addYear(archiveYear);
+
+					$.each(archiveData, function(property, rowData) {
+
+						if(property === "label")
+						{
+							$("#archive" + archiveYear + " #label").text(rowData);
+							return true;
+						}
+
+						if(property === "image")
+						{
+							if(rowData != null) {
+								$("#archive" + archiveYear + " #location_image").attr("data-picture", archiveYear + "/" + rowData);
+								$("#archive" + archiveYear + " #location_image").removeClass("picture-disabled");
+							} else {
+								$("#archive" + archiveYear + " #location_image").attr("data-toggle", "");
+							}
+							return true;
+						}
+						addRow(rowData);
+					});
+					
+				});
+   			});
+
+   			function addYear(archiveYear) {
+   	   			
+				var year_template = $.trim($('#year_template').html());
+				year_template = year_template.replace(/{{year}}/g, archiveYear);
+			    $('#accordion').append(year_template);
+   			}
+
+   			function addRow(archiveRow) {
+
+			    var row_template;
+				row_template = $.trim($('#row_template').html());
+			    if (archiveRow.Image != null) {
+				    console.log("here1");
+					row_template = row_template.replace(/{{year}}/ig, archiveRow.Year);
+					row_template = row_template.replace(/{{image}}/ig, archiveRow.Image);
+					row_template = row_template.replace("picture-disabled", "");
+			    } else {
+				    console.log("here2");
+				    row_template = row_template.replace("data-toggle=\"modal\"", "");
+
+					console.log(row_template);
+			    }
+				row_template = row_template.replace(/{{santa}}/ig, archiveRow.Santa);
+				row_template = row_template.replace(/{{child}}/ig, archiveRow.Child);
+				row_template = row_template.replace(/{{gift}}/ig, archiveRow.Gift);
+
+			    $('div#archive' + archiveRow.Year + ' .table').append(row_template);
+   			}
+		</script>
 	</head>
 	<body>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3  col-xs-12">
-					<img id="img" src="images/santa.jpg">
+					<img id="img" src="resources/images/santa.jpg">
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3 col-xs-12">
 					<div class="panel-group" id="accordion">
-
-
-                    <?php
-
-                        session_start();
-
-                        function connect($xml) {
-                            // create connection
-                            $mysqli = new mysqli($xml->database->hostname, $xml->database->username, $xml->database->password, $xml->database->database);
-                            // check connection
-                            if ($mysqli->connect_error) {
-                                die("Connection failed: " . $mysqli->connect_error);
-                            }
-
-                            // this will make sure cyrilic letters are displayed properly
-                            $mysqli->query("SET NAMES utf8");
-
-                            return $mysqli;
-                        }
-
-                        function get_config($config) {
-                            // load configuration file
-                            $xml = simplexml_load_file($config) or die("Error: Cannot load configuration file");
-                            return $xml;
-                        }
-
-                        $xml = get_config('config.xml');
-                        $mysqli = connect($xml);
-
-                        // protection from sql injection
-                        $sql = "SELECT * FROM archive WHERE id=1";
-
-                        // perform the SQL query to get the quote by id
-                        if (!$result = $mysqli->query($sql)) {
-                            echo "Error. Code 4";
-                            exit;
-                        }
-
-                        // check if any result is returned
-                        if ($result->num_rows === 0) {
-                            echo "Error. Invalid ID";
-                            exit;
-                        }
-
-                        // get total number
-                        $row = $result->fetch_assoc();
-
-                        $quote = $row['santa'];
-                        $author = $row['child'];
-
-                        // return it as json object
-                        echo $quote;
-
-                        $result->free();
-                        $mysqli->close();
-
-                        exit();
-                    ?>
-
-
-						<div class="panel panel-default">
-							<a data-toggle="collapse" data-parent="#accordion" href="#archive2012">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<b>2012</b>
-									</h4>
-								</div>
-							</a>
-							<div id="archive2012" class="panel-collapse collapse">
-								<div class="panel-body">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Santa</th>
-												<th>Child</th>
-												<th>Gift</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tijana</td>
-												<td>Nataša</td>
-												<td>4 sličice</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Staša</td>
-												<td>Goran</td>
-												<td>Žuta majica</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Nataša</td>
-												<td>Vlada</td>
-												<td>Flogging Moly krigla</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Slavko</td>
-												<td>Joca</td>
-												<td>Vaučeri za picu u Korleonu</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2012/vauceri.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Vlada</td>
-												<td>Tijana</td>
-												<td>Knjiga</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Goran</td>
-												<td>Slavko</td>
-												<td>Batman privezak</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true" ></span></td>
-											</tr>
-											<tr>
-												<td>Joca</td>
-												<td>Staša</td>
-												<td>Muzička kutijica sa snežnom kuglom</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-										</tbody>
-									</table>
-									<p class="location"><b>Location:</b> Laser Tag, Novi Sad <span class="glyphicon glyphicon-picture pull-right" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2012/ss2012.jpg"></span></p>
-								</div>
-							</div>
-						</div>
-
-
-
-                        <!--
-
-						<div class="panel panel-default">
-							<a data-toggle="collapse" data-parent="#accordion" href="#archive2014">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<b>2014</b>
-									</h4>
-								</div>
-							</a>
-							<div id="archive2014" class="panel-collapse collapse">
-								<div class="panel-body">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Santa</th>
-												<th>Child</th>
-												<th>Gift</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tijana</td>
-												<td>Vlada</td>
-												<td>Ram sa slikom iz Venecije</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2014/slika-iz-venecije.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Staša</td>
-												<td>Goran</td>
-												<td>Nutella</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2014/nutella.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Marina</td>
-												<td>Slavko</td>
-												<td>Kalup za šotove</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Slavko</td>
-												<td>Joca</td>
-												<td>Hard Rock privezak iz Nice</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2014/hard-rock-chain.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Vlada</td>
-												<td>Marina</td>
-												<td>Knjiga - Nikadadođija</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2014/nikadadodjija.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Goran</td>
-												<td>Tijana</td>
-												<td>Knjiga - Danteova zamka</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Joca</td>
-												<td>Staša</td>
-												<td>Šolja za kafu - Paris</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2014/paris-cup.jpg"></span></td>
-											</tr>
-										</tbody>
-									</table>
-									<p class="location"><b>Location:</b> Budisava <span class="glyphicon glyphicon-picture pull-right picture-disabled" aria-hidden="true"></span></p>
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<a data-toggle="collapse" data-parent="#accordion" href="#archive2015">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<b>2015</b>
-									</h4>
-								</div>
-							</a>
-							<div id="archive2015" class="panel-collapse collapse">
-								<div class="panel-body">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Santa</th>
-												<th>Child</th>
-												<th>Gift</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tijana</td>
-												<td>Joca</td>
-												<td>Jenga - sa časicama za šotove</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/jenga.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Staša</td>
-												<td>Goran</td>
-												<td>Fensi kravata</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/tie.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Marina</td>
-												<td>Vlada</td>
-												<td>Terry Pratchett - Noćna Straža</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/nocna-straza.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Slavko</td>
-												<td>Marina</td>
-												<td>Timetraveler ogrlica - Harry Potter</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/timetraveler.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Vlada</td>
-												<td>Staša</td>
-												<td>Mikrofon sa igricom za pijenje</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/microphone.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Goran</td>
-												<td>Tijana</td>
-												<td>Kokošinjac</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/kokosinjac.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Joca</td>
-												<td>Slavko</td>
-												<td>Batman privezak</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/privezak.jpg"></span></td>
-											</tr>
-										</tbody>
-									</table>
-									<p class="location"><b>Location:</b> Jocin prvi stan, Beograd <span class="glyphicon glyphicon-picture pull-right" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2015/ss2015.jpg"></span></p>
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<a data-toggle="collapse" data-parent="#accordion" href="#archive2016">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<b>2016</b>
-									</h4>
-								</div>
-							</a>
-							<div id="archive2016" class="panel-collapse collapse">
-								<div class="panel-body">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Santa</th>
-												<th>Child</th>
-												<th>Gift</th>
-												<th>Image</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tijana</td>
-												<td>Vlada</td>
-												<td>New York vodič</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2016/vodic.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Staša</td>
-												<td>Goran</td>
-												<td>Tefter</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2016/tefter.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Marina</td>
-												<td>Joca</td>
-												<td>Puzla - Vrt rajskih uživanja</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2016/vrt-rajskih-uzivanja.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Slavko</td>
-												<td>Tijana</td>
-												<td>Ogledalce i kutija</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture " aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2016/ogledalce.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Vlada</td>
-												<td>Staša</td>
-												<td>Ogromna kutija sa slatkišima i ukrasima</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2016/christmas-tree.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Goran</td>
-												<td>Marina</td>
-												<td>Hogwards acceptance letter i Slitherin šal</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Joca</td>
-												<td>Slavko</td>
-												<td>USB sa dva ulaza</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2016/usb.jpg"></span></td>
-											</tr>
-										</tbody>
-									</table>
-									<p class="location"><b>Location:</b> Kafa za poneti, Novi Sad <span class="glyphicon glyphicon-picture pull-right" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2016/ss2016.jpg"></span></p>
-								</div>
-							</div>
-						</div>
-						<div class="panel panel-default">
-							<a data-toggle="collapse" data-parent="#accordion" href="#archive2017">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<b>2017</b>
-									</h4>
-								</div>
-							</a>
-							<div id="archive2017" class="panel-collapse collapse">
-								<div class="panel-body">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Santa</th>
-												<th>Child</th>
-												<th>Gift</th>
-												<th class="text-right">Image</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tijana</td>
-												<td>Slavko</td>
-												<td>Ice bucket & wine set</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2017/ice-bucket.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Staša</td>
-												<td>Goran</td>
-												<td>Ćebence</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2017/blanket.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Marina</td>
-												<td>Joca</td>
-												<td>Shaker</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2017/shaker.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Slavko</td>
-												<td>Staša</td>
-												<td>Magic 8 ball</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2017/magic-8-ball.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Vlada</td>
-												<td>Marina</td>
-												<td>Book: Ship of Theseus</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2017/ship-of-theseus.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Goran</td>
-												<td>Vlada</td>
-												<td>Smart watch</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-											<tr>
-												<td>Joca</td>
-												<td>Tijana</td>
-												<td>Bowtie earings</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture picture-disabled" aria-hidden="true"></span></td>
-											</tr>
-										</tbody>
-									</table>
-									<p class="location"><b>Location:</b> Stašina druga kuća, Salajka <span class="glyphicon glyphicon-picture pull-right picture-disabled" aria-hidden="true"></span></p>
-								</div>
-							</div>
-						</div>
-
-						<div class="panel panel-default">
-							<a data-toggle="collapse" data-parent="#accordion" href="#archive2018">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<b>2018</b>
-									</h4>
-								</div>
-							</a>
-							<div id="archive2018" class="panel-collapse collapse">
-								<div class="panel-body">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Santa</th>
-												<th>Child</th>
-												<th>Gift</th>
-												<th class="text-right">Image</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tijana</td>
-												<td>Goran</td>
-												<td>Crni sok & childhood calendar</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/calendar.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Staša</td>
-												<td>Tijana</td>
-												<td>Besties calendar</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/calendar2.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Marina</td>
-												<td>Kil</td>
-												<td>The little book of unwritten rules - WRITTEN</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/welcome.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Jovana</td>
-												<td>Slavko</td>
-												<td>Wine bottle</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/wine-bottle.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Slavko</td>
-												<td>Marina</td>
-												<td>Slytherin Ćebence</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/cebence.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Vlada</td>
-												<td>Staša</td>
-												<td>Voting game</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/voting.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Goran</td>
-												<td>Joca</td>
-												<td>The Wall LP</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/lp.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Kil</td>
-												<td>Vlada</td>
-												<td>Portable speakers</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/speakers.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Joca</td>
-												<td>Jovana</td>
-												<td>Mugs</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/mugs.jpg"></span></td>
-											</tr>
-										</tbody>
-									</table>
-									<p class="location"><b>Location:</b> Budisava <span class="glyphicon glyphicon-picture pull-right" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2018/ss2018.jpg"></span></p>
-								</div>
-							</div>
-						</div>
-
-
-						<div class="panel panel-default">
-							<a data-toggle="collapse" data-parent="#accordion" href="#archive2019">
-								<div class="panel-heading">
-									<h4 class="panel-title">
-										<b>2019</b>
-									</h4>
-								</div>
-							</a>
-							<div id="archive2019" class="panel-collapse collapse">
-								<div class="panel-body">
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th>Santa</th>
-												<th>Child</th>
-												<th>Gift</th>
-												<th class="text-right">Image</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td>Tijana</td>
-												<td>Jovana</td>
-												<td>Vazna</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/vazna.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Staša</td>
-												<td>Goran</td>
-												<td>Merry Christmas LP</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/ploca-merry-christmas.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Marina</td>
-												<td>Slavko</td>
-												<td>Reservoir dogs LP</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/ploca-dogs.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Jovana</td>
-												<td>Kil</td>
-												<td>Knjiga: The Expectant Dad's Survival Guide</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/knjiga-dads-survival-guide.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Milica</td>
-												<td>Tijana</td>
-												<td>Knjiga: 501 event</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/knjiga-501.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Slavko</td>
-												<td>Milica</td>
-												<td>Set za čaj</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/caj.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Vlada</td>
-												<td>Staša</td>
-												<td>Osveživač</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/osvezivac.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Goran</td>
-												<td>Marina</td>
-												<td>Knjiga: Star Wars</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/knjiga-starwars.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Kil</td>
-												<td>Joca</td>
-												<td>Charging station</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/station.jpg"></span></td>
-											</tr>
-											<tr>
-												<td>Joca</td>
-												<td>Vlada</td>
-												<td>Džemper</td>
-												<td class="text-right"><span class="glyphicon glyphicon-picture" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/dzemper.jpg"></span></td>
-											</tr>
-										</tbody>
-									</table>
-									<p class="location"><b>Location:</b> Goranova kuća <span class="glyphicon glyphicon-picture pull-right" aria-hidden="true" data-toggle="modal" data-target="#present" data-picture="2019/ss2019.jpg"></span></p>
-								</div>
-							</div>
-						</div>
-                        -->
 
 					</div>
 					<a href="secretsanta.html">
