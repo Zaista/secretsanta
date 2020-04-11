@@ -1,4 +1,8 @@
+/*global $, document, setTimeout */
+
 $(document).ready(function () {
+    "use strict";
+
 	var request;
 	// send a username and password, get the santa name and address and display it
 	$("form").submit(function () {
@@ -32,33 +36,33 @@ $(document).ready(function () {
 	$('.textfield').keypress(function (e) {
 		var key = e.which;
 		// the enter key code
-		if (key == 13) {
+		if (key === 13) {
 			$("#santa").click();
 		}
 	});
 
 	// if present picture is open
-	$("#present").on('show.bs.modal', function(event) {
+	$("#present").on('show.bs.modal', function (event) {
 		var picture = $(event.relatedTarget).data('picture');
 		$('#image').attr('src', 'resources/images/' + picture);
 	});
 
 	// if present picture is closed
-	$("#present").on('hide.bs.modal', function(event) {
-		setTimeout(function() {
+	$("#present").on('hide.bs.modal', function () {
+		setTimeout(function () {
 			$('#image').attr('src', '');
 		}, 300);
 	});
 
 	// if friend sheet is open
-	$("#friend").on('show.bs.modal', function(event) {
+	$("#friend").on('show.bs.modal', function (event) {
 		var picture = $(event.relatedTarget).data('picture');
 		$('#sheet').attr('src', 'resources/images/' + picture);
 	});
 
 	// if friend sheet is closed
-	$("#friend").on('hide.bs.modal', function(event) {
-		setTimeout(function() {
+	$("#friend").on('hide.bs.modal', function () {
+		setTimeout(function () {
 			$('#sheet').attr('src', '');
 		}, 300);
 	});
