@@ -109,15 +109,11 @@
 			    var row_template;
 				row_template = $.trim($('#row_template').html());
 			    if (archiveRow.Image != null) {
-				    console.log("here1");
 					row_template = row_template.replace(/{{year}}/ig, archiveRow.Year);
 					row_template = row_template.replace(/{{image}}/ig, archiveRow.Image);
 					row_template = row_template.replace("picture-disabled", "");
 			    } else {
-				    console.log("here2");
 				    row_template = row_template.replace("data-toggle=\"modal\"", "");
-
-					console.log(row_template);
 			    }
 				row_template = row_template.replace(/{{santa}}/ig, archiveRow.Santa);
 				row_template = row_template.replace(/{{child}}/ig, archiveRow.Child);
