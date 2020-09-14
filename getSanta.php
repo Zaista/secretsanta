@@ -42,7 +42,6 @@
 		// this will reset santa pairs
 		ob_start();
 		require 'match.php';
-		$buffer = ob_get_contents();
 		exit;
 	}
 

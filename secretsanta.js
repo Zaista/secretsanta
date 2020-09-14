@@ -25,6 +25,19 @@ $(document).ready(function () {
 		return false;
 	});
 
+	$("#emailPasswords").click(function () {
+		request = $.get("emailPasswords.php", function (data, status) {
+			if (status === 'success' && data.indexOf("Success.") != -1) {
+				$("#santa-display").empty();
+				$("#santa-display").append('<div class="alert alert-success">' + data + '</div>');
+				
+			} else {
+				$("#santa-display").empty();
+				$("#santa-display").append('<div class="alert alert-warning">Something bad happened: ' + data + ')</span></div>');
+			}
+		});
+	});
+
 	// when santa-dialog is closed return a spinner in place
 	$('#santa-dialog').on('hidden.bs.modal', function () {
 		$("#santa-display").empty();
