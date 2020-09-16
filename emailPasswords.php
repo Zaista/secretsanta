@@ -52,9 +52,10 @@
             if ($user_data["email"] != null) {
                 $email_subject = "User activation";
                 $email_text = '
-These are you secret santa username and password:
+Secret Santa access:
     username: ' . $user . '
     password: ' . $user_data["password"] . '
+    link: https://secretsanta.jovanilic.com
 
 Marry shopping :)';
 
