@@ -30,7 +30,7 @@
         
         // check if any result is returned
         if ($result->num_rows === 0) {
-            echo "Error. Empty result.";
+            echo "Error. Empty result."; 
             exit;
         }
         

@@ -14,8 +14,10 @@ $(document).ready(function () {
 				} else {
 					var result = JSON.parse(data);
 					$("#santa-display").empty();
-					$("#santa-display").append('<p style="font-size: 30px;"><strong>' + result[0] + '</p></strong>');
+					$("#santa-display").append('<p style="font-size: 30px;"><strong>' + result[0] + '</strong></p>');
 					$("#santa-display").append('<img src="resources/images/' + result[1] + '">');
+					if (result[2])
+						$("#santa-display").append('<br><br><p style="font-size: 20px;">Address: ' + result[2] + '</p>');
 				}
 			} else {
 				$("#santa-display").empty();

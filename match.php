@@ -122,12 +122,6 @@
         christmas_match_up();
     }
 
-	/* // this is for test
-	$test2 = array_keys($santas);
-	for ($i = 0; $i < sizeof($santas); $i++) {
-		echo $test[$test2[$i]] . ' -> ' . $test[$santas[$test2[$i]]] . '<br>';
-	} */
-
     // 23. when you stop banging your head, behold, the naughtiless santa pairs (add them to database)
 	$match = [];
 	$iterator = 1;

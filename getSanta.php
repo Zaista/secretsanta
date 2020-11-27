@@ -1,6 +1,6 @@
 <?php
 
-	// this add a flavor
+	// this adds a flavor
 	sleep(1);
 
 	// if username or password was not found
@@ -46,7 +46,7 @@
 	}
 
 	$stmt = $mysqli->prepare("
-		SELECT c.Name AS Secretsanta, c.Image FROM users u
+		SELECT c.Name AS Secretsanta, c.Image, c.Address FROM users u
 		JOIN matches m ON u.UserId = m.SantaID
 		JOIN users c ON m.ChildID = c.UserID
 		WHERE u.Username = ? AND u.Password = ?");
@@ -62,7 +62,7 @@
 	}
 
 	$row = $result->fetch_assoc();
-	$child = array($row['Secretsanta'], $row['Image']);
+	$child = array($row['Secretsanta'], $row['Image'], $row['Address']);
 
 	echo json_encode($child);
 ?>

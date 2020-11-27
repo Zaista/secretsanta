@@ -39,6 +39,7 @@
             $temp = array();
             $temp["password"] = $row["Password"];
             $temp["email"] = $row["Email"];
+            $temp["address"] = $row["Address"];
             
             global $users;
             $users[$row["Username"]] = $temp;
@@ -55,6 +56,7 @@
 Secret Santa access:
     username: ' . $user . '
     password: ' . $user_data["password"] . '
+    address: ' . $user_data["address"] . '
     link: https://secretsanta.jovanilic.com
 
 Marry shopping :)';
@@ -73,13 +75,12 @@ Marry shopping :)';
         exit;
     }
 
-    
     $xml = get_config('private/config.xml');
     $mysqli = connect($xml);
     
     $users = array();
     
-    get_emails("SELECT Username, Password, Email FROM users where Active != 0");
+    get_emails("SELECT Username, Password, Email, Address FROM users where Active != 0");
 
     send_emails();
 
