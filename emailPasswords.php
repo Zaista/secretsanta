@@ -51,17 +51,17 @@
         global $users;
         foreach ($users as $user => $user_data) {
             if ($user_data["email"] != null) {
-                $email_subject = "User activation";
+                $email_subject = "How to access your super neat Secret Santa place";
                 $email_text = '
-Secret Santa access:
-    username: ' . $user . '
-    password: ' . $user_data["password"] . '
-    address: ' . $user_data["address"] . '
-    link: https://secretsanta.jovanilic.com
+Secret Santa super secret info:
+    secret_santa_username: ' . $user . '
+    santa_super_password: ' . $user_data["password"] . '
+    secret_not_so_secret_address: ' . $user_data["address"] . '
+    super_public_link: https://secretsanta.jovanilic.com
 
-Marry shopping :)';
+Merry shopping und Alles Gute zum Gechristmas :)';
 
-                $email_headers = "From: admin@jovanilic.com";
+                $email_headers = "From: secretsanta@jovanilic.com";
 
                 // use wordwrap() if lines are longer than 70 characters
                 $email_text = wordwrap($email_text, 70);
