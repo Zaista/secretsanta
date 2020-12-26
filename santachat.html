@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="description" content="Secret Santa chat for my friends">
+	<meta name="keywords" content="secret,santa,secretsanta,friends,christmas,chat">
+	<meta name="author" content="Jovan Ilic">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Secret Santa Chat</title>
+	<link rel="stylesheet" type="text/css" href="santachat.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="santachat.js"></script>
+	<link rel="icon" type="img/ico" href="favicon.ico">
+
+	<!-- Bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+	<!-- For facebook crawler -->
+	<meta property="og:url" content="http://www.secretsanta.jovanilic.com/chat.html" />
+	<meta property="og:site_name" content="secretsanta.jovanilic.com" />
+	<meta property="og:title" content="Secret Santa Chat" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="Secret Santa chat for my friends!" />
+</head>
+
+<body>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col col-md-6 col-xs-12">
+				<img id="img" src="resources/images/santa.jpg">
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col col-md-6 col-xs-12">
+				<div class="red-border" id="chat">
+				</div>
+
+				<div class="input-group">
+					<input type="text" class="form-control" id="chat-message" placeholder="Your message"
+						aria-label="Your message">
+					<button class="btn btn-outline-secondary" type="button" id="chat-button">Send</button>
+				</div>
+
+				<div class="input-group">
+					<select class="form-select" id="chat-ping-select" aria-label="Select santa to ping">
+						<option selected>Choose santa to ping...</option>
+						<option value="1">Tijana</option>
+						<option value="2">Staša</option>
+						<option value="3">Marina</option>
+						<option value="4">Slavko</option>
+						<option value="5">Vlada</option>
+						<option value="6">Goran</option>
+						<option value="7">Joca</option>
+						<option value="8">Jovana</option>
+						<option value="9">Kil</option>
+						<option value="10">Milica</option>
+					</select>
+					<button id="chat-ping-button" class="btn btn-outline-secondary" type="button">Ping</button>
+				</div>
+
+				<div class="alert alert-success alert-dismissible collapse" role="alert">
+					<span></span>
+					<button type="button" class="btn-close" aria-label="Close"></button>
+				</div>
+
+				<a href="secretsanta.html">
+					<button id="back" class="btn btn-primary">Back</button>
+				</a>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

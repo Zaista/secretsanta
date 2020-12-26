@@ -1,0 +1,49 @@
+#img {
+	width: 100%;
+	margin-top: 20px;
+}
+
+.panel-body p {
+	font-size: 1.2em;
+}
+
+.modal-body img {
+	margin: 0 auto;
+}
+
+.input-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#back {
+	margin-top: 20px;
+	margin-bottom: 20px !important;
+}
+
+.red-border {
+	border: 3px red dashed;
+}
+
+#chat {
+	height: 250px;
+    margin-top: 20px;
+    overflow-y: scroll;
+}
+
+#chat p {
+    position: relative;
+    margin: 10px 5px;
+    background-color: tomato;
+    padding: 5px 15px;
+    text-align: right;
+    color: white;
+}
+
+#chat p span {
+    font-size: 10px;
+    color: lightgray;
+    position: absolute; 
+    bottom: 0;
+    left: 0;
+}
