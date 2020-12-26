@@ -33,7 +33,7 @@ $(document).ready(function () {
         $.get('pingPerson.php', {person: person_id}, function(data, status) {
             console.log(status);
             console.log(data);
-            $('.alert span').text('Person pinged. He will receive an email that a question has been asked.');
+            $('.alert span').text('Person pinged. He/she will receive an email that a question has been asked.');
             $('.alert').show();
             setTimeout(function() {
                 $('.alert').hide();
