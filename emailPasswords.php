@@ -56,7 +56,7 @@
 
                 $email_headers = "From: secretsanta@jovanilic.com\r\n";
                 $email_headers .= "MIME-Version: 1.0\r\n";
-                $email_headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+                $email_headers .= "Content-Type: text/html; charset=utf-8\r\n";
 
                 $email_text = '<html><head><style>' . 
                 'table {' .
