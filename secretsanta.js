@@ -15,7 +15,7 @@ $(document).ready(function () {
 					var result = JSON.parse(data);
 					$("#santa-display").empty();
 					$("#santa-display").append('<p style="font-size: 30px;"><strong>' + result[0] + '</strong></p>');
-					$("#santa-display").append('<img src="resources/images/' + result[1] + '">');
+					$("#santa-display").append('<img src="resources/images/' + result[1] + '.png">');
 					if (result[2])
 						$("#santa-display").append('<br><br><p style="font-size: 20px;">Address: ' + result[2] + '</p>');
 				}
