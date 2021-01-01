@@ -1,5 +1,6 @@
 <?php
     // HOW TO SANTA
+    $output = new stdClass();
 
     // 1. prepare two chirstmas buckets, one for people, and one for naughty pairs
     $people = array();
@@ -47,13 +48,14 @@
 
 		$sql = "SELECT User1ID, User2ID FROM forbidden";
 		if (!$result = $mysqli->query($sql)) {
-
-			echo "Error. Code 3";
+            $output->error = "Error code 3.";
+            echo json_encode($output);
 			exit;
 
 		} else if ($result->num_rows === 0) {
 
-			echo "Error. Code 4";
+            $output->error = "Error code 4";
+            echo json_encode($output);
 			exit;
 
 		} else {
@@ -134,14 +136,17 @@
 
 	if (!$result = $mysqli->query($sql)) {
 
-		echo "Error. Code 5";
+		$output->error = "Error code 5.";
+		echo json_encode($output);
 		exit;
 
 	} else if ($mysqli->affected_rows == 0) {
 
-		echo "Error. Code 6";
+		$output->error = "Error code 6.";
+		echo json_encode($output);
 		exit;
 	}
 
-	echo "Secret Santa paris have been matched successfully!";
+    $output->match = "Secret Santa paris have been matched successfully.";
+    echo json_encode($output);
 ?>

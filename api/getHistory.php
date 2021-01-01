@@ -48,6 +48,7 @@
     function execute_sql2($sql) {
         
         global $mysqli;
+
         if (!$result = $mysqli->query($sql)) {
             echo "Error. Code 4";
             exit;
@@ -66,7 +67,7 @@
         }
     }
     
-    $xml = get_config('private/config.xml');
+    $xml = get_config('../private/config.xml');
     $mysqli = connect($xml);
     
     $history = array();
@@ -83,5 +84,5 @@
     //$result->free();
     $mysqli->close();
 
-    exit();
+    exit;
 ?>

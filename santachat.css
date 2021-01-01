@@ -1,24 +1,13 @@
+body {
+	overflow-y: scroll;
+}
+
 #img {
 	width: 100%;
+}
+
+.margin-top {
 	margin-top: 20px;
-}
-
-.panel-body p {
-	font-size: 1.2em;
-}
-
-.modal-body img {
-	margin: 0 auto;
-}
-
-.input-group {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#back {
-	margin-top: 20px;
-	margin-bottom: 20px !important;
 }
 
 .red-border {

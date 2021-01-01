@@ -3,17 +3,20 @@
 	// this adds a flavor
 	sleep(1);
 
+	$output = new stdClass();
+
 	// if username or password was not found
-	if(empty($_GET['santa']) || empty($_GET['pwd'])) {
-		echo "Warning. Username or password not set!";
+	if(empty($_GET['santa-username']) || empty($_GET['santa-password'])) {
+		$output->error = "Username or password not set.";
+		echo json_encode($output);
 		exit;
 	}
 
 	// store name from url parameter in variable
-	$santa = $_GET['santa'];
+	$santa_username = $_GET['santa-username'];
 
 	// store password from url parameter in variable
-	$pwd = $_GET['pwd'];
+	$santa_password = $_GET['santa-password'];
 	
 	function connect($xml) {
 	    // create connection
@@ -35,10 +38,10 @@
 	    return $xml;
 	}
 
-	$xml = get_config('private/config.xml');
+	$xml = get_config('../private/config.xml');
 	$mysqli = connect($xml);
 
-	if ($santa === 'joca_santa' && $pwd ==='santa_seed') {
+	if ($santa_username === 'joca_santa' && $santa_password ==='santa_seed') {
 		// this will reset santa pairs
 		ob_start();
 		require 'match.php';
@@ -51,18 +54,22 @@
 		JOIN users c ON m.ChildID = c.UserID
 		WHERE u.Username = ? AND u.Password = ?");
 
-	$stmt->bind_param('ss', $santa, $pwd);
+	$stmt->bind_param('ss', $santa_username, $santa_password);
 	$stmt->execute();
 	$result = $stmt->get_result();
 
 	if ($result->num_rows == 0) {
-
-		echo "Warning. Wrong username or password!";
+		$output->error = "Incorrect username or password.";
+		echo json_encode($output);
 		exit;
 	}
 
 	$row = $result->fetch_assoc();
-	$child = array($row['Secretsanta'], $row['Image'], $row['Address']);
+	$output->santa = $row['Secretsanta'];
+	$output->image = $row['Image'];
+	$output->address = $row['Address'];
 
-	echo json_encode($child);
+	// $child = array($row['Secretsanta'], $row['Image'], $row['Address']);
+
+	echo json_encode($output);
 ?>

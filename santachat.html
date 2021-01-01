@@ -14,7 +14,6 @@
 	<link rel="icon" type="img/ico" href="favicon.ico">
 
 	<!-- Bootstrap -->
-	<!-- Latest compiled and minified CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
@@ -29,24 +28,20 @@
 <body>
 	<div class="container">
 		<div class="row justify-content-center">
-			<div class="col col-md-6 col-xs-12">
-				<img id="img" src="resources/images/santa.jpg">
+			<div class="col-md-8 col-xs-12">
+				<img id="img" class="margin-top" src="resources/images/santa.jpg">
 			</div>
 		</div>
 		<div class="row justify-content-center">
-			<div class="col col-md-6 col-xs-12">
+			<div class="col-md-8 col-xs-12">
 				<div class="red-border" id="chat">
 				</div>
 
-				<div class="input-group">
-					<input type="text" class="form-control" id="chat-message" placeholder="Your message"
-						aria-label="Your message">
-					<button class="btn btn-outline-secondary" type="button" id="chat-button">Send</button>
-				</div>
-
-				<div class="input-group">
+				<div class="input-group margin-top">
+					<input type="text" class="form-control w-50" id="chat-message" placeholder="Your message"
+						aria-label="Your message" required>
 					<select class="form-select" id="chat-ping-select" aria-label="Select santa to ping">
-						<option selected>Choose santa to ping...</option>
+						<option selected value="0">Choose...</option>
 						<option value="1">Tijana</option>
 						<option value="2">Staša</option>
 						<option value="3">Marina</option>
@@ -58,17 +53,15 @@
 						<option value="9">Kil</option>
 						<option value="10">Milica</option>
 					</select>
-					<button id="chat-ping-button" class="btn btn-outline-secondary" type="button">Ping</button>
+					<button id="chat-ping-button" class="btn btn-outline-secondary" type="button">Ask</button>
 				</div>
 
-				<div class="alert alert-success alert-dismissible collapse" role="alert">
+				<div class="alert alert-success alert-dismissible collapse margin-top" role="alert">
 					<span></span>
 					<button type="button" class="btn-close" aria-label="Close"></button>
 				</div>
 
-				<a href="secretsanta.html">
-					<button id="back" class="btn btn-primary">Back</button>
-				</a>
+				<button class="btn btn-primary margin-top" onclick="location.href='secretsanta.html'">Back</button>
 			</div>
 		</div>
 	</div>

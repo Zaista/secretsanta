@@ -2,67 +2,26 @@ body {
 	overflow-y: scroll;
 }
 
-#contentdiv {
-	margin-top: 50px;
-	text-align: center;
+#img {
+	width: 100%;
 }
 
-.historydiv {
-	width: 730px;
-	min-width: 730px;
-	margin: 20px auto;
-	text-align: left;
-	overflow: hidden;
-	margin-bottom: 5px;
-	margin-top: 5px;
+.margin-top {
+	margin-top: 20px;
 }
 
-.historydiv span {
-	text-align: left;
-	font-size: 150%;
+.picture-disabled {
+	opacity: 0.4;
+}
+
+.modal-body img {
+	width: 100%;
+}
+
+.location {
+	padding: 4px;
+}
+
+.pointer {
 	cursor: pointer;
-}
-
-.historydiv .year:after {
-  display: inline-block;
-  content: "";
-  height: 1px;
-  background: grey;
-  position: relative;
-  width: 85%;
-  top: -5px;
-  margin-left: 10px;
-}
-
-.historydiv div {
-	overflow: hidden;
-	height: 0;
-	margin: 0;
-	padding-top: 10px;
-	padding-left: 40px;
-	font-size: 70%;
-}
-
-.symbol {
-	display: inline-block;
-}
-
-#santaback {
-	height: 30px;
-	width: 60px;
-}
-
-table {
-    border-collapse: collapse;
-    width: calc(100% - 40px);
-}
-
-td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-}
-
-tr:nth-child(even) {
-    background-color: #dddddd;
 }

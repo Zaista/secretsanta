@@ -1,11 +1,18 @@
 <?php
 
+	$output = new stdClass();
+
     function connect($xml) {
+        
+        global $output;
+
         // create connection
         $mysqli = new mysqli($xml->database->hostname, $xml->database->username, $xml->database->password, $xml->database->database);
         // check connection
         if ($mysqli->connect_error) {
-            die("Connection failed: " . $mysqli->connect_error);
+            $output->error = "Connection failed: " . $mysqli->connect_error;
+            echo json_encode($output);
+            exit;
         }
 
         // this will make sure cyrilic letters are displayed properly
@@ -20,19 +27,21 @@
         return $xml;
     }
 
-	$xml = get_config('private/config.xml');
+	$xml = get_config('../private/config.xml');
 	$mysqli = connect($xml);
 
     $sql = "SELECT * FROM chat ORDER BY Timestamp";
     
     if (!$result = $mysqli->query($sql)) {
-        echo "Error. Code 1";
+        $output->error = "Eror code 1";
+        echo json_encode($output);
         exit;
     }
     
     // check if any result is returned
     if ($result->num_rows === 0) {
-        echo "Error. Empty result.";
+        $output->error = "Empty result.";
+        echo json_encode($output);
         exit;
     }
     
@@ -46,5 +55,5 @@
 
     $mysqli->close();
 
-    exit();
+    exit;
 ?>
