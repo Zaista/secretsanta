@@ -28,7 +28,8 @@ $(document).ready(function () {
 	});
 
 	$("#emailPasswords").click(function () {
-		request = $.get("emailPasswords.php", function (data, status) {
+		var person_id = $("#email-select").val();
+		request = $.get("emailPasswords.php?person=" + person_id, function (data, status) {
 			if (status === 'success' && data.indexOf("Success.") != -1) {
 				$("#santa-display").empty();
 				$("#santa-display").append('<div class="alert alert-success">' + data + '</div>');

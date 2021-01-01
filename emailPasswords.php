@@ -20,10 +20,22 @@
         return $xml;
     }
     
-    function get_emails($sql) {
+    function get_emails() {
         
         global $mysqli;
-        if (!$result = $mysqli->query($sql)) {
+
+        $person = $_GET['person'];
+
+        if ($person != 0) {
+            $stmt = $mysqli->prepare("SELECT Username, Password, Email, Address FROM users WHERE UserID = ?");
+            $stmt->bind_param('s', $person);
+        } else {
+            $stmt = $mysqli->prepare("SELECT Username, Password, Email, Address FROM users WHERE Active != 0");
+        }
+
+        $stmt->execute();
+        
+        if (!$result = $stmt->get_result()) {
             echo "Error. Code 4";
             exit;
         }
@@ -105,7 +117,7 @@
     
     $users = array();
     
-    get_emails("SELECT Username, Password, Email, Address FROM users where Active != 0");
+    get_emails();
 
     send_emails();
 
