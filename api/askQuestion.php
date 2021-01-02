@@ -1,6 +1,8 @@
 <?php
 
     $output = new stdClass();
+    $output->user_id = $_POST['user_id'];
+    $output->message = $_POST['message'];
 
     function connect($xml) {
         
@@ -26,24 +28,12 @@
         $xml = simplexml_load_file($config) or die("Error: Cannot load configuration file");
         return $xml;
     }
-
-    function post_message() {
-        
-        global $mysqli, $output;
-        
-        $stmt = $mysqli->prepare("INSERT INTO chat(Message, Timestamp) VALUES (?, NOW())");
-
-        $message = $_POST['message'];
-        $stmt->bind_param('s', $message);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $output->post = "Message sent.";
-    }
     
-    function get_email($sql) {
+    function get_user_data() {
         
         global $mysqli, $output;
+
+        $sql = "select Username, Email from users where UserID = " . $output->user_id;
 
         if (!$result = $mysqli->query($sql)) {
             $output->error = "Eror code 4";
@@ -66,10 +56,24 @@
             exit;
         }
 
-        return $row["Email"];
+        $output->email = $row["Email"];
+        $output->username = $row["Username"];
     }
 
-    function send_email($email) {
+    function post_message() {
+        
+        global $mysqli, $output;
+        
+        $stmt = $mysqli->prepare('INSERT INTO chat(Message, Timestamp, UserID) VALUES (?, NOW(), ' . $output->user_id . ')');
+
+        $stmt->bind_param('s', $output->message);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $output->result = "Message posted.";
+    }
+
+    function send_email() {
         
         global $output;
         
@@ -81,7 +85,7 @@
 
         $email_text = '<html><body>';
         $email_text .= '<p>Somebody asked you a question:</p>';
-        $email_text .= '<p>' . $_POST['message'] . '</p><br>';
+        $email_text .= '<p>' . $output->message . '</p><br>';
         $email_text .= '<p>Go to <a href="https://secretsanta.jovanilic.com/santachat.html" target="_blank">SecretSanta</a> website and answer it!</p>';
         $email_text .= '<p>Merry shopping und Alles Gute zum Gechristmas :)</p>';
         $email_text .= '</body></html>';
@@ -90,20 +94,20 @@
         $email_text = wordwrap($email_text, 70);
 
         // send email
-        mail($email, $email_subject, $email_text, $email_headers);
+        mail($output->email, $email_subject, $email_text, $email_headers);
 
-        $output->email = "Email sent.";
+        $output->result = "Message posted in chat and email sent to the selected person.";
         echo json_encode($output);
     }
 
     $xml = get_config('../private/config.xml');
     $mysqli = connect($xml);
+    
+    get_user_data();
 
     post_message();
-    
-    $email = get_email("select Email from users where UserID = " . $_POST['person']);
 
-    send_email($email);
+    send_email();
 
     $mysqli->close();
 

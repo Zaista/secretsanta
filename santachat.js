@@ -3,12 +3,14 @@
 $(document).ready(function () {
     "use strict";
 
+    const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
     $.get('api/getMessages.php', function (result) {
         var messages = JSON.parse(result);
         for (var message of messages) {
             var date = new Date(message.Timestamp);
-            var dateStr = date.getHours() + ":" + date.getMinutes() + " (" + date.getDay() + "." + date.getMonth() + ")";
-            $('#chat').append('<p>' + message.Message + '<span>' + dateStr + "" + '</span></p>');
+            var dateStr = date.getHours() + ":" + date.getMinutes() + " - " + date.getDay() + ". " + months[date.getMonth()];
+            $('#chat').append('<p>' + message.Message + '<span>@' + message.Name + ' - (' + dateStr + ')' + '</span></p>');
         }
 
         $('#chat').scrollTop($('#chat').prop("scrollHeight"));
@@ -31,8 +33,8 @@ $(document).ready(function () {
             return;
         }
 
-        var person_id = $('#chat-ping-select').val();
-        if (person_id == 0) {
+        var user_id = $('#chat-ping-select').val();
+        if (user_id == 0) {
             $('.alert').removeClass('alert-success alert-danger');
             $('.alert').addClass('alert-danger');
             $('.alert span').text("Please select a person.");
@@ -43,11 +45,11 @@ $(document).ready(function () {
             return;
         }
 
-        $.post('api/askQuestion.php', { person: person_id, message: message}, function (data) {
+        $.post('api/askQuestion.php', { user_id: user_id, message: message }, function (data) {
             var result = JSON.parse(data);
             if (result.error) {
-				$('.alert').removeClass('alert-success alert-danger');
-				$('.alert').addClass('alert-danger');
+                $('.alert').removeClass('alert-success alert-danger');
+                $('.alert').addClass('alert-danger');
                 $('.alert span').text(result.error);
                 $('.alert').show();
                 setTimeout(function () {
@@ -58,9 +60,9 @@ $(document).ready(function () {
                 $('#chat').append('<p>' + message + '<span>Just now...</span></p>');
                 $('#chat').scrollTop($('#chat').prop("scrollHeight"));
 
-				$('.alert').removeClass('alert-success alert-danger');
-				$('.alert').addClass('alert-success');
-                $('.alert span').text('Person pinged. He/she will receive an email that a question has been asked.');
+                $('.alert').removeClass('alert-success alert-danger');
+                $('.alert').addClass('alert-success');
+                $('.alert span').text(result.result);
                 $('.alert').show();
                 setTimeout(function () {
                     $('.alert').hide();

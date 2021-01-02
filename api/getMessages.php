@@ -30,7 +30,7 @@
 	$xml = get_config('../private/config.xml');
 	$mysqli = connect($xml);
 
-    $sql = "SELECT * FROM chat ORDER BY Timestamp";
+    $sql = "SELECT c.Message, u.Name, c.Timestamp FROM chat c, users u WHERE c.UserID = u.UserID ORDER BY Timestamp";
     
     if (!$result = $mysqli->query($sql)) {
         $output->error = "Eror code 1";
