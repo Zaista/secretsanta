@@ -11,7 +11,7 @@ body {
 }
 
 .red-border {
-	border: 3px red dashed;
+	border: 2px lightgray dashed;
 }
 
 #chat {
@@ -23,7 +23,7 @@ body {
 #chat p {
     position: relative;
     margin: 10px 5px;
-    background-color: tomato;
+    background-color: #0d6efd;
     padding-left: 15px;
     padding-right: 15px;
     padding-bottom: 15px;

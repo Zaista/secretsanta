@@ -46,8 +46,8 @@
 						</tbody>
 					</table>
 					<p class="location"><b>Location:</b> 
-						<span id="label"></span>
-						<span id="location_image" class="picture-disabled float-end" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#present" data-picture="">
+						<span id="label">{{label}}</span>
+						<span id="location_image" class="picture-disabled pointer float-end" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#present" data-picture="{{yearImage}}">
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
 								<path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
 								<path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
@@ -59,13 +59,13 @@
 		</div>
 	</script>
 
-	<script id="row_template" type="template">
+	<script id="gift_template" type="template">
 		<tr>
 			<td>{{santa}}</td>
 			<td>{{child}}</td>
 			<td>{{gift}}</td>
 			<td class="text-end">
-				<span class="picture-disabled" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#present" data-picture="{{Year}}/{{image}}">
+				<span class="picture-disabled" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#present" data-picture="{{Year}}/{{giftImage}}">
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
 						<path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
 						<path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
@@ -73,62 +73,6 @@
 				</span>
 			</td>
 		</tr>
-	</script>
-
-	<script type="text/javascript">
-		$.getJSON("api/getHistory.php", function (data) {
-
-			$.each(data, function (archiveYear, archiveData) {
-
-				addYear(archiveYear);
-
-				$.each(archiveData, function (property, rowData) {
-
-					if (property === "label") {
-						$("#collapse" + archiveYear + " #label").text(rowData);
-						return true;
-					}
-
-					if (property === "image") {
-						if (rowData != null) {
-							$("#collapse" + archiveYear + " #location_image").attr("data-picture", archiveYear + "/" + rowData);
-							$("#collapse" + archiveYear + " #location_image").removeClass("picture-disabled");
-							$("#collapse" + archiveYear + " #location_image").addClass("pointer");
-						} else {
-							$("#collapse" + archiveYear + " #location_image").attr("data-bs-toggle", "");
-						}
-						return true;
-					}
-					addRow(rowData);
-				});
-
-			});
-		});
-
-		function addYear(archiveYear) {
-
-			var year_template = $.trim($('#year_template').html());
-			year_template = year_template.replace(/{{year}}/g, archiveYear);
-			$('#accordion').append(year_template);
-		}
-
-		function addRow(archiveRow) {
-
-			var row_template;
-			row_template = $.trim($('#row_template').html());
-			if (archiveRow.Image != null) {
-				row_template = row_template.replace(/{{year}}/ig, archiveRow.Year);
-				row_template = row_template.replace(/{{image}}/ig, archiveRow.Image);
-				row_template = row_template.replace("picture-disabled", "pointer");
-			} else {
-				row_template = row_template.replace("data-bs-toggle=\"modal\"", "");
-			}
-			row_template = row_template.replace(/{{santa}}/ig, archiveRow.Santa);
-			row_template = row_template.replace(/{{child}}/ig, archiveRow.Child);
-			row_template = row_template.replace(/{{gift}}/ig, archiveRow.Gift);
-
-			$('div#collapse' + archiveRow.Year + ' .table').append(row_template);
-		}
 	</script>
 </head>
 

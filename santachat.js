@@ -5,12 +5,11 @@ $(document).ready(function () {
 
     const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-    $.get('api/getMessages.php', function (result) {
-        var messages = JSON.parse(result);
-        for (var message of messages) {
+    $.getJSON('api/getMessages.php', function (result) {
+        for (var message of result) {
             var date = new Date(message.Timestamp);
             var dateStr = date.getHours() + ":" + date.getMinutes() + " - " + date.getDay() + ". " + months[date.getMonth()];
-            $('#chat').append('<p>' + message.Message + '<span>@' + message.Name + ' - (' + dateStr + ')' + '</span></p>');
+            $('#chat').append('<p>' + message.Message + '<span>@' + message.FirstName + ' - (' + dateStr + ')' + '</span></p>');
         }
 
         $('#chat').scrollTop($('#chat').prop("scrollHeight"));

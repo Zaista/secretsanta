@@ -21,8 +21,12 @@ $(document).ready(function () {
 						$("#santa-display").append('<div class="alert alert-success">' + result.match + '</div>');
 					} else {
 						$("#santa-display").empty();
-						$("#santa-display").append('<p style="font-size: 30px;"><strong>' + result.santa + '</strong></p>');
-						$("#santa-display").append('<img src="resources/images/' + result.image + '.png">');
+						var name = result.first_name;
+						if (result.last_name) {
+							name += " " + result.last_name;
+						}
+						$("#santa-display").append('<p style="font-size: 30px;"><strong>' + name + '</strong></p>');
+						$("#santa-display").append('<img src="resources/images/' + result.username + '.png">');
 						if (result.address)
 							$("#santa-display").append('<br><br><p style="font-size: 20px;">Address: ' + result.address + '</p>');
 					}

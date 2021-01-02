@@ -23,6 +23,17 @@
 	<meta property="og:title" content="Secret Santa Archive" />
 	<meta property="og:type" content="website" />
 	<meta property="og:description" content="Secret Santa archive for my friends!" />
+
+	<script id="santa-template" type="text/x-custom-template">	
+		<div class="col-md-3 col-xs-12">
+			<img src="resources/images/{{user}}.png">
+			<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/{{user}}.jpg" data-index="{{index}}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-info-circle-fill text-danger pointer" viewBox="0 0 16 16">
+					<path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+				</svg>
+			</a>
+		</div>
+	</script>
 </head>
 
 <body>
@@ -34,108 +45,7 @@
 		</div>
 		<div class="row justify-content-center">
 			<div class="col-md-8 col-xs-12">
-				<div class="row friends">
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/tijana.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/tijana.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/stasa.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/stasa.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/marina.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/marina.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/milica.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/milica.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/jovana.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/jovana.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/slavko.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/slavko.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/vlada.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/vlada.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/goran.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/goran.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/kil.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/kil.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-
-					<div class="col-md-3 col-xs-12">
-						<img src="resources/images/joca.png">
-						<a data-bs-toggle="modal" data-bs-target="#friend" data-picture="sheet/joca.jpg">
-							<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-file-earmark-person text-primary pointer" viewBox="0 0 16 16">
-								<path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-								<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2v9.255S12 12 8 12s-5 1.755-5 1.755V2a1 1 0 0 1 1-1h5.5v2z"/>
-							</svg>
-						</a>
-					</div>
-				</div>
-
+				<div class="row friends"></div>
 				<button class="btn btn-primary margin-top" onclick="location.href='secretsanta.html'">Back</button>
 			</div>
 		</div>
@@ -143,7 +53,10 @@
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-body">
-						<img id="sheet" class="img-responsive">
+						<p id="santa_name">Name: </p>
+						<p id="santa_email">Email: </p>
+						<p id="santa_address">Address: </p>
+						<img id="santa_sheet" class="img-responsive">
 					</div>
 				</div>
 			</div>

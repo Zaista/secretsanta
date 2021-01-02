@@ -49,7 +49,7 @@
 	}
 
 	$stmt = $mysqli->prepare("
-		SELECT c.Name AS Secretsanta, c.Image, c.Address FROM users u
+		SELECT c.FirstName, c.LastName, c.Username, c.Address FROM users u
 		JOIN matches m ON u.UserId = m.SantaID
 		JOIN users c ON m.ChildID = c.UserID
 		WHERE u.Username = ? AND u.Password = ?");
@@ -65,11 +65,10 @@
 	}
 
 	$row = $result->fetch_assoc();
-	$output->santa = $row['Secretsanta'];
-	$output->image = $row['Image'];
+	$output->first_name = $row['FirstName'];
+	$output->last_name = $row['LastName'];
+	$output->username = $row['Username'];
 	$output->address = $row['Address'];
-
-	// $child = array($row['Secretsanta'], $row['Image'], $row['Address']);
 
 	echo json_encode($output);
 ?>
