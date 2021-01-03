@@ -38,22 +38,44 @@ $(document).ready(function () {
 
 	$("#emailPasswords").click(function () {
 		var person_id = $("#email-select").val();
-		request = $.get("api/emailPasswords.php?person=" + person_id, function (data) {
-			var result = JSON.parse(data);
+		$.getJSON("api/emailPasswords.php?person=" + person_id, function (result) {
 			if (result.error) {
 				$('.alert').removeClass('alert-success alert-danger');
 				$('.alert').addClass('alert-danger');
 				$('.alert span').text(result.error);
 				$('.alert').show();
-				setTimeout(function() {
+				setTimeout(function () {
 					$('.alert').hide();
-								}, 3000);
+				}, 3000);
 			} else {
 				$('.alert').removeClass('alert-success alert-danger');
 				$('.alert').addClass('alert-success');
 				$('.alert span').text(result.success);
 				$('.alert').show();
-				setTimeout(function() {
+				setTimeout(function () {
+					$('.alert').hide();
+				}, 3000);
+			}
+		});
+	});
+
+	$("#rematch").click(function () {
+		var password = $("#rematch-password").val();
+		$.getJSON("api/match.php?password=" + password, function (result) {
+			if (result.error) {
+				$('.alert').removeClass('alert-success alert-danger');
+				$('.alert').addClass('alert-danger');
+				$('.alert span').text(result.error);
+				$('.alert').show();
+				setTimeout(function () {
+					$('.alert').hide();
+				}, 3000);
+			} else {
+				$('.alert').removeClass('alert-success alert-danger');
+				$('.alert').addClass('alert-success');
+				$('.alert span').text(result.match);
+				$('.alert').show();
+				setTimeout(function () {
 					$('.alert').hide();
 				}, 3000);
 			}

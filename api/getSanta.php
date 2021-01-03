@@ -41,13 +41,6 @@
 	$xml = get_config('../private/config.xml');
 	$mysqli = connect($xml);
 
-	if ($santa_username === 'joca_santa' && $santa_password ==='santa_seed') {
-		// this will reset santa pairs
-		ob_start();
-		require 'match.php';
-		exit;
-	}
-
 	$stmt = $mysqli->prepare("
 		SELECT c.FirstName, c.LastName, c.Username, c.Address FROM users u
 		JOIN matches m ON u.UserId = m.SantaID
