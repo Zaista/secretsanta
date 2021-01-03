@@ -8,8 +8,15 @@ $(document).ready(function () {
     $.getJSON('api/getMessages.php', function (result) {
         for (var message of result) {
             var date = new Date(message.Timestamp);
-            var dateStr = date.getHours() + ":" + date.getMinutes() + " - " + date.getDay() + ". " + months[date.getMonth()];
-            $('#chat').append('<p>' + message.Message + '<span>@' + message.FirstName + ' - (' + dateStr + ')' + '</span></p>');
+
+            var hours = date.getHours();
+            hours = hours < 10 ? '0' + hours : hours;
+
+            var minutes = date.getMinutes();
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            var dateStr = hours + ":" + minutes + " - " + date.getDate() + ". " + months[date.getMonth()];
+            $('#chat').append('<p>' + message.Message + '<span>@' + message.FirstName + ' (' + dateStr + ')' + '</span></p>');
         }
 
         $('#chat').scrollTop($('#chat').prop("scrollHeight"));
