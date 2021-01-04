@@ -5,7 +5,7 @@ $(document).ready(function () {
 
 	var request;
 	// send a username and password, get the santa name and address and display it
-	$("form").submit(function () {
+	$("#santa-form").submit(function () {
 		$("#santa-dialog").modal("show");
 		var username = $('#santa-username').val().toLowerCase();
 		var password = $('#santa-password').val();
@@ -59,7 +59,7 @@ $(document).ready(function () {
 		});
 	});
 
-	$("#rematch").click(function () {
+	$("#rematch-form").submit(function () {
 		var password = $("#rematch-password").val();
 		$.getJSON("api/match.php?password=" + password, function (result) {
 			if (result.error) {
@@ -78,8 +78,10 @@ $(document).ready(function () {
 				setTimeout(function () {
 					$('.alert').hide();
 				}, 3000);
+				$('#rematch-dialog').modal('hide');
 			}
 		});
+		return false;
 	});
 
 	// when santa-dialog is closed return a spinner in place
