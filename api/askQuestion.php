@@ -1,33 +1,20 @@
 <?php
 
+    require '../private/connect.php';
+
     $output = new stdClass();
-    $output->user_id = $_POST['user_id'];
-    $output->message = $_POST['message'];
+    $output->user_id = $_POST['chatUserID'];
+    $output->message = $_POST['chatMessage'];
+    
+    get_user_data();
 
-    function connect($xml) {
-        
-        global $output;
+    post_message();
 
-        // create connection
-        $mysqli = new mysqli($xml->database->hostname, $xml->database->username, $xml->database->password, $xml->database->database);
-        // check connection
-        if ($mysqli->connect_error) {
-            $output->error = "Connection failed: " . $mysqli->connect_error;
-            echo json_encode($output);
-            exit;
-        }
+    send_email();
 
-        // this will make sure cyrilic letters are displayed properly
-        $mysqli->query("SET NAMES utf8");
+    $mysqli->close();
 
-        return $mysqli;
-    }
-
-    function get_config($config) {
-        // load configuration file
-        $xml = simplexml_load_file($config) or die("Error: Cannot load configuration file");
-        return $xml;
-    }
+    exit;
     
     function get_user_data() {
         
@@ -100,16 +87,4 @@
         echo json_encode($output);
     }
 
-    $xml = get_config('../private/config.xml');
-    $mysqli = connect($xml);
-    
-    get_user_data();
-
-    post_message();
-
-    send_email();
-
-    $mysqli->close();
-
-    exit;
 ?>

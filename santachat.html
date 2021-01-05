@@ -37,25 +37,26 @@
 				<div class="red-border" id="chat">
 				</div>
 
-				<div class="input-group margin-top">
-					<input type="text" class="form-control w-50" id="chat-message" placeholder="Your message"
-						aria-label="Your message" required>
-					<select class="form-select" id="chat-ping-select" aria-label="Select santa to ping">
-						<option selected value="0">Choose...</option>
-						<option value="1">Tijana</option>
-						<option value="2">Staša</option>
-						<option value="3">Marina</option>
-						<option value="4">Slavko</option>
-						<option value="5">Vlada</option>
-						<option value="6">Goran</option>
-						<option value="7">Joca</option>
-						<option value="8">Jovana</option>
-						<option value="9">Kil</option>
-						<option value="10">Milica</option>
-					</select>
-					<button id="chat-ping-button" class="btn btn-outline-secondary" type="button">Ask</button>
-				</div>
-
+				<form class="margin-top" id="chat-form">
+					<div class="input-group">
+						<input type="text" class="form-control w-50" name="chatMessage" placeholder="Your message"
+							required>
+						<select class="form-select" name="chatUserID" required>
+							<option selected value="">Choose...</option>
+							<option value="1">Tijana</option>
+							<option value="2">Staša</option>
+							<option value="3">Marina</option>
+							<option value="4">Slavko</option>
+							<option value="5">Vlada</option>
+							<option value="6">Goran</option>
+							<option value="7">Joca</option>
+							<option value="8">Jovana</option>
+							<option value="9">Kil</option>
+							<option value="10">Milica</option>
+						</select>
+						<button class="btn btn-outline-secondary" type="submit">Ask</button>
+					</div>
+				</form>
 				<div class="alert alert-success alert-dismissible collapse margin-top" role="alert">
 					<span></span>
 					<button type="button" class="btn-close" aria-label="Close"></button>

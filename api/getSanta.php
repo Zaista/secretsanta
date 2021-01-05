@@ -1,5 +1,7 @@
 <?php
 
+	require '../private/connect.php';
+	
 	// this adds a flavor
 	sleep(1);
 
@@ -17,29 +19,6 @@
 
 	// store password from url parameter in variable
 	$santa_password = $_GET['santa-password'];
-	
-	function connect($xml) {
-	    // create connection
-	    $mysqli = new mysqli($xml->database->hostname, $xml->database->username, $xml->database->password, $xml->database->database);
-	    // check connection
-	    if ($mysqli->connect_error) {
-	        die("Connection failed: " . $mysqli->connect_error);
-	    }
-	    
-	    // this will make sure cyrilic letters are displayed properly
-	    $mysqli->query("SET NAMES utf8");
-	    
-	    return $mysqli;
-	}
-	
-	function get_config($config) {
-	    // load configuration file
-	    $xml = simplexml_load_file($config) or die("Error: Cannot load configuration file");
-	    return $xml;
-	}
-
-	$xml = get_config('../private/config.xml');
-	$mysqli = connect($xml);
 
 	$stmt = $mysqli->prepare("
 		SELECT c.FirstName, c.LastName, c.Username, c.Address FROM users u
@@ -64,4 +43,8 @@
 	$output->address = $row['Address'];
 
 	echo json_encode($output);
+
+    $mysqli->close();
+
+    exit;
 ?>

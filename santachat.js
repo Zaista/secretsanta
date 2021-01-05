@@ -22,36 +22,11 @@ $(document).ready(function () {
         $('#chat').scrollTop($('#chat').prop("scrollHeight"));
     });
 
-    $('#chat-button').click(function () {
-    });
+    $('#chat-form').submit(function () {
 
-    $('#chat-ping-button').click(function () {
+        var requestData = $(this).serialize();
 
-        var message = $('#chat-message').val();
-        if (message === "") {
-            $('.alert').removeClass('alert-success alert-danger');
-            $('.alert').addClass('alert-danger');
-            $('.alert span').text("Question field is empty.");
-            $('.alert').show();
-            setTimeout(function () {
-                $('.alert').hide();
-            }, 3000);
-            return;
-        }
-
-        var user_id = $('#chat-ping-select').val();
-        if (user_id == 0) {
-            $('.alert').removeClass('alert-success alert-danger');
-            $('.alert').addClass('alert-danger');
-            $('.alert span').text("Please select a person.");
-            $('.alert').show();
-            setTimeout(function () {
-                $('.alert').hide();
-            }, 3000);
-            return;
-        }
-
-        $.post('api/askQuestion.php', { user_id: user_id, message: message }, function (data) {
+        $.post('api/askQuestion.php', requestData, function (data) {
             var result = JSON.parse(data);
             if (result.error) {
                 $('.alert').removeClass('alert-success alert-danger');
@@ -63,7 +38,7 @@ $(document).ready(function () {
                 }, 3000);
             } else {
                 $('#chat-message').val('');
-                $('#chat').append('<p>' + message + '<span>Just now...</span></p>');
+                $('#chat').append('<p>' + result.message + '<span>Just now...</span></p>');
                 $('#chat').scrollTop($('#chat').prop("scrollHeight"));
 
                 $('.alert').removeClass('alert-success alert-danger');
@@ -75,6 +50,8 @@ $(document).ready(function () {
                 }, 3000);
             }
         });
+
+        return false;
     });
 
     $('.alert .btn-close').click(function () {
