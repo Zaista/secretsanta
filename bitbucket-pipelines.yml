@@ -1,4 +1,4 @@
-image: samueldebruyn/debian-git
+image: bitnami/git
 
 pipelines:
   default:
