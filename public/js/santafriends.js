@@ -20,7 +20,7 @@ $(document).ready(function () {
 	$("#friend").on('show.bs.modal', function (event) {
 		var picture = $(event.relatedTarget).data('picture');
 		var user_id = $(event.relatedTarget).data('index');
-		$('#santa_sheet').attr('src', 'resources/images/' + picture);
+		$('#santa_sheet').attr('src', 'public/resources/images/' + picture);
 		var name = users[user_id].FirstName;
 		if (users[user_id].LastName) {
 			name += " " + users[user_id].LastName;

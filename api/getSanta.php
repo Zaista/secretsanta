@@ -1,6 +1,6 @@
 <?php
 
-	require '../private/connect.php';
+	$mysqli = require '../private/connect.php';
 	
 	// this adds a flavor
 	sleep(1);

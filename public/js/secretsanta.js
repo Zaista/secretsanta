@@ -26,7 +26,7 @@ $(document).ready(function () {
 							name += " " + result.last_name;
 						}
 						$("#santa-display").append('<p style="font-size: 30px;"><strong>' + name + '</strong></p>');
-						$("#santa-display").append('<img src="resources/images/' + result.username + '.png">');
+						$("#santa-display").append('<img src="public/resources/images/' + result.username + '.png">');
 						if (result.address)
 							$("#santa-display").append('<br><br><p style="font-size: 20px;">Address: ' + result.address + '</p>');
 					}

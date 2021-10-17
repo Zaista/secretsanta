@@ -1,6 +1,6 @@
 <?php
 
-    require '../private/connect.php';
+    $mysqli = require '../private/connect.php';
 
 	$output = new stdClass();
     
@@ -62,7 +62,7 @@
 
                 $email_subject = "How to access your super neat Secret Santa place";
 
-                $email_headers = "From: secretsanta@jovanilic.com\r\n";
+                $email_headers = "From: ilicjovan89@gmail.com\r\n";
                 $email_headers .= "MIME-Version: 1.0\r\n";
                 $email_headers .= "Content-Type: text/html; charset=utf-8\r\n";
 

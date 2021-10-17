@@ -1,6 +1,6 @@
 <?php
 
-    require '../private/connect.php';
+    $mysqli = require '../private/connect.php';
 
     $output = new stdClass();
     $output->user_id = $_POST['chatUserID'];
@@ -16,8 +16,8 @@
 
     exit;
     
-    function get_user_data() {
-        
+    function get_user_data()
+    {
         global $mysqli, $output;
 
         $sql = "select Username, Email from users where UserID = " . $output->user_id;
@@ -47,8 +47,8 @@
         $output->username = $row["Username"];
     }
 
-    function post_message() {
-        
+    function post_message()
+    {
         global $mysqli, $output;
         
         $stmt = $mysqli->prepare('INSERT INTO chat(Message, Timestamp, UserID) VALUES (?, NOW(), ' . $output->user_id . ')');
@@ -60,8 +60,8 @@
         $output->result = "Message posted.";
     }
 
-    function send_email() {
-        
+    function send_email()
+    {
         global $output;
         
         $email_subject = "A new question has been asked in Secret Santa chat!";
@@ -86,5 +86,3 @@
         $output->result = "Message posted in chat and email sent to the selected person.";
         echo json_encode($output);
     }
-
-?>
