@@ -1,6 +1,6 @@
 <?php
 
-    $mysqli = require '../private/connect.php';
+    $mysqli = require '../../private/connect.php';
 
     $output = new stdClass();
     $output->user_id = $_POST['chatUserID'];

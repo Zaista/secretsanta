@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_USER: secretsanta
+      MYSQL_PASSWORD: secretsanta
+      MYSQL_DATABASE: secretsanta
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./private/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+      image: phpmyadmin
+      ports:
+        - 3307:80
+      depends_on:
+        - db

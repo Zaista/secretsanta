@@ -12,6 +12,10 @@
 # below:
 .git
 .gitignore
+/private/config.xml
 
 # PHP Composer dependencies:
 /vendor/
+
+# MySQL data:
+/private/data

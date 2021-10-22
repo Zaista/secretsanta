@@ -1,6 +1,4 @@
 <?php
-    require '../vendor/autoload.php';
-
     use Google\Cloud\SecretManager\V1\SecretManagerServiceClient;
 
     if (strpos(getenv('SERVER_SOFTWARE'), 'Development') === 0) {
@@ -29,7 +27,7 @@
         $data->database = $response->getPayload()->getData();
         return connect($data);
     } else {
-        $xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'].'/private/config.xml');
+        $xml = simplexml_load_file(__DIR__ . '/config.xml');
         return connect($xml);
     }
     
@@ -40,9 +38,7 @@
     }
 
     function connect($xml)
-    {
-        global $output;
-        
+    {   
         $mysqli = new mysqli($xml->hostname, $xml->username, $xml->password, $xml->database);
         
         if ($mysqli->connect_error) {
