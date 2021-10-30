@@ -27,7 +27,7 @@
         $data->database = $response->getPayload()->getData();
         return connect($data);
     } else {
-        $xml = simplexml_load_file(__DIR__ . '/config.xml');
+        $xml = simplexml_load_file(__DIR__ . '/private/config.xml');
         return connect($xml);
     }
     
