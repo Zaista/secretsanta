@@ -1,2 +1,6 @@
 runtime: php74
 service: secretsanta
+
+handlers:
+- url: /api/(.+\.php)$
+  script: auto
