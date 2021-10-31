@@ -40,8 +40,6 @@
             $years[$row["Year"]]["label"] = $row["Label"];
             $years[$row["Year"]]["image"] = $row["YearImage"];
         }
-
-        print_r($years);
         
         $response->getBody()->write(json_encode($years));
         return $response;

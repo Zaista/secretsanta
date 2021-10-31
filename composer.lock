@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8be18bb0197727fc7e292348cca12313",
+    "content-hash": "4825318447a565e49b9491d3e8c56f96",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -177,16 +177,16 @@
         },
         {
             "name": "google/cloud-secret-manager",
-            "version": "v1.7.0",
+            "version": "v1.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-secret-manager.git",
-                "reference": "e7e80571109922c70d9c2bdbf19348cc16a9630f"
+                "reference": "0a41c8fe6d6dd817561ea415fd4fe89039bc7216"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-secret-manager/zipball/e7e80571109922c70d9c2bdbf19348cc16a9630f",
-                "reference": "e7e80571109922c70d9c2bdbf19348cc16a9630f",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-secret-manager/zipball/0a41c8fe6d6dd817561ea415fd4fe89039bc7216",
+                "reference": "0a41c8fe6d6dd817561ea415fd4fe89039bc7216",
                 "shasum": ""
             },
             "require": {
@@ -223,9 +223,9 @@
             ],
             "description": "Secret Manager Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-secret-manager/tree/v1.7.0"
+                "source": "https://github.com/googleapis/google-cloud-php-secret-manager/tree/v1.7.1"
             },
-            "time": "2021-08-27T00:41:47+00:00"
+            "time": "2021-10-20T17:52:15+00:00"
         },
         {
             "name": "google/common-protos",
@@ -272,16 +272,16 @@
         },
         {
             "name": "google/gax",
-            "version": "v1.9.1",
+            "version": "v1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/gax-php.git",
-                "reference": "1cb6414a33d7af5381bb18e47c6c9bcb8cb8d5b4"
+                "reference": "5222f7712e73d266490c742dc9bc602602ae00a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/1cb6414a33d7af5381bb18e47c6c9bcb8cb8d5b4",
-                "reference": "1cb6414a33d7af5381bb18e47c6c9bcb8cb8d5b4",
+                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/5222f7712e73d266490c742dc9bc602602ae00a5",
+                "reference": "5222f7712e73d266490c742dc9bc602602ae00a5",
                 "shasum": ""
             },
             "require": {
@@ -319,9 +319,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/gax-php/issues",
-                "source": "https://github.com/googleapis/gax-php/tree/v1.9.1"
+                "source": "https://github.com/googleapis/gax-php/tree/v1.10.0"
             },
-            "time": "2021-09-27T23:18:48+00:00"
+            "time": "2021-10-27T17:33:04+00:00"
         },
         {
             "name": "google/grpc-gcp",
@@ -370,16 +370,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v3.18.1",
+            "version": "v3.19.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "b6a544ef62dfbeb6d291a9055947d28689ea4f38"
+                "reference": "83fe8edf7469ffdd83cb4b4e62249c154f961b9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/b6a544ef62dfbeb6d291a9055947d28689ea4f38",
-                "reference": "b6a544ef62dfbeb6d291a9055947d28689ea4f38",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/83fe8edf7469ffdd83cb4b4e62249c154f961b9b",
+                "reference": "83fe8edf7469ffdd83cb4b4e62249c154f961b9b",
                 "shasum": ""
             },
             "require": {
@@ -409,9 +409,9 @@
             ],
             "support": {
                 "issues": "https://github.com/protocolbuffers/protobuf-php/issues",
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.18.1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.19.1"
             },
-            "time": "2021-10-05T20:17:50+00:00"
+            "time": "2021-10-29T00:36:13+00:00"
         },
         {
             "name": "grpc/grpc",
@@ -583,16 +583,16 @@
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "1.5.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "136a635e2b4a49b9d79e9c8fee267ffb257fdba0"
+                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/136a635e2b4a49b9d79e9c8fee267ffb257fdba0",
-                "reference": "136a635e2b4a49b9d79e9c8fee267ffb257fdba0",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
+                "reference": "fe752aedc9fd8fcca3fe7ad05d419d32998a06da",
                 "shasum": ""
             },
             "require": {
@@ -647,7 +647,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/1.5.0"
+                "source": "https://github.com/guzzle/promises/tree/1.5.1"
             },
             "funding": [
                 {
@@ -663,7 +663,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-10-07T13:05:22+00:00"
+            "time": "2021-10-22T20:56:57+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -1652,7 +1652,9 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "7.4.*"
+    },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }

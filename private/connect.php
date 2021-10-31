@@ -2,7 +2,12 @@
 
     use Google\Cloud\SecretManager\V1\SecretManagerServiceClient;
 
-    if (strpos(getenv('SERVER_SOFTWARE'), 'Development') === 0) {
+    if (empty($_ENV['GAE_ENV'])) {
+        // local environment
+        $xml = simplexml_load_file(__DIR__ . '/../private/config.xml');
+        return connect($xml);
+    } else {
+        // production environment
         $data = new stdClass();
         $projectId = 'deductive-span-313911';
         $versionId = 'latest';
@@ -27,9 +32,6 @@
         $secret = $client->accessSecretVersion($name);
         $data->database = $secret->getPayload()->getData();
         return connect($data);
-    } else {
-        $xml = simplexml_load_file(__DIR__ . '/../private/config.xml');
-        return connect($xml);
     }
     
     function get_config($config)
