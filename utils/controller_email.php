@@ -48,6 +48,18 @@
             }
             $GLOBALS['users'] = $users;
         }
+        
+        function httpPost($url, $data)
+        {
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($curl);
+            curl_close($curl);
+            echo $response;
+            return $response;
+        }
 
         function send_emails()
         {
@@ -55,12 +67,6 @@
             $users = $GLOBALS['users'];
             foreach ($users as $user => $user_data) {
                 if ($user_data["email"] != null) {
-                    $email_subject = "How to access your super neat Secret Santa place";
-
-                    $email_headers = "From: ilicjovan89@gmail.com\r\n";
-                    $email_headers .= "MIME-Version: 1.0\r\n";
-                    $email_headers .= "Content-Type: text/html; charset=utf-8\r\n";
-
                     $email_text = '<html><head><style>' .
                         'table {' .
                             'max-width: 730px; ' .
@@ -94,12 +100,29 @@
                     // use wordwrap() if lines are longer than 70 characters
                     $email_text = wordwrap($email_text, 70);
 
-                    // send email
-                    if(!mail($user_data["email"], $email_subject, $email_text, $email_headers)) {
-                        $output->error = "Error with email server.";
-                        $GLOBALS['output'] = $output;
-                        return;
-                    }
+                    $mail = [
+                        'Messages' => [
+                            [
+                                'From' => [
+                                    'Email' => "secretsanta@jovanilic.com",
+                                    'Name' => "SecretSanta"
+                                ],
+                                'To' => [
+                                    [
+                                        'Email' => $user_data["email"]
+                                    ]
+                                ],
+                                'Subject' => "How to access your super neat Secret Santa place.",
+                                'TextPart' => "SecretSanta email",
+                                'HTMLPart' => $email_text,
+                                'CustomID' => "SecretSantaMailer"
+                            ]
+                        ]
+                    ];
+
+                    $output->what = httpPost('https://mail-dot-deductive-span-313911.ey.r.appspot.com/email', $mail);
+                    $output->success = "Emails with usernames and passwords are sent out.";
+                    $GLOBALS['output'] = $output;
                 }
             }
 
