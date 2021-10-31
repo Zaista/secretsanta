@@ -46,3 +46,17 @@
         $newResponse->getBody()->write(file_get_contents($filePath));
         return $newResponse;
     });
+
+    // used to serve static files in local development
+    if (php_sapi_name() == 'cli-server') {
+        $app->get('/resources/images/[{year}[/{file}]]', function (Request $request, Response $response, $args) {
+            if (!empty($args['file'])) {
+                $filePath = 'public/resources/images/' . $args['year'] . '/' . $args['file'];
+            } else  {
+                $filePath = 'public/resources/images/' . $args['year'];
+            }
+            $newResponse = $response->withHeader('Content-Type', 'text/css; charset=UTF-8');
+            $newResponse->getBody()->write(file_get_contents($filePath));
+            return $newResponse;
+        });
+    }
