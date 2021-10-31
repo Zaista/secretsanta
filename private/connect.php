@@ -1,4 +1,5 @@
 <?php
+
     use Google\Cloud\SecretManager\V1\SecretManagerServiceClient;
 
     if (strpos(getenv('SERVER_SOFTWARE'), 'Development') === 0) {
@@ -11,23 +12,23 @@
     
         // Build the resource name of the secret version.
         $name = $client->secretVersionName($projectId, 'sql-hostname', $versionId);
-        $response = $client->accessSecretVersion($name);
-        $data->hostname = $response->getPayload()->getData();
+        $secret = $client->accessSecretVersion($name);
+        $data->hostname = $secret->getPayload()->getData();
 
         $name = $client->secretVersionName($projectId, 'sql-username', $versionId);
-        $response = $client->accessSecretVersion($name);
-        $data->username = $response->getPayload()->getData();
+        $secret = $client->accessSecretVersion($name);
+        $data->username = $secret->getPayload()->getData();
 
         $name = $client->secretVersionName($projectId, 'sql-password', $versionId);
-        $response = $client->accessSecretVersion($name);
-        $data->password = $response->getPayload()->getData();
+        $secret = $client->accessSecretVersion($name);
+        $data->password = $secret->getPayload()->getData();
 
         $name = $client->secretVersionName($projectId, 'sql-database', $versionId);
-        $response = $client->accessSecretVersion($name);
-        $data->database = $response->getPayload()->getData();
+        $secret = $client->accessSecretVersion($name);
+        $data->database = $secret->getPayload()->getData();
         return connect($data);
     } else {
-        $xml = simplexml_load_file(__DIR__ . '/private/config.xml');
+        $xml = simplexml_load_file(__DIR__ . '/../private/config.xml');
         return connect($xml);
     }
     
@@ -38,7 +39,7 @@
     }
 
     function connect($xml)
-    {   
+    {
         $mysqli = new mysqli($xml->hostname, $xml->username, $xml->password, $xml->database);
         
         if ($mysqli->connect_error) {

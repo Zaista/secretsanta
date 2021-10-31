@@ -5,7 +5,7 @@ $(document).ready(function () {
 
 	var users = [];
 
-	$.getJSON("api/getUsers.php", function (result) {
+	$.getJSON("api/friends", function (result) {
 		$.each(result, function (i, userData) {
 			var santa_template = $("#santa-template").html();
 

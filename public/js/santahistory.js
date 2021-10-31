@@ -3,7 +3,7 @@
 $(document).ready(function () {
 	"use strict";
 	
-	$.getJSON("api/getHistory.php", function (result) {
+	$.getJSON("api/history", function (result) {
 		$.each(result, function (archiveYear, archiveData) {
 
 			addYear(archiveYear, archiveData.label, archiveData.image);

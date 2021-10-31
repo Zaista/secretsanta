@@ -1,37 +1,31 @@
 <?php
-    $mysqli = require '../../private/connect.php';
-    
-    $output = new stdClass();
-    
-    load_history();
 
-    //$result->free();
-    $mysqli->close();
+    use Psr\Http\Message\ServerRequestInterface as Request;
+    use Psr\Http\Message\ResponseInterface as Response;
 
-    exit;
-    
-    function load_history()
-    {
-        global $mysqli, $output;
+    $app->get('/api/history', function (Request $request, Response $response) {
+        $mysqli = require 'private/connect.php';
+
+        $output = new stdClass();
 
         $sql = "SELECT year.Year, year.Label, year.Image as YearImage, santa.Username, santa.FirstName as Santa, child.FirstName as Child, archive.Gift, archive.Image as GiftImage FROM archive
-        INNER JOIN users AS santa ON archive.SantaID = santa.UserID
-        INNER JOIN users AS child ON archive.ChildID = child.UserID
-        INNER JOIN year ON archive.YearID = year.YearID;";
+            INNER JOIN users AS santa ON archive.SantaID = santa.UserID
+            INNER JOIN users AS child ON archive.ChildID = child.UserID
+            INNER JOIN year ON archive.YearID = year.YearID;";
 
         if (!$result = $mysqli->query($sql)) {
             $output->error = "Eror code 5.";
-            echo json_encode($output);
-            exit;
+            $response->getBody()->write(json_encode($output));
+            return $response;
         }
-        
+            
         // check if any result is returned
         if ($result->num_rows === 0) {
             $output->error = "Empty result from database, code 2.";
-            echo json_encode($output);
-            exit;
+            $response->getBody()->write(json_encode($output));
+            return $response;
         }
-        
+            
         $years = array();
         while ($row = $result->fetch_assoc()) {
             $year = new stdClass();
@@ -46,8 +40,9 @@
             $years[$row["Year"]]["label"] = $row["Label"];
             $years[$row["Year"]]["image"] = $row["YearImage"];
         }
-    
-        echo json_encode($years);
-    }
 
-?>
+        print_r($years);
+        
+        $response->getBody()->write(json_encode($years));
+        return $response;
+    });

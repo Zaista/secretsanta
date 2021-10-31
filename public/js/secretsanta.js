@@ -9,7 +9,7 @@ $(document).ready(function () {
 		$("#santa-dialog").modal("show");
 		var username = $('#santa-username').val().toLowerCase();
 		var password = $('#santa-password').val();
-		request = $.get("api/getSanta.php?santa-username=" + username + "&santa-password=" + password, function (data, status) {
+		request = $.get("api/santa?santa-username=" + username + "&santa-password=" + password, function (data, status) {
 			if (status === 'success') {
 				var result = JSON.parse(data);
 				if (result.error) {
@@ -38,7 +38,7 @@ $(document).ready(function () {
 
 	$("#emailPasswords").click(function () {
 		var person_id = $("#email-select").val();
-		$.getJSON("api/emailPasswords.php?person=" + person_id, function (result) {
+		$.getJSON("api/email?person=" + person_id, function (result) {
 			if (result.error) {
 				$('.alert').removeClass('alert-success alert-danger');
 				$('.alert').addClass('alert-danger');
@@ -61,7 +61,7 @@ $(document).ready(function () {
 
 	$("#rematch-form").submit(function () {
 		var password = $("#rematch-password").val();
-		$.getJSON("api/match.php?password=" + password, function (result) {
+		$.getJSON("api/match?password=" + password, function (result) {
 			if (result.error) {
 				$('.alert').removeClass('alert-success alert-danger');
 				$('.alert').addClass('alert-danger');

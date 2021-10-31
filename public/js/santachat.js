@@ -5,7 +5,7 @@ $(document).ready(function () {
 
     const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-    $.getJSON('api/getMessages.php', function (result) {
+    $.getJSON('api/chat', function (result) {
         for (var message of result) {
             var date = new Date(message.Timestamp);
 
@@ -26,7 +26,7 @@ $(document).ready(function () {
 
         var requestData = $(this).serialize();
 
-        $.post('api/askQuestion.php', requestData, function (data) {
+        $.post('api/chat', requestData, function (data) {
             var result = JSON.parse(data);
             if (result.error) {
                 $('.alert').removeClass('alert-success alert-danger');

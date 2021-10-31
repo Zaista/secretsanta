@@ -2,5 +2,5 @@ runtime: php74
 service: secretsanta
 
 handlers:
-- url: /api/(.+\.php)$
-  script: auto
+- url: /resources
+  static_dir: public/resources

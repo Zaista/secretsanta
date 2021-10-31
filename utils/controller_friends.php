@@ -1,18 +1,15 @@
 <?php
 
-    $mysqli = require '../../private/connect.php';
-    
-    $output = new stdClass();
-    
-    get_users();
+    /*
+    * Adds all the controllers to Slim PHP $app.
+    */
+    use Psr\Http\Message\ServerRequestInterface as Request;
+    use Psr\Http\Message\ResponseInterface as Response;
 
-    $mysqli->close();
-
-    exit;
+    $app->get('/api/friends', function (Request $request, Response $response) {
+        $mysqli = require 'private/connect.php';
     
-    function get_users() {
-        
-        global $mysqli, $output;
+        $output = new stdClass();
 
         $sql = "SELECT FirstName, LastName, Email, Username, Address FROM users WHERE Active != 0";
 
@@ -33,8 +30,7 @@
         while ($row = $result->fetch_assoc()) {
             $users[] = $row;
         }
-    
-        echo json_encode($users);
-    }
-
-?>
+        
+        $response->getBody()->write(json_encode($users));
+        return $response;
+    });

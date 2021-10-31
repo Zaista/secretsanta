@@ -1,25 +1,48 @@
 <?php
 
-    $mysqli = require '../../private/connect.php';
+    /*
+    * Adds all the controllers to Slim PHP $app.
+    */
+    use Psr\Http\Message\ServerRequestInterface as Request;
+    use Psr\Http\Message\ResponseInterface as Response;
 
-    $output = new stdClass();
-    $output->user_id = $_POST['chatUserID'];
-    $output->message = $_POST['chatMessage'];
+    $app->get('/api/chat', function (Request $request, Response $response) {
+        $mysqli = require 'private/connect.php';
     
-    get_user_data();
+        $output = new stdClass();
 
-    post_message();
-
-    send_email();
-
-    $mysqli->close();
-
-    exit;
+        $sql = "SELECT c.Message, u.FirstName, c.Timestamp FROM chat c, users u WHERE c.UserID = u.UserID ORDER BY Timestamp";
     
-    function get_user_data()
-    {
-        global $mysqli, $output;
+        if (!$result = $mysqli->query($sql)) {
+            $output->error = "Eror code 1";
+            echo json_encode($output);
+            exit;
+        }
+    
+        if ($result->num_rows === 0) {
+            $output->error = "Empty result.";
+            echo json_encode($output);
+            exit;
+        }
+    
+        $messages = array();
+    
+        while ($row = $result->fetch_assoc()) {
+            $messages[] = $row;
+        }
+        
+        $response->getBody()->write(json_encode($messages));
+        return $response;
+    });
 
+    $app->post('/api/chat', function (Request $request, Response $response) {
+        $mysqli = require 'private/connect.php';
+
+        $output = new stdClass();
+        $output->user_id = $_POST['chatUserID'];
+        $output->message = $_POST['chatMessage'];
+    
+        // get user data
         $sql = "select Username, Email from users where UserID = " . $output->user_id;
 
         if (!$result = $mysqli->query($sql)) {
@@ -45,11 +68,8 @@
 
         $output->email = $row["Email"];
         $output->username = $row["Username"];
-    }
 
-    function post_message()
-    {
-        global $mysqli, $output;
+        // post message
         
         $stmt = $mysqli->prepare('INSERT INTO chat(Message, Timestamp, UserID) VALUES (?, NOW(), ' . $output->user_id . ')');
 
@@ -58,12 +78,8 @@
         $result = $stmt->get_result();
 
         $output->result = "Message posted.";
-    }
 
-    function send_email()
-    {
-        global $output;
-        
+        // send email
         $email_subject = "A new question has been asked in Secret Santa chat!";
 
         $email_headers = "From: secretsanta@jovanilic.com\r\n";
@@ -85,4 +101,7 @@
 
         $output->result = "Message posted in chat and email sent to the selected person.";
         echo json_encode($output);
-    }
+
+        $response->getBody()->write(json_encode($output));
+        return $response;
+    });
