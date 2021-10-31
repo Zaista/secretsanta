@@ -1,13 +1,10 @@
 <?php
 
-    /*
-    * Adds all the controllers to Slim PHP $app.
-    */
     use Psr\Http\Message\ServerRequestInterface as Request;
     use Psr\Http\Message\ResponseInterface as Response;
 
     $app->get('/api/santa', function (Request $request, Response $response) {
-        $mysqli = require 'private/connect.php';
+        $mysqli = require 'connect.php';
     
         // this adds a flavor
         sleep(1);

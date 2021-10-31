@@ -1,3 +1,4 @@
 /vendor
-/private/config.xml
 /private/data
+.env
+docker-compose.yaml

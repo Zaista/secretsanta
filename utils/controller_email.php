@@ -4,7 +4,7 @@
     use Psr\Http\Message\ResponseInterface as Response;
 
     $app->get('/api/email', function (Request $request, Response $response) {
-        $GLOBALS['mysqli'] = require 'private/connect.php';
+        $GLOBALS['mysqli'] = require 'connect.php';
 
         $GLOBALS['output'] = new stdClass();
             

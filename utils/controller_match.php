@@ -1,9 +1,10 @@
 <?php
+
     use Psr\Http\Message\ServerRequestInterface as Request;
     use Psr\Http\Message\ResponseInterface as Response;
 
     $app->get('/api/match', function (Request $request, Response $response) {
-        $GLOBALS['mysqli'] = require 'private/connect.php';
+        $GLOBALS['mysqli'] = require 'connect.php';
     
         $output = new stdClass();
 

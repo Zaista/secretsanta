@@ -4,8 +4,12 @@
 
     if (empty($_ENV['GAE_ENV'])) {
         // local environment
-        $xml = simplexml_load_file(__DIR__ . '/../private/config.xml');
-        return connect($xml);
+        $data = new stdClass();
+        $data->hostname = $_ENV['HOSTNAME'];
+        $data->username = $_ENV['USERNAME'];
+        $data->password = $_ENV['PASSWORD'];
+        $data->database = $_ENV['DATABASE'];
+        return connect($data);
     } else {
         // production environment
         $data = new stdClass();
@@ -32,12 +36,6 @@
         $secret = $client->accessSecretVersion($name);
         $data->database = $secret->getPayload()->getData();
         return connect($data);
-    }
-    
-    function get_config($config)
-    {
-        $xml = simplexml_load_file($config);
-        return $xml;
     }
 
     function connect($xml)

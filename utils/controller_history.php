@@ -4,7 +4,7 @@
     use Psr\Http\Message\ResponseInterface as Response;
 
     $app->get('/api/history', function (Request $request, Response $response) {
-        $mysqli = require 'private/connect.php';
+        $mysqli = require 'connect.php';
 
         $output = new stdClass();
 

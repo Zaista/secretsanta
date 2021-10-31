@@ -1,5 +1,7 @@
 <?php
     require __DIR__ . '/vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+    $dotenv->load();
 
     //  Load the application code.
     /** @var Slim\App $app */

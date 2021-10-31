@@ -12,10 +12,11 @@
 # below:
 .git
 .gitignore
-/private/config.xml
+.env
 
 # PHP Composer dependencies:
 /vendor/
 
-# MySQL data:
+# local development files:
 /private/data
+docker-compose.yaml

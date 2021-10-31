@@ -1,13 +1,10 @@
 <?php
 
-    /*
-    * Adds all the controllers to Slim PHP $app.
-    */
     use Psr\Http\Message\ServerRequestInterface as Request;
     use Psr\Http\Message\ResponseInterface as Response;
 
     $app->get('/api/chat', function (Request $request, Response $response) {
-        $mysqli = require 'private/connect.php';
+        $mysqli = require 'connect.php';
     
         $output = new stdClass();
 
@@ -36,7 +33,7 @@
     });
 
     $app->post('/api/chat', function (Request $request, Response $response) {
-        $mysqli = require 'private/connect.php';
+        $mysqli = require 'connect.php';
 
         $output = new stdClass();
         $output->user_id = $_POST['chatUserID'];
