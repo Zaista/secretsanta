@@ -4,6 +4,9 @@
 
     if (empty($_ENV['GAE_ENV'])) {
         // local environment
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+        $dotenv->load();
+
         $data = new stdClass();
         $data->hostname = $_ENV['HOSTNAME'];
         $data->username = $_ENV['USERNAME'];
