@@ -14,5 +14,3 @@
 
     // Bootstrap the slim framework to handle the request.
     $app->run();
-
-    // [END gae_php_app_bootstrap]
