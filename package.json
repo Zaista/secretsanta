@@ -1,0 +1,11 @@
+{
+    "name": "secretsanta",
+    "scripts": {
+        "test": "cypress open",
+        "test_ci": "cy2 run --record --key XXX --parallel --ci-build-id $BUILD --config baseUrl=https://secretsanta.jovanilic.com"
+    },
+    "devDependencies": {
+        "cypress": "9.0.0",
+        "cy2": "1.3.0"
+    }
+}

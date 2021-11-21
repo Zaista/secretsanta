@@ -1,4 +1,4 @@
 /vendor
 /private/data
+/node_modules
 .env
-docker-compose.yaml

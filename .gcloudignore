@@ -17,6 +17,9 @@
 # PHP Composer dependencies:
 /vendor/
 
+# Node dependencies:
+/node_modules/
+
 # local development files:
 /private/data
 docker-compose.yaml

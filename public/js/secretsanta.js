@@ -25,10 +25,10 @@ $(document).ready(function () {
 						if (result.last_name) {
 							name += " " + result.last_name;
 						}
-						$("#santa-display").append('<p style="font-size: 30px;"><strong>' + name + '</strong></p>');
+						$("#santa-display").append('<p id="santa_name" style="font-size: 30px;"><strong>' + name + '</strong></p>');
 						$("#santa-display").append('<img src="resources/images/' + result.username + '.png">');
 						if (result.address)
-							$("#santa-display").append('<br><br><p style="font-size: 20px;">Address: ' + result.address + '</p>');
+							$("#santa-display").append('<br><br><p id="santa_address" style="font-size: 20px;">Address: ' + result.address + '</p>');
 					}
 				}
 			}
