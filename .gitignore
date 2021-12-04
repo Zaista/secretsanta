@@ -1,4 +1,4 @@
 /vendor
-/private/data
+/private
 /node_modules
 .env

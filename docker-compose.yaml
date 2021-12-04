@@ -15,8 +15,13 @@ services:
       - 3306:3306
 
   phpmyadmin:
-      image: phpmyadmin
-      ports:
-        - 3307:80
-      depends_on:
-        - db
+    image: phpmyadmin
+    # use this to connect to remote db server, leave commented for localhost
+    #environment:
+      #PMA_HOST: <hostname>
+      #PMA_USER: <username>
+      #PMA_PASSWORD: <password>
+    ports:
+      - 3307:80
+    depends_on:
+      - db
