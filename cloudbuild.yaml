@@ -1,10 +1,10 @@
 steps:
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
-- name: cypress/included:9.0.0
+- name: cypress/included:10.9.0
   entrypoint: npm
   args: ['ci']
-- name: cypress/included:9.0.0
+- name: cypress/included:10.9.0
   entrypoint: npm
   env:
     - 'CYPRESS_API_URL=https://cypress-director-gp34ticnkq-ey.a.run.app'
