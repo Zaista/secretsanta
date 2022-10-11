@@ -1,5 +1,5 @@
 describe('Secret Santa', () => {
-  it('See secret santa', () => {
+  it('User can see his secret santa', () => {
     cy.fixture('user').then((user) => {
       cy.visit('/');
       cy.get('img')
@@ -17,9 +17,19 @@ describe('Secret Santa', () => {
 
       cy.get('div.buttons button[type="submit"]').click();
 
-      cy.get('#santa_name').should('have.text', 'Jovana Stašuk');
-      cy.get('#santa-display img').should('have.attr', 'src', 'resources/images/jovana.png');
-      cy.get('#santa_address').should('have.text', 'Address: Narodnog Fronta 15/53, 21000 Novi Sad, Serbia');
+      cy.contains('This is not the santa you are looking for.').should('be.visible');
     });
+  });
+
+  it('User can see history', () => {
+      cy.visit('/');
+      cy.contains('History').click();
+      cy.contains('2012').click();
+
+      cy.request('api/history').then(response => {
+        expect(response.body).to.contain('gifts');
+      });
+
+      cy.contains('Location: Laser Tag, Novi Sad').should('be.visible');
   });
 });

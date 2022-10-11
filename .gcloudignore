@@ -23,3 +23,8 @@
 # local development files:
 /private/data
 docker-compose.yaml
+
+# test files
+/cypress/screenshots
+/cypress/videos
+/cypress/downloads
