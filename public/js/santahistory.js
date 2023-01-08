@@ -4,14 +4,11 @@ $(document).ready(function () {
 	"use strict";
 	
 	$.getJSON("api/history", function (result) {
-		$.each(result, function (archiveYear, archiveData) {
-
-			addYear(archiveYear, archiveData.label, archiveData.image);
-
-			$.each(archiveData.gifts, function (i, gifts) {
-				addGifts(gifts);
+		$.each(result, function (index, yearData) {
+			addYear(yearData.year, yearData.location, yearData.location_image);
+			$.each(yearData.gifts, function (i, gifts) {
+				addGifts(yearData.year, gifts);
 			});
-
 		});
 	});
 
@@ -30,13 +27,12 @@ $(document).ready(function () {
 		$('#accordion').append(year_template); 
 	}
 
-	function addGifts(gifts) {
-
+	function addGifts(year, gifts) {
 		var gift_template = $('#gift_template').html();
 
-		if (gifts.image != null) {
-			gift_template = gift_template.replace(/{{year}}/ig, gifts.year);
-			gift_template = gift_template.replace(/{{giftImage}}/ig, gifts.image);
+		if (gifts.gift_image != null) {
+			gift_template = gift_template.replace(/{{year}}/ig, year);
+			gift_template = gift_template.replace(/{{giftImage}}/ig, gifts.gift_image);
 			gift_template = gift_template.replace("picture-disabled", "pointer");
 		} else {
 			gift_template = gift_template.replace("data-bs-toggle=\"modal\"", "");
@@ -45,7 +41,7 @@ $(document).ready(function () {
 		gift_template = gift_template.replace(/{{child}}/ig, gifts.child);
 		gift_template = gift_template.replace(/{{gift}}/ig, gifts.gift);
 
-		$('div#collapse' + gifts.year + ' #table_body').append(gift_template);
+		$('div#collapse' + year + ' #table_body').append(gift_template);
 	}
 
 	// if present picture is open

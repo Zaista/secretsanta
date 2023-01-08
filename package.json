@@ -6,8 +6,7 @@
         "test_ci": "cy2 run --record --key XXX --parallel --ci-build-id $BUILD --config baseUrl=https://secretsanta.jovanilic.com"
     },
     "devDependencies": {
-        "@deploysentinel/cypress-debugger": "^0.4.11",
-        "cy2": "2.0.1",
-        "cypress": "10.9.0"
+        "cy2": "^3.4.3",
+        "cypress": "^12.3.0"
     }
 }

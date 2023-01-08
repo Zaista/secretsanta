@@ -7,12 +7,10 @@
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
         $dotenv->load();
 
-        $data = new stdClass();
-        $data->hostname = $_ENV['HOSTNAME'];
-        $data->username = $_ENV['USERNAME'];
-        $data->password = $_ENV['PASSWORD'];
-        $data->database = $_ENV['DATABASE'];
-        return connect($data);
+        $client = new MongoDB\Client("mongodb://${_ENV['username']}:${_ENV['password']}@${_ENV['hostname']}");
+        $db = $client->{$_ENV['database']};
+
+        return $db;
     } else {
         // production environment
         $data = new stdClass();
