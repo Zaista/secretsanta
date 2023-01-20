@@ -1,1 +1,0 @@
-import '@deploysentinel/cypress-debugger/support';

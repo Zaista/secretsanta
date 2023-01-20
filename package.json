@@ -1,13 +1,25 @@
 {
     "name": "secretsanta",
+    "version": "2.0.0",
+    "description": "SecretSanta source code",
+    "author": "Zaista",
+    "license": "MIT",
+    "main": "app.js",
+    "type": "module",
     "scripts": {
+        "start": "node app.js",
         "test": "cypress open --e2e --browser chrome",
         "run": "cypress run --browser chrome",
         "test_ci": "cy2 run --record --key XXX --parallel --ci-build-id $BUILD --config baseUrl=https://secretsanta.jovanilic.com"
     },
+    "dependencies": {
+        "@google-cloud/firestore": "^4.15.1",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "mongodb": "^4.13"
+    },
     "devDependencies": {
-        "@deploysentinel/cypress-debugger": "^0.4.11",
-        "cy2": "2.0.1",
-        "cypress": "10.9.0"
+        "cy2": "^3.4.3",
+        "cypress": "^12.1.0"
     }
 }

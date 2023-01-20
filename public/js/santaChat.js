@@ -1,33 +1,35 @@
 /*global $, document, setTimeout */
 
-$(document).ready(function () {
-    "use strict";
+$(function () {
+    'use strict';
 
-    const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
     $.getJSON('api/chat', function (result) {
-        for (var message of result) {
-            var date = new Date(message.Timestamp);
+        for (let message of result) {
+            let date = new Date(message.timestamp);
 
-            var hours = date.getHours();
+            let hours = date.getHours();
             hours = hours < 10 ? '0' + hours : hours;
 
-            var minutes = date.getMinutes();
+            let minutes = date.getMinutes();
             minutes = minutes < 10 ? '0' + minutes : minutes;
 
-            var dateStr = hours + ":" + minutes + " - " + date.getDate() + ". " + months[date.getMonth()];
-            $('#chat').append('<p>' + message.Message + '<span>@' + message.FirstName + ' (' + dateStr + ')' + '</span></p>');
+            let dateStr = hours + ':' + minutes + ' - ' + date.getDate() + '. ' + months[date.getMonth()];
+            $('#chat').append('<p>' + message.message + '<span>@' + message.firstName + ' (' + dateStr + ')' + '</span></p>');
         }
 
-        $('#chat').scrollTop($('#chat').prop("scrollHeight"));
+        $('#chat').scrollTop($('#chat').prop('scrollHeight'));
     });
 
+    // TODO deprecated, function setup
     $('#chat-form').submit(function () {
 
-        var requestData = $(this).serialize();
+        let requestData = $(this).serialize();
 
         $.post('api/chat', requestData, function (data) {
-            var result = JSON.parse(data);
+            let result = JSON.parse(data);
+            console.log(result);
             if (result.error) {
                 $('.alert').removeClass('alert-success alert-danger');
                 $('.alert').addClass('alert-danger');
@@ -39,7 +41,7 @@ $(document).ready(function () {
             } else {
                 $('#chat-message').val('');
                 $('#chat').append('<p>' + result.message + '<span>Just now...</span></p>');
-                $('#chat').scrollTop($('#chat').prop("scrollHeight"));
+                $('#chat').scrollTop($('#chat').prop('scrollHeight'));
 
                 $('.alert').removeClass('alert-success alert-danger');
                 $('.alert').addClass('alert-success');
@@ -54,6 +56,7 @@ $(document).ready(function () {
         return false;
     });
 
+    // TODO deprecated
     $('.alert .btn-close').click(function () {
         $('.alert').hide();
     });

@@ -14,9 +14,6 @@
 .gitignore
 .env
 
-# PHP Composer dependencies:
-/vendor/
-
 # Node dependencies:
 /node_modules/
 

@@ -1,8 +1,6 @@
-/vendor
 /private
 /node_modules
 .env
 /cypress/screenshots
 /cypress/videos
 /cypress/downloads
-cypress.env.json
