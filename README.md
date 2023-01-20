@@ -4,7 +4,7 @@ Checkout the live thing here: https://secretsanta.jovanilic.com
 
 # local dev
 ```
-$ php -S localhost:8080 index.php
+$ npm run start
 ```
 
 See the LICENSE.md for license information.

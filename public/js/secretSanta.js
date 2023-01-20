@@ -1,6 +1,6 @@
 /*global $, document, setTimeout */
 
-$(document).ready(function () {
+$(function () {
 	"use strict";
 
 	var request;

@@ -1,4 +1,4 @@
-runtime: php74
+runtime: nodejs14
 service: secretsanta
 
 handlers:

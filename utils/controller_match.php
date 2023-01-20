@@ -23,7 +23,7 @@
     
         // HOW TO SANTA
 
-        // 1. prepare two chirstmas buckets, one for people, and one for naughty pairs
+        // 1. prepare two Christmas buckets, one for people, and one for naughty pairs
         $GLOBALS['people'] = array();
         $GLOBALS['naughties'] = array();
 
