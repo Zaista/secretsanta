@@ -13,19 +13,15 @@ app.use(express.urlencoded({extended: true})); // for parsing application/x-www-
 
 if (process.env.NODE_ENV === 'production') {
   let projectId = 'deductive-span-313911';
-  let versionId = 'latest';
   const client = new SecretManagerServiceClient();
   const [accessResponse] = await client.accessSecretVersion({
-    name: 'projects/307352298506/secrets/secretsanta-mongodb-url/versions/1',
+    name: `projects/${projectId}/secrets/secretsanta-mongodb-url/versions/latest`,
   });
 
   const responsePayload = accessResponse.payload.data.toString('utf8');
-  console.info(`Payload: ${responsePayload}`);
   process.env.mongodb_uri = responsePayload;
-  console.log(process.env.mongodb_uri);
 } else {
   dotenv.config();
-  console.log(process.env.mongodb_uri);
 }
 
 const {MongoClient} = mongodb;
