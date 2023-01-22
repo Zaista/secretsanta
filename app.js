@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'production') {
   let versionId = 'latest';
   const client = new SecretManagerServiceClient();
   const [accessResponse] = await client.accessSecretVersion({
-    name: 'projects/deductive-span-313911/secrets/mongodb_uri/versions/latest',
+    name: 'projects/307352298506/secrets/secretsanta-mongodb-url/versions/1',
   });
 
   const responsePayload = accessResponse.payload.data.toString('utf8');
