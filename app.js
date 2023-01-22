@@ -12,10 +12,6 @@ app.use(express.urlencoded({extended: true})); // for parsing application/x-www-
 
 dotenv.config();
 
-if (process.env.NODE_ENV === 'production') {
-    await setupEnv();
-}
-
 const {MongoClient} = mongodb;
 const client = new MongoClient(process.env.mongodb_uri, {
     useUnifiedTopology: true,
@@ -90,7 +86,3 @@ app.post('/api/chat', async (req, res) => {
 app.get('/stats', async (req, res) => {
     res.sendFile('public/santaStats.html', {root: '.'});
 });
-
-async function setupEnv() {
-    process.env.MONGODB = env.data().mongodb_uri;
-}
