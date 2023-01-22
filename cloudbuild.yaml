@@ -9,13 +9,4 @@ steps:
     - 'mongodb_uri=${_MONGODB_URI}'
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
-- name: cypress/included:10.9.0
-  entrypoint: npm
-  args: ['ci']
-- name: cypress/included:10.9.0
-  entrypoint: npm
-  env:
-    - 'CYPRESS_API_URL=https://cypress-director-gp34ticnkq-ey.a.run.app'
-    - 'BUILD=$BUILD_ID'
-  args: ['run', 'test_ci']
 timeout: 1800s

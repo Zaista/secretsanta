@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
 dotenv.config();
+console.log(process.env.mongodb_uri);
 
 const {MongoClient} = mongodb;
 const client = new MongoClient(process.env.mongodb_uri, {
