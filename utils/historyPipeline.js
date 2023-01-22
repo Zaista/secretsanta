@@ -75,9 +75,11 @@ async function getHistory(client) {
     };
 
     const stage8 = {
-        '$project': {
-            '_id': 0
-        }
+        '$project': { '_id': 0 }
+    };
+
+    const stage9 = {
+         '$sort' : { year : -1 }
     };
 
     const pipeline = [];
@@ -89,7 +91,8 @@ async function getHistory(client) {
         stage5,
         stage6,
         stage7,
-        stage8
+        stage8,
+        stage9
     );
 
     try {
