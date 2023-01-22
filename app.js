@@ -1,6 +1,5 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import Firestore from '@google-cloud/firestore';
 import mongodb from 'mongodb';
 import historyPipeline from './utils/historyPipeline.js';
 import friendsPipeline from './utils/friendsPipeline.js';
@@ -93,7 +92,5 @@ app.get('/stats', async (req, res) => {
 });
 
 async function setupEnv() {
-    const firestore = new Firestore({projectId: 'deductive-span-313911'});
-    const env = await firestore.collection('data').doc('env').get();
     process.env.MONGODB = env.data().mongodb_uri;
 }
