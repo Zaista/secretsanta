@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongodb from 'mongodb';
+import {SecretManagerServiceClient} from '@google-cloud/secret-manager';
 import historyPipeline from './utils/historyPipeline.js';
 import friendsPipeline from './utils/friendsPipeline.js';
 import chatPipeline from './utils/chatPipeline.js';
@@ -10,8 +11,22 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
-dotenv.config();
-console.log(process.env.mongodb_uri);
+if (process.env.NODE_ENV === 'production') {
+  let projectId = 'deductive-span-313911';
+  let versionId = 'latest';
+  const client = new SecretManagerServiceClient();
+  const [accessResponse] = await client.accessSecretVersion({
+    name: 'projects/deductive-span-313911/secrets/mongodb_uri/versions/latest',
+  });
+
+  const responsePayload = accessResponse.payload.data.toString('utf8');
+  console.info(`Payload: ${responsePayload}`);
+  process.env.mongodb_uri = responsePayload;
+  console.log(process.env.mongodb_uri);
+} else {
+  dotenv.config();
+  console.log(process.env.mongodb_uri);
+}
 
 const {MongoClient} = mongodb;
 const client = new MongoClient(process.env.mongodb_uri, {

@@ -4,7 +4,6 @@ $(function () {
 	"use strict";
 	
 	$.getJSON("api/history", function (result) {
-		console.log(result)
 		$.each(result, function (index, yearData) {
 			addYear(yearData.year, yearData.location, yearData.location_image);
 			$.each(yearData.gifts, function (i, gifts) {
@@ -29,7 +28,6 @@ $(function () {
 	}
 
 	function addGifts(year, gifts) {
-		console.log(gifts)
 		let giftTemplate = $('#gift_template').html();
 
 		if (gifts.gift_image != null) {
