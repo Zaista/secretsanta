@@ -5,30 +5,30 @@ $(function () {
 
 	var request;
 	// send a username and password, get the santa name and address and display it
-	$("#santa-form").submit(function () {
+	$("#santa-form").on('submit', function () {
 		$("#santa-dialog").modal("show");
 		var username = $('#santa-username').val().toLowerCase();
 		var password = $('#santa-password').val();
-		request = $.get("api/santa?santa-username=" + username + "&santa-password=" + password, function (data, status) {
+		request = $.get("api/santa?username=" + username + "&password=" + password, function (result, status) {
 			if (status === 'success') {
-				var result = JSON.parse(data);
 				if (result.error) {
 					$("#santa-display").empty();
 					$("#santa-display").append('<div class="alert alert-warning">This is not the santa you are looking for.<br><span>(' + result.error + ')</span></div>');
 				} else {
-					if (result.match) {
-						$("#santa-display").empty();
-						$("#santa-display").append('<div class="alert alert-success">' + result.match + '</div>');
+				  // TODO below was used to display rematch message
+					if (false) {
+						$('#santa-display').empty();
+						$("#santa-display").append('<div class="alert alert-success">' + result[0].firstName + '</div>');
 					} else {
 						$("#santa-display").empty();
-						var name = result.first_name;
+						var name = result[0].firstName;
 						if (result.last_name) {
-							name += " " + result.last_name;
+							name += " " + result[0].lastName;
 						}
 						$("#santa-display").append('<p id="santa_name" style="font-size: 30px;"><strong>' + name + '</strong></p>');
-						$("#santa-display").append('<img src="resources/images/' + result.username + '.png">');
-						if (result.address)
-							$("#santa-display").append('<br><br><p id="santa_address" style="font-size: 20px;">Address: ' + result.address + '</p>');
+						$("#santa-display").append('<img src="resources/images/' + result[0].username + '.png">');
+						if (result[0].address)
+							$("#santa-display").append('<br><br><p id="santa_address" style="font-size: 20px;">Address: ' + result[0].address + '</p>');
 					}
 				}
 			}
@@ -36,7 +36,7 @@ $(function () {
 		return false;
 	});
 
-	$("#emailPasswords").click(function () {
+	$("#emailPasswords").on('click', function () {
 		var person_id = $("#email-select").val();
 		$.getJSON("api/email?person=" + person_id, function (result) {
 			if (result.error) {
@@ -59,7 +59,7 @@ $(function () {
 		});
 	});
 
-	$("#rematch-form").submit(function () {
+	$("#rematch-form").on('submit', function () {
 		var password = $("#rematch-password").val();
 		$.getJSON("api/match?password=" + password, function (result) {
 			if (result.error) {

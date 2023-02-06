@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongodb from 'mongodb';
 import {SecretManagerServiceClient} from '@google-cloud/secret-manager';
+import santaPipeline from './utils/santaPipeline.js';
 import historyPipeline from './utils/historyPipeline.js';
 import friendsPipeline from './utils/friendsPipeline.js';
 import chatPipeline from './utils/chatPipeline.js';
@@ -37,6 +38,15 @@ app.listen(PORT, () => {
 
 app.get('/', (req, res) => {
     res.sendFile('public/secretSanta.html', {root: '.'});
+});
+
+app.get('/api/santa', async (req, res) => {
+    const result = await santaPipeline.getSanta(client, req.query.username, req.query.password);
+    if (result.length === 0) {
+      res.send({error: 'Invalid username or password'});
+    } else {
+      res.send(result);
+    }
 });
 
 app.get('/history', (req, res) => {

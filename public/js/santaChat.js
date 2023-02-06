@@ -22,8 +22,7 @@ $(function () {
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
     });
 
-    // TODO deprecated, function setup
-    $('#chat-form').submit(function () {
+    $('#chat-form').on('submit', function () {
 
         let requestData = $(this).serialize();
 
@@ -56,8 +55,7 @@ $(function () {
         return false;
     });
 
-    // TODO deprecated
-    $('.alert .btn-close').click(function () {
+    $('.alert .btn-close').on('click', function () {
         $('.alert').hide();
     });
 });
