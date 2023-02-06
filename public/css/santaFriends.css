@@ -2,7 +2,7 @@ body {
 	overflow-y: scroll;
 }
 
-img {
+.container img {
 	width: 100%;
 }
 

@@ -40,6 +40,10 @@ app.get('/', (req, res) => {
     res.sendFile('public/secretSanta.html', {root: '.'});
 });
 
+app.get('/login', (req, res) => {
+    res.sendFile('public/santaLogin.html', {root: '.'});
+});
+
 app.get('/api/santa', async (req, res) => {
     const result = await santaPipeline.getSanta(client, req.query.username, req.query.password);
     if (result.length === 0) {
