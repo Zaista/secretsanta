@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongodb from 'mongodb';
 import {SecretManagerServiceClient} from '@google-cloud/secret-manager';
+import loginPipeline from './utils/loginPipeline.js';
 import santaPipeline from './utils/santaPipeline.js';
 import historyPipeline from './utils/historyPipeline.js';
 import friendsPipeline from './utils/friendsPipeline.js';
@@ -44,10 +45,25 @@ app.get('/login', (req, res) => {
     res.sendFile('public/santaLogin.html', {root: '.'});
 });
 
+app.get('/api/login', async (req, res) => {
+    const result = await loginPipeline.login(client, req.query.username, req.query.password);
+    if (result.length === 0) {
+      res.send({error: 'Invalid username or password'});
+    } else {
+      // TODO handle login session
+      res.send({success: 'Logged in'});
+    }
+});
+
+app.get('/logout', (req, res) => {
+    // TODO do a logout
+    res.redirect('login');
+});
+
 app.get('/api/santa', async (req, res) => {
     const result = await santaPipeline.getSanta(client, req.query.username, req.query.password);
     if (result.length === 0) {
-      res.send({error: 'Invalid username or password'});
+      res.send({error: 'Some error'}); // TODO
     } else {
       res.send(result);
     }

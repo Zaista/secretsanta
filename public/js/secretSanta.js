@@ -3,16 +3,11 @@
 $(function () {
 	"use strict";
 
-	var request;
+	let request;
 	// send a username and password, get the santa name and address and display it
-//	$("#santa-form").on('submit', function () {
-//		$("#santa-dialog").modal("show");
-//		var username = $('#santa-username').val().toLowerCase();
-//		var password = $('#santa-password').val();
-  var username = 'joca';
-  var password = 'cowboys';
+  let username = 'joca';
+  let password = 'cowboys';
   request = $.get("api/santa?username=" + username + "&password=" + password, function (result, status) {
-  console.log(result);
     if (status === 'success') {
       if (result.error) {
         $("#santa-display").empty();
@@ -83,11 +78,5 @@ $(function () {
 			}
 		});
 		return false;
-	});
-
-	// when santa-dialog is closed return a spinner in place
-	$('#santa-dialog').on('hidden.bs.modal', function () {
-		$("#santa-display").empty();
-		$("#santa-display").append('<div class="loader"></div>');
 	});
 });

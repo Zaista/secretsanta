@@ -15,8 +15,8 @@ $(function () {
             let minutes = date.getMinutes();
             minutes = minutes < 10 ? '0' + minutes : minutes;
 
-            let dateStr = hours + ':' + minutes + ' - ' + date.getDate() + '. ' + months[date.getMonth()];
-            $('#chat').append('<p>' + message.message + '<span>@' + message.firstName + ' (' + dateStr + ')' + '</span></p>');
+            let dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
+            $('#chat').append('<p>' + message.message + '<span>To: ' + message.firstName + ' (' + dateStr + ')' + '</span></p>');
         }
 
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));

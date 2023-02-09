@@ -1,37 +1,7 @@
-
 #img {
 	width: 100%;
 }
 
 .margin-top {
 	margin-top: 20px;
-}
-
-#santa-display {
-	text-align: center;
-	min-height: 200px;
-}
-
-#santa-display img {
-	width: 75%;
-}
-
-.buttons button {
-    margin-top: 5px;
-}
-
-.loader {
-	margin: 0 auto;
-	margin-top: 50px;
-    border: 8px solid #f3f3f3; /* Light grey */
-    border-top: 8px solid grey; /* Blue */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
