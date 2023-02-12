@@ -18,15 +18,15 @@ $(function () {
           $('#santa-display').empty();
           $("#santa-display").append('<div class="alert alert-success">' + result[0].firstName + '</div>');
         } else {
-          $("#santa-display").empty();
-          var name = result[0].firstName;
-          if (result[0].lastName) {
-            name += " " + result[0].lastName;
-          }
-          $("#santa-display").append('<p id="santa_name" style="font-size: 30px;"><strong>' + name + '</strong></p>');
-          $("#santa-display").append('<img src="resources/images/' + result[0].username + '.png">');
-          if (result[0].address)
-            $("#santa-display").append('<br><br><p id="santa_address" style="font-size: 20px;">Address: ' + result[0].address + '</p>');
+//          $("#santa-display").empty();
+//          var name = result[0].firstName;
+//          if (result[0].lastName) {
+//            name += " " + result[0].lastName;
+//          }
+//          $("#santa-display").append('<p id="santa_name" style="font-size: 30px;"><strong>' + name + '</strong></p>');
+//          $("#santa-display").append('<img src="resources/images/' + result[0].username + '.png">');
+//          if (result[0].address)
+//            $("#santa-display").append('<br><br><p id="santa_address" style="font-size: 20px;">Address: ' + result[0].address + '</p>');
         }
       }
     }

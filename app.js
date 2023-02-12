@@ -19,9 +19,12 @@ if (process.env.NODE_ENV === 'production') {
   const [accessResponse] = await client.accessSecretVersion({
     name: `projects/${projectId}/secrets/secretsanta-mongodb-url/versions/latest`,
   });
+  process.env.mongodb_uri = accessResponse.payload.data.toString('utf8');
 
-  const responsePayload = accessResponse.payload.data.toString('utf8');
-  process.env.mongodb_uri = responsePayload;
+  [accessResponse] = await client.accessSecretVersion({
+    name: `projects/${projectId}/secrets/sendgrid-api/versions/latest`,
+  });
+  process.env.sendgrid_api = accessResponse.payload.data.toString('utf8');
 } else {
   dotenv.config();
 }
@@ -108,7 +111,7 @@ app.post('/api/chat', async (req, res) => {
     let email_text = '<html><body>';
     email_text += '<p>Somebody asked you a question:</p>';
     email_text += `<p>${req.body.message}</p><br>`;
-    email_text += '<p>Go to <a href="https://secretsanta.jovanilic.com/santachat.html" target="_blank">SecretSanta</a> website and answer it!</p>';
+    email_text += '<p>Go to <a href="https://secretsanta.jovanilic.com/chat" target="_blank">SecretSanta</a> website and answer it!</p>';
     email_text += '<p>Merry shopping und Alles Gute zum Gechristmas :)</p>';
     email_text += '</body></html>';
     
@@ -123,6 +126,26 @@ app.post('/api/chat', async (req, res) => {
     output.message = req.body.message;
     console.log(`info: email sent to ${userInfo.value.email}`);
     res.send(JSON.stringify(output));
+});
+
+app.get('/api/email', async (req, res) => {
+  const sgMail = await import('@sendgrid/mail');
+  sgMail.default.setApiKey(process.env.sendgrid_api);
+  const msg = {
+    to: 'ilicjovan89@gmail.com',
+    from: 'mail@jovanilic.com',
+    subject: 'Sending for Secret Santa',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+  }
+  sgMail
+    .default.send(msg)
+    .then(() => {
+      console.log('Email sent');
+    })
+    .catch((error) => {
+      console.error(error)
+    });
 });
 
 app.get('/stats', async (req, res) => {
