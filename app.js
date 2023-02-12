@@ -14,9 +14,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
 if (process.env.NODE_ENV === 'production') {
-  let projectId = 'deductive-span-313911';
+  const projectId = 'deductive-span-313911';
   const client = new SecretManagerServiceClient();
-  const [accessResponse] = await client.accessSecretVersion({
+  let [accessResponse] = await client.accessSecretVersion({
     name: `projects/${projectId}/secrets/secretsanta-mongodb-url/versions/latest`,
   });
   process.env.mongodb_uri = accessResponse.payload.data.toString('utf8');
