@@ -34,7 +34,7 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-8 col-xs-12">
-            <form id="santa-form" class="margin-top">
+            <form id="santa-login-form" class="margin-top">
                 <div class="form-group">
                     <label for="santa-username">Santa username:</label>
                     <input type="text" class="form-control" id="santa-username" required>
@@ -44,13 +44,38 @@
                     <input type="password" class="form-control" id="santa-password" required>
                 </div>
                 <div class="buttons margin-top">
-                    <button type="submit" class="btn btn-success">Login</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <a href="/login" data-bs-toggle="modal" data-bs-target="#email-dialog">Forgot password</a>
                 </div>
             </form>
 
             <div class="alert alert-success alert-dismissible collapse margin-top" role="alert">
                 <span></span>
                 <button type="button" class="btn-close" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog for emailing -->
+    <div id="email-dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Forgot your password?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="santa-email-form" class="margin-top">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="santa-email">Enter your email address:</label>
+                            <input type="email" class="form-control" id="santa-email" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="email-password">Email</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

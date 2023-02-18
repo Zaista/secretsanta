@@ -38,9 +38,9 @@ async function getChat(client) {
     }
 }
 
-async function sendMessage(client, userId, message) {
+async function sendMessage(client, email, message) {
 
-    const filter = {userId: parseInt(userId)};
+    const filter = {email: email};
     const update = {'$push': {chat: {message: message, timestamp: new Date()}}};
 
     try {

@@ -27,4 +27,20 @@ async function login(client, username, password) {
     }
 }
 
-export default {login};
+async function checkEmail(client, email) {
+
+    const query = {email: email};
+    const options = {projection: {_id: 0}};
+
+    try {
+        return await client
+            .db(process.env.database)
+            .collection('users')
+            .findOne(query, options);
+    } catch (err) {
+        console.log('ERROR: ' + err.stack);
+        return null;
+    }
+}
+
+export default {login, checkEmail};

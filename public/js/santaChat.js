@@ -5,6 +5,12 @@ $(function () {
 
     const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
+    $.getJSON('api/friends', function (result) {
+      result.forEach(function (friend) {
+        $('.form-select').append(`<option value="${friend.email}">${friend.firstName}</option>`);
+      });
+    });
+
     $.getJSON('api/chat', function (result) {
         for (let message of result) {
             let date = new Date(message.timestamp);
@@ -23,34 +29,24 @@ $(function () {
     });
 
     $('#chat-form').on('submit', function () {
-
         let requestData = $(this).serialize();
-
-        $.post('api/chat', requestData, function (data) {
-            let result = JSON.parse(data);
-            console.log(result);
-            if (result.error) {
-                $('.alert').removeClass('alert-success alert-danger');
+        $.post('api/chat', requestData, function (response) {
+            $('.alert').removeClass('alert-success alert-danger alert-warning');
+            if (response.error) {
                 $('.alert').addClass('alert-danger');
-                $('.alert span').text(result.error);
-                $('.alert').show();
-                setTimeout(function () {
-                    $('.alert').hide();
-                }, 3000);
             } else {
                 $('#chat-message').val('');
-                $('#chat').append('<p>' + result.message + '<span>Just now...</span></p>');
+                $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
                 $('#chat').scrollTop($('#chat').prop('scrollHeight'));
 
-                $('.alert').removeClass('alert-success alert-danger');
                 $('.alert').addClass('alert-success');
-                $('.alert span').text(result.result);
-                $('.alert').show();
-                setTimeout(function () {
-                    $('.alert').hide();
-                }, 3000);
             }
-        });
+            $('.alert span').text(response.message);
+            $('.alert').show();
+            setTimeout(function () {
+                $('.alert').hide();
+            }, 3000);
+        }, 'json');
 
         return false;
     });

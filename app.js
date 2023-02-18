@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mongodb from 'mongodb';
 import {SecretManagerServiceClient} from '@google-cloud/secret-manager';
+import sgMail from '@sendgrid/mail';
 import loginPipeline from './utils/loginPipeline.js';
 import santaPipeline from './utils/santaPipeline.js';
 import historyPipeline from './utils/historyPipeline.js';
@@ -29,6 +30,8 @@ if (process.env.NODE_ENV === 'production') {
   dotenv.config();
 }
 
+sgMail.setApiKey(process.env.sendgrid_api);
+
 const {MongoClient} = mongodb;
 const client = new MongoClient(process.env.mongodb_uri, {
     useUnifiedTopology: true,
@@ -48,8 +51,8 @@ app.get('/login', (req, res) => {
     res.sendFile('public/santaLogin.html', {root: '.'});
 });
 
-app.get('/api/login', async (req, res) => {
-    const result = await loginPipeline.login(client, req.query.username, req.query.password);
+app.post('/api/login', async (req, res) => {
+    const result = await loginPipeline.login(client, req.body.username, req.body.password);
     if (result.length === 0) {
       res.send({error: 'Invalid username or password'});
     } else {
@@ -100,52 +103,100 @@ app.get('/api/chat', async (req, res) => {
 });
 
 app.post('/api/chat', async (req, res) => {
-    let userInfo = await chatPipeline.sendMessage(client, req.body.userId, req.body.message);
-    
-    let email_subject = 'A new question has been asked in Secret Santa chat!';
-    
-    let email_headers = 'From: secretsanta@jovanilic.com\r\n';
-    email_headers += 'MIME-Version: 1.0\r\n';
-    email_headers += 'Content-Type: text/html; charset=utf-8\r\n';
-    
-    let email_text = '<html><body>';
-    email_text += '<p>Somebody asked you a question:</p>';
-    email_text += `<p>${req.body.message}</p><br>`;
-    email_text += '<p>Go to <a href="https://secretsanta.jovanilic.com/chat" target="_blank">SecretSanta</a> website and answer it!</p>';
-    email_text += '<p>Merry shopping und Alles Gute zum Gechristmas :)</p>';
-    email_text += '</body></html>';
-    
-    // TODO wrap body if lines are longer than 70 characters
-    // email_text = wordwrap($email_text, 70);
-    
-    // TODO send email
-    // mail($output->email, $email_subject, $email_text, $email_headers);
-    
-    let output = {};
-    output.result = 'Message posted in chat and email sent to the selected person.';
-    output.message = req.body.message;
-    console.log(`info: email sent to ${userInfo.value.email}`);
+    let message, error = false;
+    const queryInfo = await chatPipeline.sendMessage(client, req.body.email, req.body.message);
+    if (queryInfo.ok !== 1) {
+      message = 'Failed to ask the question. Contact the administrator.';
+      error = true;
+    } else {
+      const emailText = `<html><body>\
+        <p>Somebody asked you a question:</p>\
+        <p>${req.body.message}</p><br>\
+        <p>Answer it here: <a href="https://secretsanta.jovanilic.com/chat" target="_blank">SecretSanta</a> website</p>\
+        <p>Merry shopping und Alles Gute zum Gechristmas :)</p>\
+        </body></html>`;
+
+        // TODO wrap body if lines are longer than 70 characters
+        // email_text = wordwrap($email_text, 70);
+
+        const email = {
+          to: req.body.email,
+          from: 'mail@jovanilic.com',
+          subject: 'Secret Santa Question',
+          html: emailText,
+        };
+        sgMail.send(email).then(() => {
+          console.log(`Email with question sent to ${req.body.email}`);
+          message = 'Message posted in chat and email sent to the selected person.';
+        }).catch((error) => {
+          console.error(error);
+          message = 'There was an error sending the email. Contact the administrator.';
+          error = true;
+        });
+    }
+    const output = {error: error, message: message};
     res.send(JSON.stringify(output));
 });
 
-app.get('/api/email', async (req, res) => {
-  const sgMail = await import('@sendgrid/mail');
-  sgMail.default.setApiKey(process.env.sendgrid_api);
-  const msg = {
-    to: 'ilicjovan89@gmail.com',
-    from: 'mail@jovanilic.com',
-    subject: 'Sending for Secret Santa',
-    text: 'and easy to do anywhere, even with Node.js',
-    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+app.post('/api/email', async (req, res) => {
+  let message, emailText, error = false;
+  const user = await loginPipeline.checkEmail(client, req.body.email);
+
+  if (user) {
+    emailText = `<html><head><style>\
+      table {\
+          max-width: 730px;\
+          margin: 25px 0;\
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); }\
+      table, th, td {\
+          border-collapse: collapse;\
+          font-size: 0.9em;\
+          font-family: sans-serif;\
+          min-width: 400px; }\
+      .padds {\
+          padding: 12px 15px; }\
+      th {\
+          background-color: #fc0000;\
+          color: #ffffff;\
+          text-align: left; }\
+      tr {\
+          border-bottom: 1px solid #dddddd; }\
+      tr:last-of-type {\
+          border-bottom: 2px solid #009879; }\
+      </style></head><body>\
+      <table><tr><td colspan="2" style="overflow: hidden; max-height: 254px"><img src="https://secretsanta.jovanilic.com/resources/images/santa.jpg" style="width: calc(100% + 24px); position: relative; left: -12px"></td></tr>\
+      <tr><th class="padds">User:</th><td class="padds">${user.firstName}</td></tr>\
+      <tr><th class="padds">Password:</th><td class="padds">${user.password}</td></tr>\
+      <tr><th class="padds">Address:</th><td class="padds">${user.address}</td></tr>\
+      <tr><td colspan="2" class="padds" style="text-align: center">Link to <a href="https://secretsanta.jovanilic.com" target="_blank">SecretSanta</a> website</td></tr>';
+      </table>\
+      <p>Merry shopping und Alles Gute zum Gechristmas :)</p>\
+      </body></html>`;
+  } else {
+    emailText = `<html><body>\
+      <p>If you haven't requested this email, please ignore it</p>\
+      <p>Otherwise, forgot password option was triggered for this email, but it wasn't found in SecretSanta server. Did you use another email there perhaps?</p><br>\
+      <p>Website: <a href="https://secretsanta.jovanilic.com/chat" target="_blank">SecretSanta</a></p>\
+      </body></html>`;
   }
-  sgMail
-    .default.send(msg)
-    .then(() => {
-      console.log('Email sent');
-    })
-    .catch((error) => {
-      console.error(error)
-    });
+
+   const email = {
+     to: req.body.email,
+     from: 'mail@jovanilic.com',
+     subject: 'Secret Santa Credentials',
+     html: emailText,
+   };
+   sgMail.send(email).then(() => {
+      console.log(`Email with credentials sent to ${req.body.email}`);
+      message = 'Email sent';
+   }).catch((error) => {
+      console.error(error);
+      message = 'There was an error sending the email. Contact the administrator.';
+      error = true;
+   });
+
+    const output = {error: error, message: message};
+    res.send(output);
 });
 
 app.get('/stats', async (req, res) => {
