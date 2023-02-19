@@ -19,11 +19,16 @@ async function getChat(client) {
         }
     };
 
+    const stage4 = {
+         '$sort' : { timestamp : -1 }
+    };
+
     const pipeline = [];
     pipeline.push(
         stage1,
         stage2,
-        stage3
+        stage3,
+        stage4
     );
 
     try {

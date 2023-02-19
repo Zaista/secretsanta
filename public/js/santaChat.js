@@ -3,6 +3,11 @@
 $(function () {
     'use strict';
 
+    $('#menu').load('modules/menu.html', () => {
+      $('#menu-chat').addClass('active');
+      $('#menu-chat').attr('aria-current', 'page');
+    });
+
     const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
     $.getJSON('api/friends', function (result) {

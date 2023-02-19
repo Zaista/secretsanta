@@ -1,7 +1,9 @@
 /*global $, document, setTimeout */
 
 $(function () {
-	"use strict";
+	'use strict';
+
+	$('#menu').load('modules/menu.html');
 
 	let request;
 	// send a username and password, get the santa name and address and display it
@@ -32,9 +34,9 @@ $(function () {
     }
   });
 
-	$("#emailPasswords").on('click', function () {
-		var person_id = $("#email-select").val();
-		$.getJSON("api/email?person=" + person_id, function (result) {
+	$('#emailPasswords').on('click', function () {
+		var person_id = $('#email-select').val();
+		$.getJSON('api/email?person=' + person_id, function (result) {
 			if (result.error) {
 				$('.alert').removeClass('alert-success alert-danger');
 				$('.alert').addClass('alert-danger');

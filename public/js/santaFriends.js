@@ -3,16 +3,22 @@
 $(function () {
     'use strict';
 
+    $('#menu').load('modules/menu.html', () => {
+      $('#menu-friends').addClass('active');
+      $('#menu-friends').attr('aria-current', 'page');
+    });
+
     let users = [];
 
     $.getJSON('api/friends', function (result) {
+      $.get('modules/santa.html', (baseSantaTemplate) => {
         $.each(result, function (i, userData) {
-            let santaTemplate = $('#santa-template').html();
-
-            santaTemplate = santaTemplate.replace(/{{user}}/g, userData.username);
-            santaTemplate = santaTemplate.replace(/{{index}}/, i);
-            $(".friends").append(santaTemplate);
-            users.push(userData);
+              let santaTemplate = baseSantaTemplate;
+              santaTemplate = santaTemplate.replace(/{{user}}/g, userData.username);
+              santaTemplate = santaTemplate.replace(/{{index}}/, i);
+              $(".friends").append(santaTemplate);
+              users.push(userData);
+            });
         });
     });
 
