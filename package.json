@@ -10,7 +10,8 @@
         "start": "node app.js",
         "test": "cypress open --e2e --browser chrome",
         "run": "cypress run --browser chrome",
-        "test_ci": "cy2 run --record --key XXX --parallel --ci-build-id $BUILD --config baseUrl=https://secretsanta.jovanilic.com"
+        "test_ci": "cy2 run --record --key XXX --parallel --ci-build-id $BUILD --config baseUrl=https://secretsanta.jovanilic.com",
+        "lint": "npx eslint ."
     },
     "dependencies": {
         "@google-cloud/secret-manager": "^4.2.0",
@@ -20,7 +21,15 @@
         "mongodb": "^4.13"
     },
     "devDependencies": {
+        "@html-eslint/eslint-plugin": "^0.16.0",
+        "@html-eslint/parser": "^0.16.0",
         "cy2": "^3.4.3",
-        "cypress": "^12.1.0"
+        "cypress": "^12.1.0",
+        "eslint": "^8.34.0",
+        "eslint-config-standard": "^17.0.0",
+        "eslint-plugin-html": "^7.1.0",
+        "eslint-plugin-import": "^2.27.5",
+        "eslint-plugin-n": "^15.6.1",
+        "eslint-plugin-promise": "^6.1.1"
     }
 }

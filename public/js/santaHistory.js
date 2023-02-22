@@ -1,19 +1,19 @@
-/*global $, document, setTimeout */
+/* global $ */
 
 $(function () {
-	'use strict';
+  'use strict';
 
-	$('#menu').load('modules/menu.html', () => {
+  $('#menu').load('modules/menu.html', () => {
     $('#menu-history').addClass('active');
     $('#menu-history').attr('aria-current', 'page');
-	});
+  });
 
-	let baseYearTemplate, baseGiftTemplate;
+  let baseYearTemplate, baseGiftTemplate;
 
-	$.getJSON('api/history', (result) => {
-		$.get('modules/year.html', (yearTemplate) => {
-		  baseYearTemplate = yearTemplate;
-		  $.get('modules/gift.html', (giftTemplate) => {
+  $.getJSON('api/history', (result) => {
+    $.get('modules/year.html', (yearTemplate) => {
+      baseYearTemplate = yearTemplate;
+      $.get('modules/gift.html', (giftTemplate) => {
         baseGiftTemplate = giftTemplate;
 
         $.each(result, function (index, yearData) {
@@ -24,10 +24,10 @@ $(function () {
         });
       });
     });
-	});
+  });
 
-	function addYear(year, label, image) {
-	  let yearTemplate = baseYearTemplate;
+  function addYear (year, label, image) {
+    let yearTemplate = baseYearTemplate;
     yearTemplate = yearTemplate.replace(/{{year}}/g, year);
     yearTemplate = yearTemplate.replace(/{{label}}/, label);
     if (image != null) {
@@ -38,10 +38,10 @@ $(function () {
       yearTemplate = yearTemplate.replace(/pointer/, '');
     }
     $('#accordion').append(yearTemplate);
-	}
+  }
 
-	function addGifts(year, gifts) {
-	  let giftTemplate = baseGiftTemplate;
+  function addGifts (year, gifts) {
+    let giftTemplate = baseGiftTemplate;
     if (gifts.gift_image != null) {
       giftTemplate = giftTemplate.replace(/{{year}}/ig, year);
       giftTemplate = giftTemplate.replace(/{{giftImage}}/ig, gifts.gift_image);
@@ -54,16 +54,16 @@ $(function () {
     giftTemplate = giftTemplate.replace(/{{gift}}/ig, gifts.gift);
 
     $('div#collapse' + year + ' #table_body').append(giftTemplate);
-	}
+  }
 
-	// if present picture is open
-	$('#present').on('show.bs.modal', function (event) {
-		let picture = $(event.relatedTarget).data('picture');
-		$('#image').attr('src', 'resources/images/' + picture);
-	});
+  // if present picture is open
+  $('#present').on('show.bs.modal', function (event) {
+    const picture = $(event.relatedTarget).data('picture');
+    $('#image').attr('src', 'resources/images/' + picture);
+  });
 
-	// if present picture is closed
-	$('#present').on('hidden.bs.modal', function () {
-        $('#image').attr('src', '');
-	});
+  // if present picture is closed
+  $('#present').on('hidden.bs.modal', function () {
+    $('#image').attr('src', '');
+  });
 });

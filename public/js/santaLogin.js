@@ -1,15 +1,15 @@
-/*global $, document, setTimeout */
+/* global $, setTimeout */
 
 $(function () {
-	'use strict';
+  'use strict';
 
-	$('#santa-login-form').on('submit', function () {
-		const userData = {
-		  username: $('#santa-username').val().toLowerCase(),
-		  password: $('#santa-password').val()
-		};
+  $('#santa-login-form').on('submit', function () {
+    const userData = {
+      username: $('#santa-username').val().toLowerCase(),
+      password: $('#santa-password').val()
+    };
 
-		$.post('api/login', userData, function (result) {
+    $.post('api/login', userData, function (result) {
       if (result.error) {
         $('.alert').removeClass('alert-success alert-danger');
         $('.alert').addClass('alert-danger');
@@ -21,13 +21,13 @@ $(function () {
       } else {
         window.location.href = '/';
       }
-		}, 'json');
-		return false;
-	});
+    }, 'json');
+    return false;
+  });
 
-	$('#santa-email-form').on('submit', function () {
-    $.post('api/email', {email: $('#santa-email').val()}, function (result) {
-        $('.alert').removeClass('alert-success alert-danger');
+  $('#santa-email-form').on('submit', function () {
+    $.post('api/email', { email: $('#santa-email').val() }, function (result) {
+      $('.alert').removeClass('alert-success alert-danger');
       if (result.error) {
         $('.alert').addClass('alert-danger');
       } else {
@@ -40,5 +40,5 @@ $(function () {
       }, 3000);
     }, 'json');
     return false;
-	});
+  });
 });
