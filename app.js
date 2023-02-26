@@ -9,6 +9,9 @@ import santaPipeline from './utils/santaPipeline.js';
 import historyPipeline from './utils/historyPipeline.js';
 import friendsPipeline from './utils/friendsPipeline.js';
 import chatPipeline from './utils/chatPipeline.js';
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
+import session from 'cookie-session';
 
 const app = express();
 app.use(express.static('public'));
@@ -18,25 +21,64 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 if (process.env.NODE_ENV === 'production') {
   const projectId = 'deductive-span-313911';
   const client = new SecretManagerServiceClient();
-  let [accessResponse] = await client.accessSecretVersion({
-    name: `projects/${projectId}/secrets/secretsanta-mongodb-url/versions/latest`
-  });
-  process.env.mongodb_uri = accessResponse.payload.data.toString('utf8');
 
-  [accessResponse] = await client.accessSecretVersion({
-    name: `projects/${projectId}/secrets/sendgrid-api/versions/latest`
-  });
-  process.env.sendgrid_api = accessResponse.payload.data.toString('utf8');
+  const [mongodbUri, sendgridApi, sessionKey] = await Promise.all([
+    client.accessSecretVersion({
+      name: `projects/${projectId}/secrets/secretsanta-mongodb-url/versions/latest`
+    }),
+    client.accessSecretVersion({
+      name: `projects/${projectId}/secrets/sendgrid-api/versions/latest`
+    }),
+    client.accessSecretVersion({
+      name: `projects/${projectId}/secrets/session-cookie-key/versions/latest`,
+    })
+  ]);
+
+  process.env.mongodbUri = mongodbUri.payload.data.toString();
+  process.env.sendgridApi = sendgridApi.payload.data.toString();
+  process.env.sessionKey = sessionKey.payload.data.toString();
 } else {
   dotenv.config();
 }
 
-sgMail.setApiKey(process.env.sendgrid_api);
+app.use(
+  session({
+    secret: process.env.sessionKey,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+sgMail.setApiKey(process.env.sendgridApi);
 
 const { MongoClient } = mongodb;
-const client = new MongoClient(process.env.mongodb_uri, {
+const client = new MongoClient(process.env.mongodbUri, {
   useUnifiedTopology: true
 });
+
+passport.use(
+  new LocalStrategy(async function (username, password, done) {
+    const user = await loginPipeline.login(client, username, password);
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false);
+    }
+  })
+);
+
+passport.serializeUser(function (user, done) {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async function (_id, done) {
+  console.log('deserializing');
+  const user = await loginPipeline.getById(client, _id);
+  done(null, user);
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 8080;
@@ -45,30 +87,33 @@ app.listen(PORT, () => {
 });
 
 app.get('/', (req, res) => {
+  if (!req.user) return res.status(401).redirect('/login');
   res.sendFile('public/secretSanta.html', { root: '.' });
 });
 
 app.get('/login', (req, res) => {
+  if (req.user) return res.redirect('/');
   res.sendFile('public/santaLogin.html', { root: '.' });
 });
 
-app.post('/api/login', async (req, res) => {
-  const result = await loginPipeline.login(client, req.body.username, req.body.password);
-  if (result.length === 0) {
-    res.send({ error: 'Invalid username or password' });
-  } else {
-    // TODO handle login session
+app.post('/api/login', passport.authenticate('local'), async (req, res) => {
     res.send({ success: 'Logged in' });
-  }
 });
 
 app.get('/logout', (req, res) => {
-  // TODO do a logout
-  res.redirect('login');
+  if (req.user) {
+    console.log(`User ${req.user.firstName} logged out`);
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.redirect('/login');
+    });
+  }
+  res.redirect('/login');
 });
 
 app.get('/api/santa', async (req, res) => {
-  const result = await santaPipeline.getSanta(client, req.query.username, req.query.password);
+  if (!req.user) return res.status(401).redirect('/login');
+  const result = await santaPipeline.getSanta(client, req.user.firstName);
   if (result.length === 0) {
     res.send({ error: 'Some error' }); // TODO
   } else {
@@ -177,8 +222,4 @@ app.post('/api/email', async (req, res) => {
 
   const output = { error, message };
   res.send(output);
-});
-
-app.get('/stats', async (req, res) => {
-  res.sendFile('public/santaStats.html', { root: '.' });
 });

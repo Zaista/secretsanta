@@ -1,9 +1,8 @@
-async function getSanta (client, username, password) {
+async function getSanta (client, firstName) {
   const pipeline = [
     {
       $match: {
-        username,
-        password
+        firstName: firstName
       }
     }, {
       $lookup: {

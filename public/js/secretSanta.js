@@ -6,9 +6,7 @@ $(function () {
   $('#menu').load('modules/menu.html');
 
   // send a username and password, get the santa name and address and display it
-  const username = 'joca';
-  const password = 'cowboys';
-  $.get('api/santa?username=' + username + '&password=' + password, function (result, status) {
+  $.get('api/santa', function (result, status) {
     if (status === 'success') {
       if (result.error) {
         $('#santa-display').empty();

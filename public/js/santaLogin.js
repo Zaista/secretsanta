@@ -10,7 +10,9 @@ $(function () {
     };
 
     $.post('api/login', userData, function (result) {
-      if (result.error) {
+      if (result.success) {
+        window.location.href = '/';
+      } else {
         $('.alert').removeClass('alert-success alert-danger');
         $('.alert').addClass('alert-danger');
         $('.alert span').text(result.error);
@@ -18,8 +20,6 @@ $(function () {
         setTimeout(function () {
           $('.alert').hide();
         }, 3000);
-      } else {
-        window.location.href = '/';
       }
     }, 'json');
     return false;
