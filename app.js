@@ -120,7 +120,10 @@ app.post('/api/chat', async (req, res) => {
 
     const email = {
       to: req.body.email,
-      from: 'mail@jovanilic.com',
+      from: {
+        email: 'mail@jovanilic.com',
+        name: 'SecretSanta'
+      },
       subject: 'Secret Santa Question',
       html: emailText
     };
@@ -156,7 +159,10 @@ app.post('/api/email', async (req, res) => {
 
   const email = {
     to: req.body.email,
-    from: 'mail@jovanilic.com',
+    from: {
+      email: 'mail@jovanilic.com',
+      name: 'SecretSanta'
+    },
     subject: 'Secret Santa Credentials',
     html: emailText
   };

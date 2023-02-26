@@ -1,6 +1,6 @@
-/* global $ */
+/* global $, bootstrap */
 
-$(function () {
+$(async () => {
   'use strict';
 
   $('#menu').load('modules/menu.html', () => {
@@ -8,28 +8,29 @@ $(function () {
     $('#menu-history').attr('aria-current', 'page');
   });
 
-  let baseYearTemplate, baseGiftTemplate;
+  const baseYearTemplate = await $.get('modules/year.html');
+  const baseGiftTemplate = await $.get('modules/gift.html');
+  const baseMenuTemplate = await $.get('modules/side-menu.html');
 
-  $.getJSON('api/history', (result) => {
-    $.get('modules/year.html', (yearTemplate) => {
-      baseYearTemplate = yearTemplate;
-      $.get('modules/gift.html', (giftTemplate) => {
-        baseGiftTemplate = giftTemplate;
-
-        $.each(result, function (index, yearData) {
-          addYear(yearData.year, yearData.location, yearData.location_image);
-          $.each(yearData.gifts, function (i, gifts) {
-            addGifts(yearData.year, gifts);
-          });
-        });
+  $.getJSON('api/history', result => {
+    result.forEach(yearData => {
+      addYear(yearData.year, yearData.location, yearData.location_image);
+      yearData.gifts.forEach(gifts => {
+        addGifts(yearData.year, gifts);
       });
+    });
+
+    // eslint-disable-next-line no-new
+    new bootstrap.ScrollSpy(document.getElementById('scroll-spy-page'), {
+      target: '#navbar'
     });
   });
 
-  function addYear (year, label, image) {
+  function addYear (year, location, image) {
     let yearTemplate = baseYearTemplate;
-    yearTemplate = yearTemplate.replace(/{{year}}/g, year);
-    yearTemplate = yearTemplate.replace(/{{label}}/, label);
+    yearTemplate = yearTemplate
+      .replace(/{{year}}/g, year)
+      .replace(/{{location}}/, location);
     if (image != null) {
       yearTemplate = yearTemplate.replace(/{{yearImage}}/, year + '/' + image);
       yearTemplate = yearTemplate.replace(/picture-disabled/, '');
@@ -37,7 +38,10 @@ $(function () {
       yearTemplate = yearTemplate.replace(/data-bs-toggle='modal'/, '');
       yearTemplate = yearTemplate.replace(/pointer/, '');
     }
-    $('#accordion').append(yearTemplate);
+
+    const menuTemplate = baseMenuTemplate.replace(/{{year}}/g, year);
+    $('#scroll-spy-menu').append(menuTemplate);
+    $('#scroll-spy-page').append(yearTemplate);
   }
 
   function addGifts (year, gifts) {
@@ -53,7 +57,7 @@ $(function () {
     giftTemplate = giftTemplate.replace(/{{child}}/ig, gifts.child);
     giftTemplate = giftTemplate.replace(/{{gift}}/ig, gifts.gift);
 
-    $('div#collapse' + year + ' #table_body').append(giftTemplate);
+    $(`#section-${year}`).append(giftTemplate);
   }
 
   // if present picture is open
