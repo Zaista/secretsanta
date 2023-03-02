@@ -10,7 +10,6 @@ import { historyRouter } from './routers/history-router.js';
 import { friendsRouter } from './routers/friends-router.js';
 import { chatRouter } from './routers/chat-router.js';
 
-
 const app = express();
 app.use(express.static('public'));
 app.use(express.json());
@@ -24,6 +23,11 @@ app.use(
   })
 );
 
+app.use('/', loginRouter);
+app.use('/', santaRouter);
+app.use('/', historyRouter);
+app.use('/', friendsRouter);
+app.use('/', chatRouter);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -33,9 +37,3 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server app listening at http://localhost:${PORT}`);
 });
-
-app.use('/', loginRouter);
-app.use('/', santaRouter);
-app.use('/', historyRouter);
-app.use('/', friendsRouter);
-app.use('/', chatRouter);
