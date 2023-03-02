@@ -1,8 +1,9 @@
 import mongodb from 'mongodb';
-import { client } from './database.js';
+import { getClient } from './database.js';
 
 export async function login (username, password) {
 
+  const client = await getClient();
   const query = { username: username, password: password };
   const options = { projection: {firstName: 1, email: 1} };
 
@@ -18,6 +19,8 @@ export async function login (username, password) {
 }
 
 export async function getById(_id) {
+
+   const client = await getClient();
    const query = { _id: new mongodb.ObjectId(_id) };
    const options = { projection: {firstName: 1, email: 1} };
 
@@ -33,6 +36,8 @@ export async function getById(_id) {
  }
 
 export async function checkEmail (email) {
+
+  const client = await getClient();
   const query = { email: email };
   const options = { projection: { _id: 0 } };
 

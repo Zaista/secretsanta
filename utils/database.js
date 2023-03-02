@@ -1,9 +1,11 @@
 import mongodb from 'mongodb';
 
-const { MongoClient } = mongodb;
+export async function getClient() {
+  const { MongoClient } = mongodb;
 
-const client = new MongoClient(process.env.mongodbUri, {
-  useUnifiedTopology: true
-});
+  const client = new MongoClient(process.env.mongodbUri, {
+    useUnifiedTopology: true
+  });
 
-export { client };
+  return client;
+}

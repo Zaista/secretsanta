@@ -2,8 +2,8 @@ import express from 'express';
 import fs from 'fs';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import { login, getById } from '../utils/loginPipeline.js';
-import { mail } from '../utils/mail.js';
+import { login, getById, checkEmail } from '../utils/loginPipeline.js';
+import { getMail } from '../utils/mail.js';
 
 const loginRouter = express.Router();
 
@@ -55,6 +55,7 @@ loginRouter.post('/api/email', async (req, res) => {
     subject: 'Secret Santa Credentials',
     html: emailText
   };
+  const mail = await getMail();
   mail.send(email).then(() => {
     console.log(`Email with credentials sent to ${req.body.email}`);
     message = 'Email sent';

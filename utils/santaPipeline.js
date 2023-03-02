@@ -1,4 +1,4 @@
-import { client } from './database.js';
+import { getClient } from './database.js';
 
 export async function getSanta (firstName) {
   const pipeline = [
@@ -67,6 +67,8 @@ export async function getSanta (firstName) {
       }
     }
   ];
+
+  const client = await getClient();
 
   try {
     return await client

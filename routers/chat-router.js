@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import { getChat, sendMessage } from '../utils/chatPipeline.js';
-import { mail } from '../utils/mail.js';
+import { getMail } from '../utils/mail.js';
 
 const chatRouter = express.Router();
 
@@ -39,6 +39,7 @@ chatRouter.post('/api/chat', async (req, res) => {
       subject: 'Secret Santa Question',
       html: emailText
     };
+    const mail = await getMail();
     mail.send(email).then(() => {
       console.log(`Email with question sent to ${req.body.email}`);
       message = 'Message posted in chat and email sent to the selected person.';

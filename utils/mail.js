@@ -1,5 +1,7 @@
 import mail from '@sendgrid/mail';
 
-mail.setApiKey(process.env.sendgridApi);
+export async function getMail() {
+  mail.setApiKey(process.env.sendgridApi);
 
-export { mail }
+  return mail;
+}

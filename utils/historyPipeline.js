@@ -1,4 +1,4 @@
-import { client } from './database.js';
+import { getClient } from './database.js';
 
 export async function getHistory() {
   const stage1 = {
@@ -95,6 +95,8 @@ export async function getHistory() {
     stage8,
     stage9
   );
+
+  const client = await getClient();
 
   try {
     return await client

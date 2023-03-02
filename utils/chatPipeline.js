@@ -1,4 +1,4 @@
-import { client } from './database.js';
+import { getClient } from './database.js';
 
 export async function getChat () {
   const stage1 = {
@@ -32,6 +32,8 @@ export async function getChat () {
     stage4
   );
 
+  const client = await getClient();
+
   try {
     return await client
       .db(process.env.database)
@@ -45,6 +47,8 @@ export async function getChat () {
 }
 
 export async function sendMessage (email, message) {
+
+  const client = await getClient();
   const filter = { email };
   const update = { $push: { chat: { message, timestamp: new Date() } } };
 
