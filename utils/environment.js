@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 
 if (process.env.NODE_ENV === 'production') {
+  console.log('Environment variables loaded from the secret manager');
   const projectId = 'deductive-span-313911';
   const client = new SecretManagerServiceClient();
 
@@ -20,5 +21,6 @@ if (process.env.NODE_ENV === 'production') {
   process.env.sendgridApi = sendgridApi.payload.data.toString();
   process.env.sessionKey = sessionKey.payload.data.toString();
 } else {
+  console.log('Environment variables loaded from the .env file');
   dotenv.config();
 }
