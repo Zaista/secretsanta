@@ -1,5 +1,5 @@
 import express from 'express';
-import { loadEnv } from './utils/environment.js';
+import './utils/environment.js';
 import session from 'cookie-session';
 
 // routers
@@ -8,8 +8,6 @@ import { santaRouter } from './routers/santa-router.js';
 import { historyRouter } from './routers/history-router.js';
 import { friendsRouter } from './routers/friends-router.js';
 import { chatRouter } from './routers/chat-router.js';
-
-await loadEnv();
 
 const app = express();
 app.use(express.static('public'));

@@ -14,7 +14,7 @@
         "lint": "npx eslint ."
     },
     "dependencies": {
-        "@google-cloud/secret-manager": "^4.2.0",
+        "@google-cloud/secret-manager": "^4.2.1",
         "@sendgrid/mail": "^7.7.0",
         "cookie-session": "^2.0.0",
         "dotenv": "^10.0.0",
