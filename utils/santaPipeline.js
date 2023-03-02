@@ -1,4 +1,6 @@
-async function getSanta (client, firstName) {
+import { client } from './database.js';
+
+export async function getSanta (firstName) {
   const pipeline = [
     {
       $match: {
@@ -77,5 +79,3 @@ async function getSanta (client, firstName) {
     return null;
   }
 }
-
-export default { getSanta };

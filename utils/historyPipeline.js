@@ -1,4 +1,6 @@
-async function getHistory (client) {
+import { client } from './database.js';
+
+export async function getHistory() {
   const stage1 = {
     $unwind: {
       path: '$gifts'
@@ -105,5 +107,3 @@ async function getHistory (client) {
     return null;
   }
 }
-
-export default { getHistory };

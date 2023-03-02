@@ -1,4 +1,6 @@
-async function getFriends (client) {
+import { client } from './database.js';
+
+export async function getFriends() {
   const query = { active: true };
   const options = { projection: { _id: 0, password: 0 } };
 
@@ -13,5 +15,3 @@ async function getFriends (client) {
     return null;
   }
 }
-
-export default { getFriends };

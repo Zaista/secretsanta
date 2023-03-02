@@ -1,4 +1,6 @@
-async function getChat (client) {
+import { client } from './database.js';
+
+export async function getChat () {
   const stage1 = {
     $unwind: {
       path: '$chat'
@@ -42,7 +44,7 @@ async function getChat (client) {
   }
 }
 
-async function sendMessage (client, email, message) {
+export async function sendMessage (email, message) {
   const filter = { email };
   const update = { $push: { chat: { message, timestamp: new Date() } } };
 
@@ -56,5 +58,3 @@ async function sendMessage (client, email, message) {
     return null;
   }
 }
-
-export default { getChat, sendMessage };
