@@ -7,15 +7,18 @@ const chatRouter = express.Router();
 
 // define the home page route
 chatRouter.get('/chat', (req, res) => {
+  if (!req.user) return res.status(401).redirect('/login');
   res.sendFile('public/santaChat.html', { root: '.' });
 });
 
 chatRouter.get('/api/chat', async (req, res) => {
+  if (!req.user) return res.status(401).send({error: 'User not logged in'});
   const result = await getChat();
   res.send(result);
 });
 
 chatRouter.post('/api/chat', async (req, res) => {
+  if (!req.user) return res.status(401).send({error: 'User not logged in'});
   let message;
   let emailText;
   let error = false;

@@ -15,7 +15,7 @@ santaRouter.get('/', (req, res) => {
 });
 
 santaRouter.get('/api/santa', async (req, res) => {
-  if (!req.user) return res.status(401).redirect('/login');
+  if (!req.user) return res.status(401).send({error: 'User not logged in'});
   const result = await getSanta(req.user.firstName);
   if (result.length === 0) {
     res.send({ error: 'Some error' }); // TODO
