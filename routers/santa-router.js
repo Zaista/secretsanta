@@ -5,8 +5,8 @@ const santaRouter = express.Router();
 
 // middleware that is specific to this router
 santaRouter.use((req, res, next) => {
-  next()
-})
+  next();
+});
 
 // define the home page route
 santaRouter.get('/', (req, res) => {
@@ -15,7 +15,7 @@ santaRouter.get('/', (req, res) => {
 });
 
 santaRouter.get('/api/santa', async (req, res) => {
-  if (!req.user) return res.status(401).send({error: 'User not logged in'});
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await getSanta(req.user.firstName);
   if (result.length === 0) {
     res.send({ error: 'Some error' }); // TODO

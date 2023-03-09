@@ -18,10 +18,10 @@ loginRouter.post('/api/login', passport.authenticate('local'), async (req, res) 
   res.send({ success: 'Logged in' });
 });
 
-loginRouter.get('/logout', (req, res) => {
+loginRouter.get('/logout', (req, res, next) => {
   if (req.user) {
     console.log(`User ${req.user.email} logged out`);
-    req.logout(function(err) {
+    req.logout(function (err) {
       if (err) { return next(err); }
       res.redirect('/login');
     });

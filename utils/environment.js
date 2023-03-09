@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'production') {
       name: `projects/${projectId}/secrets/sendgrid-api/versions/latest`
     }),
     secretManager.accessSecretVersion({
-      name: `projects/${projectId}/secrets/session-cookie-key/versions/latest`,
+      name: `projects/${projectId}/secrets/session-cookie-key/versions/latest`
     })
   ]);
 

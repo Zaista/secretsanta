@@ -47,7 +47,6 @@ export async function getChat () {
 }
 
 export async function sendMessage (email, message) {
-
   const client = await getClient();
   const filter = { email };
   const update = { $push: { chat: { message, timestamp: new Date() } } };

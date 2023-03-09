@@ -4,7 +4,7 @@ export async function getSanta (firstName) {
   const pipeline = [
     {
       $match: {
-        firstName: firstName
+        firstName
       }
     }, {
       $lookup: {

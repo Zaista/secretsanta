@@ -12,13 +12,13 @@ chatRouter.get('/chat', (req, res) => {
 });
 
 chatRouter.get('/api/chat', async (req, res) => {
-  if (!req.user) return res.status(401).send({error: 'User not logged in'});
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await getChat();
   res.send(result);
 });
 
 chatRouter.post('/api/chat', async (req, res) => {
-  if (!req.user) return res.status(401).send({error: 'User not logged in'});
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let message;
   let emailText;
   let error = false;
