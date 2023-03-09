@@ -11,13 +11,17 @@ $(function () {
   const users = [];
 
   $.getJSON('api/friends', function (result) {
-    $.get('modules/santa.html', (baseSantaTemplate) => {
+    $.get('modules/friend.html', baseFriendTemplate => {
       $.each(result, function (i, userData) {
-        let santaTemplate = baseSantaTemplate;
-        santaTemplate = santaTemplate.replace(/{{user}}/g, userData.username);
-        santaTemplate = santaTemplate.replace(/{{index}}/, i);
-        $('.friends').append(santaTemplate);
-        users.push(userData);
+        let friendTemplate = baseFriendTemplate;
+        friendTemplate = friendTemplate.replace(/{{user}}/g, userData.username);
+        friendTemplate = friendTemplate.replace(/{{name}}/g, `${userData.firstName} ${userData.lastName}`);
+        const [address, city, state] = userData.address.split(',');
+        friendTemplate = friendTemplate.replace(/{{address}}/g, address);
+        friendTemplate = friendTemplate.replace(/{{city}}/g, city);
+        friendTemplate = friendTemplate.replace(/{{state}}/g, state);
+        friendTemplate = friendTemplate.replace(/{{index}}/, i);
+        $('.friends').append(friendTemplate);
       });
     });
   });

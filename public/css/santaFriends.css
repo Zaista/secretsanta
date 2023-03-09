@@ -1,24 +1,5 @@
-.container img {
-	width: 100%;
-}
-
 .margin-top {
 	margin-top: 20px;
-}
-
-.friends img {
-	padding: 2px;
-}
-
-.friends a {
-	position: absolute;
-	bottom: 5px;
-	right: 12px;
-}
-
-.friends div {
-	margin-top: 20px;
-	position: relative;
 }
 
 .pointer {
