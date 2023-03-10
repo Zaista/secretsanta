@@ -1,6 +1,6 @@
 import { getClient } from './database.js';
 
-export async function getFriends () {
+export async function getFriends() {
   const client = await getClient();
   const query = { active: true };
   const options = { projection: { _id: 0, password: 0 } };

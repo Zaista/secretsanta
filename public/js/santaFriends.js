@@ -1,6 +1,6 @@
 /* global $ */
 
-$(function () {
+$(function() {
   'use strict';
 
   $('#menu').load('modules/menu.html', () => {
@@ -10,9 +10,9 @@ $(function () {
 
   const users = [];
 
-  $.getJSON('api/friends', function (result) {
+  $.getJSON('api/friends', function(result) {
     $.get('modules/friend.html', baseFriendTemplate => {
-      $.each(result, function (i, userData) {
+      $.each(result, function(i, userData) {
         let friendTemplate = baseFriendTemplate;
         friendTemplate = friendTemplate.replace(/{{user}}/g, userData.username);
         friendTemplate = friendTemplate.replace(/{{name}}/g, `${userData.firstName} ${userData.lastName}`);
@@ -27,7 +27,7 @@ $(function () {
   });
 
   // if friend sheet is open
-  $('#friend').on('show.bs.modal', function (event) {
+  $('#friend').on('show.bs.modal', function(event) {
     const picture = $(event.relatedTarget).data('picture');
     const userId = $(event.relatedTarget).data('index');
     $('#santa_sheet').attr('src', 'resources/images/' + picture);
@@ -51,7 +51,7 @@ $(function () {
   });
 
   // if friend sheet is closed
-  $('#friend').on('hidden.bs.modal', function () {
+  $('#friend').on('hidden.bs.modal', function() {
     $('#santa_sheet').attr('src', '');
   });
 });

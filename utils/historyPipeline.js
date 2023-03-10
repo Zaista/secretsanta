@@ -1,6 +1,6 @@
 import { getClient } from './database.js';
 
-export async function getHistory () {
+export async function getHistory() {
   const stage1 = {
     $unwind: {
       path: '$gifts'

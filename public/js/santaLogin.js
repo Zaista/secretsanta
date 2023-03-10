@@ -1,15 +1,15 @@
 /* global $, setTimeout */
 
-$(function () {
+$(function() {
   'use strict';
 
-  $('#santa-login-form').on('submit', function () {
+  $('#santa-login-form').on('submit', function() {
     const userData = {
       username: $('#santa-username').val().toLowerCase(),
       password: $('#santa-password').val()
     };
 
-    $.post('api/login', userData, function (result) {
+    $.post('api/login', userData, function(result) {
       if (result.success) {
         window.location.href = '/';
       } else {
@@ -17,7 +17,7 @@ $(function () {
         $('.alert').addClass('alert-danger');
         $('.alert span').text(result.error);
         $('.alert').show();
-        setTimeout(function () {
+        setTimeout(function() {
           $('.alert').hide();
         }, 3000);
       }
@@ -25,8 +25,8 @@ $(function () {
     return false;
   });
 
-  $('#santa-email-form').on('submit', function () {
-    $.post('api/email', { email: $('#santa-email').val() }, function (result) {
+  $('#santa-email-form').on('submit', function() {
+    $.post('api/email', { email: $('#santa-email').val() }, function(result) {
       $('.alert').removeClass('alert-success alert-danger');
       if (result.error) {
         $('.alert').addClass('alert-danger');
@@ -35,7 +35,7 @@ $(function () {
       }
       $('.alert span').text(result.message);
       $('.alert').show();
-      setTimeout(function () {
+      setTimeout(function() {
         $('.alert').hide();
       }, 3000);
     }, 'json');

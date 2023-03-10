@@ -11,13 +11,13 @@ chatRouter.get('/chat', (req, res) => {
   res.sendFile('public/santaChat.html', { root: '.' });
 });
 
-chatRouter.get('/api/chat', async (req, res) => {
+chatRouter.get('/api/chat', async(req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await getChat();
   res.send(result);
 });
 
-chatRouter.post('/api/chat', async (req, res) => {
+chatRouter.post('/api/chat', async(req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let message;
   let emailText;

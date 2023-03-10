@@ -1,11 +1,28 @@
 import mongodb from 'mongodb';
 
-export async function getClient () {
-  const { MongoClient } = mongodb;
+const database = (function() {
+  let instance;
 
-  const client = new MongoClient(process.env.mongodbUri, {
-    useUnifiedTopology: true
-  });
+  function createClient() {
+    const { MongoClient } = mongodb;
 
-  return client;
+    const client = new MongoClient(process.env.mongodbUri, {
+      useUnifiedTopology: true
+    });
+    return client;
+  }
+
+  return {
+    getClient: function() {
+      if (!instance) {
+        instance = createClient();
+      }
+
+      return instance;
+    }
+  };
+})();
+
+export async function getClient() {
+  return database.getClient();
 }

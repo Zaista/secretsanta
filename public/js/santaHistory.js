@@ -1,6 +1,6 @@
 /* global $, bootstrap */
 
-$(async () => {
+$(async() => {
   'use strict';
 
   $('#menu').load('modules/menu.html', () => {
@@ -26,7 +26,7 @@ $(async () => {
     });
   });
 
-  function addYear (year, location, image) {
+  function addYear(year, location, image) {
     let yearTemplate = baseYearTemplate;
     yearTemplate = yearTemplate
       .replace(/{{year}}/g, year)
@@ -44,7 +44,7 @@ $(async () => {
     $('#scroll-spy-page').append(yearTemplate);
   }
 
-  function addGifts (year, gifts) {
+  function addGifts(year, gifts) {
     let giftTemplate = baseGiftTemplate;
     if (gifts.gift_image != null) {
       giftTemplate = giftTemplate.replace(/{{year}}/ig, year);
@@ -61,13 +61,13 @@ $(async () => {
   }
 
   // if present picture is open
-  $('#present').on('show.bs.modal', function (event) {
+  $('#present').on('show.bs.modal', function(event) {
     const picture = $(event.relatedTarget).data('picture');
     $('#image').attr('src', 'resources/images/' + picture);
   });
 
   // if present picture is closed
-  $('#present').on('hidden.bs.modal', function () {
+  $('#present').on('hidden.bs.modal', function() {
     $('#image').attr('src', '');
   });
 });

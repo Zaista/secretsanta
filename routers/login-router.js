@@ -13,7 +13,7 @@ loginRouter.get('/login', (req, res) => {
   res.sendFile('public/santaLogin.html', { root: '.' });
 });
 
-loginRouter.post('/api/login', passport.authenticate('local'), async (req, res) => {
+loginRouter.post('/api/login', passport.authenticate('local'), async(req, res) => {
   console.log(`User ${req.user.email} logged in`);
   res.send({ success: 'Logged in' });
 });
@@ -21,7 +21,7 @@ loginRouter.post('/api/login', passport.authenticate('local'), async (req, res) 
 loginRouter.get('/logout', (req, res, next) => {
   if (req.user) {
     console.log(`User ${req.user.email} logged out`);
-    req.logout(function (err) {
+    req.logout(function(err) {
       if (err) { return next(err); }
       res.redirect('/login');
     });
@@ -29,7 +29,7 @@ loginRouter.get('/logout', (req, res, next) => {
   res.redirect('/login');
 });
 
-loginRouter.post('/api/email', async (req, res) => {
+loginRouter.post('/api/email', async(req, res) => {
   let message;
   let emailText;
   const error = false;
@@ -70,7 +70,7 @@ loginRouter.post('/api/email', async (req, res) => {
 });
 
 passport.use(
-  new LocalStrategy(async function (username, password, done) {
+  new LocalStrategy(async function(username, password, done) {
     const user = await login(username, password);
     if (user) {
       return done(null, user);
@@ -80,11 +80,11 @@ passport.use(
   })
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user._id);
 });
 
-passport.deserializeUser(async function (_id, done) {
+passport.deserializeUser(async function(_id, done) {
   const user = await getById(_id);
   done(null, user);
 });

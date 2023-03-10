@@ -1,6 +1,6 @@
 import { getClient } from './database.js';
 
-export async function getSanta (firstName) {
+export async function getSanta(firstName) {
   const pipeline = [
     {
       $match: {

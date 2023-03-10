@@ -1,12 +1,12 @@
 /* global $, setTimeout */
 
-$(function () {
+$(function() {
   'use strict';
 
   $('#menu').load('modules/menu.html');
 
   // send a username and password, get the santa name and address and display it
-  $.get('api/santa', function (result, status) {
+  $.get('api/santa', function(result, status) {
     if (status === 'success') {
       if (result.error) {
         $('#santa-display').empty();
@@ -31,15 +31,15 @@ $(function () {
     }
   });
 
-  $('#emailPasswords').on('click', function () {
+  $('#emailPasswords').on('click', function() {
     const personId = $('#email-select').val();
-    $.getJSON('api/email?person=' + personId, function (result) {
+    $.getJSON('api/email?person=' + personId, function(result) {
       if (result.error) {
         $('.alert').removeClass('alert-success alert-danger');
         $('.alert').addClass('alert-danger');
         $('.alert span').text(result.error);
         $('.alert').show();
-        setTimeout(function () {
+        setTimeout(function() {
           $('.alert').hide();
         }, 3000);
       } else {
@@ -47,22 +47,22 @@ $(function () {
         $('.alert').addClass('alert-success');
         $('.alert span').text(result.success);
         $('.alert').show();
-        setTimeout(function () {
+        setTimeout(function() {
           $('.alert').hide();
         }, 3000);
       }
     });
   });
 
-  $('#rematch-form').on('submit', function () {
+  $('#rematch-form').on('submit', function() {
     const password = $('#rematch-password').val();
-    $.getJSON('api/match?password=' + password, function (result) {
+    $.getJSON('api/match?password=' + password, function(result) {
       if (result.error) {
         $('.alert').removeClass('alert-success alert-danger');
         $('.alert').addClass('alert-danger');
         $('.alert span').text(result.error);
         $('.alert').show();
-        setTimeout(function () {
+        setTimeout(function() {
           $('.alert').hide();
         }, 3000);
       } else {
@@ -70,7 +70,7 @@ $(function () {
         $('.alert').addClass('alert-success');
         $('.alert span').text(result.match);
         $('.alert').show();
-        setTimeout(function () {
+        setTimeout(function() {
           $('.alert').hide();
         }, 3000);
         $('#rematch-dialog').modal('hide');

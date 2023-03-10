@@ -1,6 +1,6 @@
 /* global $, setTimeout */
 
-$(function () {
+$(function() {
   'use strict';
 
   $('#menu').load('modules/menu.html', () => {
@@ -10,13 +10,13 @@ $(function () {
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-  $.getJSON('api/friends', function (result) {
-    result.forEach(function (friend) {
+  $.getJSON('api/friends', function(result) {
+    result.forEach(function(friend) {
       $('.form-select').append(`<option value="${friend.email}">${friend.firstName}</option>`);
     });
   });
 
-  $.getJSON('api/chat', function (result) {
+  $.getJSON('api/chat', function(result) {
     for (const message of result) {
       const date = new Date(message.timestamp);
 
@@ -33,9 +33,9 @@ $(function () {
     $('#chat').scrollTop($('#chat').prop('scrollHeight'));
   });
 
-  $('#chat-form').on('submit', function () {
+  $('#chat-form').on('submit', function() {
     const requestData = $(this).serialize();
-    $.post('api/chat', requestData, function (response) {
+    $.post('api/chat', requestData, function(response) {
       $('.alert').removeClass('alert-success alert-danger alert-warning');
       if (response.error) {
         $('.alert').addClass('alert-danger');
@@ -48,7 +48,7 @@ $(function () {
       }
       $('.alert span').text(response.message);
       $('.alert').show();
-      setTimeout(function () {
+      setTimeout(function() {
         $('.alert').hide();
       }, 3000);
     }, 'json');
@@ -56,7 +56,7 @@ $(function () {
     return false;
   });
 
-  $('.alert .btn-close').on('click', function () {
+  $('.alert .btn-close').on('click', function() {
     $('.alert').hide();
   });
 });
