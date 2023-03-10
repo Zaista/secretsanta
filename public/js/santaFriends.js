@@ -23,6 +23,12 @@ $(function() {
         friendTemplate = friendTemplate.replace(/{{index}}/, i);
         $('.friends').append(friendTemplate);
       });
+    }).then(() => {
+      $('.card').hover(function() {
+        $(this).addClass('border-danger');
+      }, function() {
+        $(this).removeClass('border-danger');
+      });
     });
   });
 
