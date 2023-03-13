@@ -39,8 +39,7 @@
                     </nav>
                     <a class="nav-link" href="#item-3">User settings</a>
                     <nav class="nav nav-pills flex-column">
-                        <a class="nav-link ms-3 my-1" href="#item-3-1">Active users</a>
-                        <a class="nav-link ms-3 my-1" href="#item-3-2">Inactive users</a>
+                        <a class="nav-link ms-3 my-1" href="#item-3-1">User administration</a>
                     </nav>
                 </nav>
             </nav>
@@ -69,17 +68,32 @@
                         <label for="emailNotifications" class="form-label">Email notifications</label>
                     </div>
                 </div>
-                <div id="item-3">
+                <div class="mt-5" id="item-3">
                     <h4>User setting</h4>
                     <p>Settings related to the SecretSanta users.  Deactivated users will stop receiving email notifications even if they are activated. Their participation in the present exchange will not be removed or hidden, please do this step manually.</p>
                 </div>
                 <div id="item-3-1">
-                    <h5>Active users</h5>
-                    <p>...</p>
+                    <h5>user administration</h5>
+
+                    <button type="button" class="btn btn-primary mt-3 mb-3">Invite new users</button>
+
+                    <table id="users" class="table table-borderless caption-top">
+                        <caption>List of users</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col" class="text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
-                <div id="item-3-2">
-                    <h5>Inactive users</h5>
-                    <p>...</p>
+
+                <div class="mt-3" id="item-4-1">
+                    <button type="button" class="btn btn-primary mt-3 mb-3">Save changes</button>
                 </div>
             </div>
         </div>

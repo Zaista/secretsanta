@@ -1,4 +1,5 @@
 import express from 'express';
+import { getUsers } from '../utils/adminPipeline.js';
 
 const adminRouter = express.Router();
 
@@ -8,14 +9,10 @@ adminRouter.get('/admin', (req, res) => {
   res.sendFile('public/santaAdmin.html', { root: '.' });
 });
 
-adminRouter.get('/api/admin', async (req, res) => {
+adminRouter.get('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-//  const result = await getChat();
-//  res.send(result);
-});
-
-adminRouter.post('/api/admin', async (req, res) => {
-
+  const result = await getUsers();
+  res.send(result);
 });
 
 export { adminRouter };

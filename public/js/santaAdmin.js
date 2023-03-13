@@ -10,6 +10,21 @@ $(function() {
 
   });
 
+  $.getJSON('api/users', function(result) {
+    $.get('modules/user.html', userTemplate => {
+      $.each(result, function(index, userData) {
+        const userElement = $.parseHTML(userTemplate);
+        $(userElement).find('#index').text(++index);
+        $(userElement).find('#name').text(userData.name);
+        $(userElement).find('#email').text(userData.email);
+        if (userData.active) {
+          $(userElement).find('#status').attr('checked', true);
+        }
+        $('#users tbody').append(userElement);
+      });
+    });
+  });
+
   $('#emailPasswords').on('click', function() {
     const personId = $('#email-select').val();
     $.getJSON('api/email?person=' + personId, function(result) {
