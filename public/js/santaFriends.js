@@ -15,7 +15,7 @@ $(function() {
         $(friendElement).attr('id', userData.userId);
         $(friendElement).find('#userId').text(userData.userId);
         $(friendElement).find('.card-header').text(userData.name);
-        $(friendElement).find('img').attr('src', `resources/images/old_images/${userData.username}.jpg`);
+        $(friendElement).find('img').attr('src', `resources/images/old_images/${userData.userId}.jpg`);
         $(friendElement).find('#street').text(userData.address.street);
         $(friendElement).find('#postalCode').text(userData.address.postalCode);
         $(friendElement).find('#city').text(userData.address.city);

@@ -1,10 +1,10 @@
 import mongodb from 'mongodb';
 import { getClient } from './database.js';
 
-export async function login(username, password) {
+export async function login(email, password) {
   const client = await getClient();
-  const query = { username, password };
-  const options = { projection: { firstName: 1, email: 1 } };
+  const query = { email, password };
+  const options = { projection: { name: 1, email: 1 } };
 
   try {
     return await client

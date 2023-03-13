@@ -5,8 +5,8 @@ $(function() {
 
   $('#santa-login-form').on('submit', function() {
     const userData = {
-      username: $('#santa-username').val().toLowerCase(),
-      password: $('#santa-password').val()
+      username: $('#email').val().toLowerCase(),
+      password: $('#password').val()
     };
 
     $.post('api/login', userData, function(result) {

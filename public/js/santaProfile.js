@@ -9,8 +9,8 @@ $(function() {
   });
 
   $.get(`/api/friends/${window.location.pathname.replace('/friends/', '')}`, friend => {
-    $('#image').attr('src', `/resources/images/old_images/${friend.username}.jpg`);
-    $('#name').val(`${friend.firstName} ${friend.lastName}`);
+    $('#image').attr('src', `/resources/images/old_images/${friend.userId}.jpg`);
+    $('#name').val(friend.name);
     $('#description').val(friend.description);
     if (friend.description) {
       $('#description').height($('#description')[0].scrollHeight);

@@ -70,8 +70,8 @@ loginRouter.post('/api/email', async (req, res) => {
 });
 
 passport.use(
-  new LocalStrategy(async function(username, password, done) {
-    const user = await login(username, password);
+  new LocalStrategy(async function(email, password, done) {
+    const user = await login(email, password);
     if (user) {
       return done(null, user);
     } else {
