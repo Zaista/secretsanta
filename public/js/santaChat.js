@@ -40,7 +40,7 @@ $(function() {
       message: $('#message').val()
     };
     $.post('api/chat', requestData, function(response) {
-    console.log(response)
+      console.log(response);
       $('.alert').removeClass('alert-success alert-danger');
       if (response.error) {
         $('.alert').addClass('alert-danger');

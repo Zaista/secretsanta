@@ -42,7 +42,7 @@ export async function getChat() {
 
 export async function sendMessage(message, userId) {
   const client = await getClient();
-  const document = {message: message, userId: +userId, timestamp: new Date()};
+  const document = { message, userId: +userId, timestamp: new Date() };
 
   try {
     return await client
