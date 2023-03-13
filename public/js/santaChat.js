@@ -3,7 +3,7 @@
 $(function() {
   'use strict';
 
-  $('#menu').load('modules/menu.html', () => {
+  $('#menu').load('views/menu', () => {
     $('#menu-chat').addClass('active');
     $('#menu-chat').attr('aria-current', 'page');
   });

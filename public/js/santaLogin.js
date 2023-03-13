@@ -12,16 +12,16 @@ $(function() {
     $.post('api/login', userData, function(result) {
       if (result.success) {
         window.location.href = '/';
-      } else {
-        $('.alert').removeClass('alert-success alert-danger');
-        $('.alert').addClass('alert-danger');
-        $('.alert span').text(result.error);
-        $('.alert').show();
-        setTimeout(function() {
-          $('.alert').hide();
-        }, 3000);
       }
-    }, 'json');
+    }, 'json').fail((error) => {
+      $('.alert').removeClass('alert-success alert-danger');
+      $('.alert').addClass('alert-danger');
+      $('.alert span').text(`Login failed: ${error.statusText}`);
+      $('.alert').show();
+      setTimeout(function() {
+        $('.alert').hide();
+      }, 3000);
+    });
     return false;
   });
 
@@ -31,9 +31,10 @@ $(function() {
       if (result.error) {
         $('.alert').addClass('alert-danger');
       } else {
-        $('.alert').hide();
+        $('.alert').addClass('alert-success');
+        $('#email-dialog').toggle();
       }
-      $('.alert span').text(result.message);
+      $('.alert span').text(`Email sent to: ${$('#santa-email').val()}`);
       $('.alert').show();
       setTimeout(function() {
         $('.alert').hide();

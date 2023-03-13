@@ -3,7 +3,7 @@
 $(function() {
   'use strict';
 
-  $('#menu').load('modules/menu.html');
+  $('#menu').load('views/menu');
 
   // send a username and password, get the santa name and address and display it
   $.get('api/santa', function(result, status) {

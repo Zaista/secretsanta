@@ -3,7 +3,7 @@
 $(async() => {
   'use strict';
 
-  $('#menu').load('modules/menu.html', () => {
+  $('#menu').load('views/menu', () => {
     $('#menu-history').addClass('active');
     $('#menu-history').attr('aria-current', 'page');
   });
