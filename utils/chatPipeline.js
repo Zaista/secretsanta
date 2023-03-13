@@ -1,43 +1,37 @@
 import { getClient } from './database.js';
 
 export async function getChat() {
-  const stage1 = {
-    $unwind: {
-      path: '$chat'
-    }
-  };
-
-  const stage2 = {
-    $addFields: {
-      'chat.firstName': '$firstName'
-    }
-  };
-
-  // match childId and userId to get child info
-  const stage3 = {
-    $replaceRoot: {
-      newRoot: '$chat'
-    }
-  };
-
-  const stage4 = {
-    $sort: { timestamp: -1 }
-  };
-
-  const pipeline = [];
-  pipeline.push(
-    stage1,
-    stage2,
-    stage3,
-    stage4
-  );
+  const pipeline = [
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: 'userId',
+        as: 'user'
+      }
+    },
+    {
+      $unwind: {
+        path: '$user'
+      }
+    },
+    {
+      $project:
+  {
+    name: '$user.name',
+    message: 1,
+    timestamp: 1
+  }
+    }, {
+      $sort: { timestamp: 1 }
+    }];
 
   const client = await getClient();
 
   try {
     return await client
       .db(process.env.database)
-      .collection('users')
+      .collection('chat')
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
@@ -46,16 +40,15 @@ export async function getChat() {
   }
 }
 
-export async function sendMessage(email, message) {
+export async function sendMessage(message, userId) {
   const client = await getClient();
-  const filter = { email };
-  const update = { $push: { chat: { message, timestamp: new Date() } } };
+  const document = {message: message, userId: +userId, timestamp: new Date()};
 
   try {
     return await client
       .db(process.env.database)
-      .collection('users')
-      .findOneAndUpdate(filter, update);
+      .collection('chat')
+      .insertOne(document);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;

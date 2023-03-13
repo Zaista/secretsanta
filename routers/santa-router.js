@@ -14,7 +14,7 @@ santaRouter.get('/', (req, res) => {
   res.sendFile('public/secretSanta.html', { root: '.' });
 });
 
-santaRouter.get('/api/santa', async(req, res) => {
+santaRouter.get('/api/santa', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await getSanta(req.user.firstName);
   if (result.length === 0) {

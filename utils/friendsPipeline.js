@@ -36,11 +36,14 @@ export async function getFriend(userId) {
 export async function updateFriend(friend) {
   const client = await getClient();
   const filter = { userId: +friend.userId };
-  const update = { $set: {
-    name: friend.name,
-    address: friend.address,
-    role: friend.role
-  }};
+  const update = {
+    $set: {
+      name: friend.name,
+      description: friend.description,
+      address: friend.address,
+      role: friend.role
+    }
+  };
 
   try {
     return await client

@@ -33,8 +33,8 @@ app.engine('html', (filePath, options, callback) => {
     if (err) return callback(err);
     const rendered = content.toString().replace('{{replace}}', options.replace);
     return callback(null, rendered);
-  })
-})
+  });
+});
 app.set('views', './views');
 app.set('view engine', 'html');
 

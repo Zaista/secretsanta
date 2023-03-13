@@ -13,7 +13,7 @@ loginRouter.get('/login', (req, res) => {
   res.sendFile('public/santaLogin.html', { root: '.' });
 });
 
-loginRouter.post('/api/login', passport.authenticate('local'), async(req, res) => {
+loginRouter.post('/api/login', passport.authenticate('local'), async (req, res) => {
   console.log(`User ${req.user.email} logged in`);
   res.send({ success: 'Logged in' });
 });
@@ -29,7 +29,7 @@ loginRouter.get('/logout', (req, res, next) => {
   res.redirect('/login');
 });
 
-loginRouter.post('/api/email', async(req, res) => {
+loginRouter.post('/api/email', async (req, res) => {
   let message;
   let emailText;
   const error = false;

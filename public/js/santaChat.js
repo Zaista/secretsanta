@@ -12,13 +12,13 @@ $(function() {
 
   $.getJSON('api/friends', function(result) {
     result.forEach(function(friend) {
-      $('.form-select').append(`<option value="${friend.email}">${friend.firstName}</option>`);
+      $('.form-select').append(`<option value="${friend.userId}" data-email="${friend.email}">${friend.name}</option>`);
     });
   });
 
-  $.getJSON('api/chat', function(result) {
-    for (const message of result) {
-      const date = new Date(message.timestamp);
+  $.getJSON('api/chat', chat => {
+    for (const item of chat) {
+      const date = new Date(item.timestamp);
 
       let hours = date.getHours();
       hours = hours < 10 ? '0' + hours : hours;
@@ -27,23 +27,26 @@ $(function() {
       minutes = minutes < 10 ? '0' + minutes : minutes;
 
       const dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
-      $('#chat').append('<p>' + message.message + '<span>To: ' + message.firstName + ' (' + dateStr + ')' + '</span></p>');
+      $('#chat').append('<p>' + item.message + '<span>To: ' + item.name + ' (' + dateStr + ')' + '</span></p>');
     }
 
     $('#chat').scrollTop($('#chat').prop('scrollHeight'));
   });
 
   $('#chat-form').on('submit', function() {
-    const requestData = $(this).serialize();
+    const requestData = {
+      userId: +$('#user').val(),
+      email: $('#user option:selected').attr('data-email'),
+      message: $('#message').val()
+    };
     $.post('api/chat', requestData, function(response) {
-      $('.alert').removeClass('alert-success alert-danger alert-warning');
+    console.log(response)
+      $('.alert').removeClass('alert-success alert-danger');
       if (response.error) {
         $('.alert').addClass('alert-danger');
       } else {
-        $('#chat-message').val('');
         $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
-
         $('.alert').addClass('alert-success');
       }
       $('.alert span').text(response.message);
@@ -51,8 +54,7 @@ $(function() {
       setTimeout(function() {
         $('.alert').hide();
       }, 3000);
-    }, 'json');
-
+    });
     return false;
   });
 

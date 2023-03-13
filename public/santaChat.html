@@ -31,9 +31,9 @@
 			<div class="col-md-8 col-xs-12">
 				<form class="margin-top" id="chat-form">
 					<div class="input-group">
-						<input type="text" class="form-control w-50" name="message" placeholder="Your message"
+						<input type="text" class="form-control w-50" id="message" placeholder="Your message"
 							required>
-						<select class="form-select" name="email" required>
+						<select class="form-select" id="user" required>
 							<option selected value="">Choose...</option>
 						</select>
 						<button class="btn btn-outline-secondary" type="submit">Ask</button>
@@ -43,7 +43,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="alert alert-success alert-dismissible collapse margin-top" role="alert">
+
+		<div class="alert alert-dismissible collapse fixed-bottom col-md-8 offset-md-2" role="alert">
 			<span></span>
 			<button type="button" class="btn-close" aria-label="Close"></button>
 		</div>

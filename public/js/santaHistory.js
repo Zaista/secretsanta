@@ -1,6 +1,6 @@
 /* global $, bootstrap */
 
-$(async() => {
+$(async () => {
   'use strict';
 
   $('#menu').load('views/menu', () => {
