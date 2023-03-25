@@ -21,7 +21,7 @@ chatRouter.post('/api/chat', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let emailText;
   const queryInfo = await sendMessage(req.body.message, req.body.userId);
-  if (queryInfo.acknowledged) {
+  if (queryInfo.acknowledged) { // TODO acknowledged does not mean updated
     const data = fs.readFileSync('./templates/question.html');
     emailText = data.toString().replace(/{{question}}/, req.body.message);
 

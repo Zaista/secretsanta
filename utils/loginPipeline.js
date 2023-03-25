@@ -20,7 +20,7 @@ export async function login(email, password) {
 export async function getById(_id) {
   const client = await getClient();
   const query = { _id: new mongodb.ObjectId(_id) };
-  const options = { projection: { firstName: 1, email: 1, role: 1 } };
+  const options = { projection: { userId: 1, name: 1, email: 1, role: 1, groups: 1 } };
 
   try {
     return await client

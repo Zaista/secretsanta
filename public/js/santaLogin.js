@@ -32,7 +32,7 @@ $(function() {
         $('.alert').addClass('alert-danger');
       } else {
         $('.alert').addClass('alert-success');
-        $('#email-dialog').toggle();
+        $('#forgot-password-dialog').toggle();
       }
       $('.alert span').text(`Email sent to: ${$('#santa-email').val()}`);
       $('.alert').show();

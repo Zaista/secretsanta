@@ -40,8 +40,7 @@ export async function updateFriend(friend) {
     $set: {
       name: friend.name,
       description: friend.description,
-      address: friend.address,
-      role: friend.role
+      address: friend.address
     }
   };
 

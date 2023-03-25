@@ -31,7 +31,18 @@ app.use(passport.session());
 app.engine('html', (filePath, options, callback) => {
   fs.readFile(filePath, (err, content) => {
     if (err) return callback(err);
-    const rendered = content.toString().replace('{{replace}}', options.replace);
+    let rendered = content.toString();
+    if (!options.isAdmin) {
+      rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
+    }
+
+    if (options.groups) {
+//      let options
+      options.groups.forEach(group => {
+        console.log(group);
+
+      });
+    }
     return callback(null, rendered);
   });
 });
@@ -48,9 +59,14 @@ app.use('/', adminRouter);
 
 // view routers
 app.use('/views/menu', (req, res) => {
+  console.log(req.user)
+  const options = {
+    isAdmin: false,
+    groups: req.user.groups
+  }
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  else if (req.user.role === 'admin') return res.render('menu.html', { replace: '' });
-  else res.render('menu.html', { replace: 'disabled' });
+  else if (req.user.role === 'admin') options.isAdmin = true;
+  res.render('menu.html', options);
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise

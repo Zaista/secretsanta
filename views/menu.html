@@ -18,11 +18,16 @@
                 <li class="nav-item">
                     <a class="nav-link" id="menu-chat" href="/chat">Chat</a>
                 </li>
+                <!--adminStart-->
                 <li class="nav-item">
-                    <a class="nav-link {{replace}}" id="menu-admin" href="/admin">Admin</a>
+                    <a class="nav-link" id="menu-admin" href="/admin">Admin</a>
                 </li>
+                <!--adminEnd-->
             </ul>
             <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" id="menu-group" data-bs-toggle="modal" data-bs-target="#groups-dialog" href="#">Group: <b>Cigici</b></a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout">Log out</a>
                 </li>
@@ -30,3 +35,30 @@
         </div>
     </div>
 </nav>
+
+<!-- Dialog for groups -->
+<div id="groups-dialog" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Group change:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select another group to switch to it:</p>
+                <div class="input-group">
+                    <select class="form-select" id="groupSelector">
+                        <option selected value="0">All...</option>
+                        <!--groupOptions-->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="changeGroup" class="btn btn-primary" type="button"
+                        data-bs-dismiss="modal">Change
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,18 +9,21 @@ $(function() {
   });
 
   $.get(`/api/friends/${window.location.pathname.replace('/friends/', '')}`, friend => {
-    $('#image').attr('src', `/resources/images/old_images/${friend.userId}.jpg`);
+    $('#image').attr('src', `/resources/images/old_images/${friend.userId}.jpg`).on("error", function() {
+      $(this).attr('src', '/resources/images/old_images/placeholder.png');
+    });;
     $('#name').val(friend.name);
     $('#description').val(friend.description);
     if (friend.description) {
       $('#description').height($('#description')[0].scrollHeight);
     }
-    $('#street').val(friend.address.street);
-    $('#postalCode').val(friend.address.postalCode);
-    $('#city').val(friend.address.city);
-    $('#state').val(friend.address.state);
+    if (friend.address) {
+      $('#street').val(friend.address.street);
+      $('#postalCode').val(friend.address.postalCode);
+      $('#city').val(friend.address.city);
+      $('#state').val(friend.address.state);
+    }
     $('#email').val(friend.email);
-    $('#role').val(friend.role);
     $('#userId').val(friend.userId);
   });
 
@@ -35,11 +38,9 @@ $(function() {
         city: $('#city').val(),
         state: $('#state').val()
       },
-      email: $('#email').val(),
-      role: $('#role').val()
+      email: $('#email').val()
     };
     $.post(`/api/friends/${friend.userId}`, friend, result => {
-      console.log(result);
       $('.alert').removeClass('alert-success alert-danger');
       if (result.error) {
         $('.alert').addClass('alert-danger');

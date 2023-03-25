@@ -1,10 +1,19 @@
 <tr>
     <th id="index" scope="row"></th>
     <td id="name"></td>
+    <td>
+        <a id="profile" href="#"><i class="bi bi-box-arrow-up-right"></i></a>
+    </td>
     <td id="email"></td>
     <td>
+        <select class="form-select" id="role" data-onchange="users" aria-label="Role" placeholder="Role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select>
+    </td>
+    <td>
         <div class="form-check form-switch form-check-reverse">
-            <input id="status" class="form-check-input pointer" type="checkbox">
+            <input id="status" class="form-check-input pointer" data-onchange="users" type="checkbox">
         </div>
     </td>
 </tr>

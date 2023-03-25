@@ -1,5 +1,5 @@
 import express from 'express';
-import { getSanta } from '../utils/santaPipeline.js';
+import { getSanta, getUserGroups } from '../utils/santaPipeline.js';
 
 const santaRouter = express.Router();
 
@@ -16,11 +16,21 @@ santaRouter.get('/', (req, res) => {
 
 santaRouter.get('/api/santa', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getSanta(req.user.firstName);
+  const result = await getSanta(req.user.userId); // TODO remove userId
   if (result.length === 0) {
-    res.send({ error: 'Some error' }); // TODO
+    res.status(500).send({ error: 'Failed getting user santa' });
   } else {
     res.send(result);
+  }
+});
+
+santaRouter.get('/api/getUserGroups', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const result = await getUserGroups(req.user._id);
+  if (result) {
+    return res.send(result);
+  } else {
+    res.status(500).send({ error: 'Failed fetching user groups' });
   }
 });
 
