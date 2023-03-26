@@ -11,7 +11,7 @@ adminRouter.get('/admin', (req, res) => {
 
 adminRouter.get('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getUsers();
+  const result = await getUsers(req.query.groupId);
   res.send(result);
 });
 

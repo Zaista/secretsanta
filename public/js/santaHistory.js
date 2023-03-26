@@ -3,10 +3,7 @@
 $(async () => {
   'use strict';
 
-  $('#menu').load('views/menu', () => {
-    $('#menu-history').addClass('active');
-    $('#menu-history').attr('aria-current', 'page');
-  });
+  $.getScript('/js/commons.js');
 
   const baseYearTemplate = await $.get('modules/year.html');
   const baseGiftTemplate = await $.get('modules/gift.html');

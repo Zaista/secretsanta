@@ -4,7 +4,8 @@
             <img src="/favicon.ico" alt="" width="24" height="24" class="d-inline-block align-text-top">
             SecretSanta
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -26,7 +27,16 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" id="menu-group" data-bs-toggle="modal" data-bs-target="#groups-dialog" href="#">Group: <b>Cigici</b></a>
+                    <a class="nav-link" id="menu-group" data-bs-toggle="modal" data-bs-target="#groups-dialog" href="#">
+                        <span>Group: </span>
+                        <b>
+                            <span id="groupName">
+                                <div class="spinner-border spinner-grow-sm spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </span>
+                        </b>
+                    </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout">Log out</a>
@@ -47,10 +57,7 @@
             <div class="modal-body">
                 <p>Select another group to switch to it:</p>
                 <div class="input-group">
-                    <select class="form-select" id="groupSelector">
-                        <option selected value="0">All...</option>
-                        <!--groupOptions-->
-                    </select>
+                    <select class="form-select" id="groupSelector"><!--groupOptions--></select>
                 </div>
             </div>
             <div class="modal-footer">

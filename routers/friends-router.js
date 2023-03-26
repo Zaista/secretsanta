@@ -16,7 +16,7 @@ friendsRouter.get('/friends/:userId', async (req, res) => {
 
 friendsRouter.get('/api/friends', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getFriends();
+  const result = await getFriends(req.query.groupId);
   res.send(result);
 });
 

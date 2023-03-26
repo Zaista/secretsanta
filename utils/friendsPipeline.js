@@ -1,8 +1,9 @@
+import mongodb from 'mongodb';
 import { getClient } from './database.js';
 
-export async function getFriends() {
+export async function getFriends(groupId) {
   const client = await getClient();
-  const query = { active: true };
+  const query = { active: true, groups: new mongodb.ObjectId(groupId) };
   const options = { projection: { _id: 0, password: 0, chat: 0 } };
 
   try {

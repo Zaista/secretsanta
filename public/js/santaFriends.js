@@ -3,19 +3,20 @@
 $(function() {
   'use strict';
 
-  $('#menu').load('views/menu', () => {
-    $('#menu-friends').addClass('active');
-    $('#menu-friends').attr('aria-current', 'page');
-  });
+  const groupId = JSON.parse(window.localStorage.getItem('group'))._id;
 
-  $.getJSON('api/friends', function(result) {
+  $.getScript('/js/commons.js');
+
+  $.getJSON(`api/friends?groupId=${groupId}`, result => {
     $.get('modules/friend.html', friendTemplate => {
-      $.each(result, function(i, userData) {
+      $.each(result, (i, userData) => {
         const friendElement = $.parseHTML(friendTemplate);
         $(friendElement).attr('id', userData.userId);
         $(friendElement).find('#userId').text(userData.userId);
         $(friendElement).find('.card-header').text(userData.name);
-        $(friendElement).find('img').attr('src', `resources/images/old_images/${userData.userId}.jpg`);
+        $(friendElement).find('img').attr('src', `/resources/images/old_images/${userData.userId}.jpg`).on('error', function() {
+          $(this).attr('src', '/resources/images/old_images/placeholder.png');
+        });
         $(friendElement).find('#street').text(userData.address.street);
         $(friendElement).find('#postalCode').text(userData.address.postalCode);
         $(friendElement).find('#city').text(userData.address.city);

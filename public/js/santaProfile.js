@@ -3,15 +3,12 @@
 $(function() {
   'use strict';
 
-  $('#menu').load('/views/menu', () => {
-    $('#menu-friends').addClass('active');
-    $('#menu-friends').attr('aria-current', 'page');
-  });
+  $.getScript('/js/commons.js');
 
   $.get(`/api/friends/${window.location.pathname.replace('/friends/', '')}`, friend => {
-    $('#image').attr('src', `/resources/images/old_images/${friend.userId}.jpg`).on("error", function() {
+    $('#image').attr('src', `/resources/images/old_images/${friend.userId}.jpg`).on('error', function() {
       $(this).attr('src', '/resources/images/old_images/placeholder.png');
-    });;
+    });
     $('#name').val(friend.name);
     $('#description').val(friend.description);
     if (friend.description) {

@@ -37,11 +37,11 @@ app.engine('html', (filePath, options, callback) => {
     }
 
     if (options.groups) {
-//      let options
+      let groupOptions = '';
       options.groups.forEach(group => {
-        console.log(group);
-
+        groupOptions += `<option value="${group._id}">${group.name}</option>`;
       });
+      rendered = rendered.replace('<!--groupOptions-->', groupOptions);
     }
     return callback(null, rendered);
   });
@@ -59,7 +59,6 @@ app.use('/', adminRouter);
 
 // view routers
 app.use('/views/menu', (req, res) => {
-  console.log(req.user)
   const options = {
     isAdmin: false,
     groups: req.user.groups

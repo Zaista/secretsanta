@@ -1,8 +1,9 @@
 import mongodb from 'mongodb';
 import { getClient } from './database.js';
 
-export async function getUsers() {
+export async function getUsers(groupId) {
   const client = await getClient();
+  const query = { groups: new mongodb.ObjectId(groupId) };
   const options = {
     projection: { _id: 0, name: 1, email: 1, active: 1, role: 1, userId: 1 },
     sort: { active: -1, userId: 1 }
@@ -12,7 +13,7 @@ export async function getUsers() {
     return await client
       .db(process.env.database)
       .collection('users')
-      .find({}, options)
+      .find(query, options)
       .toArray();
   } catch (err) {
     console.log('ERROR: ' + err.stack);

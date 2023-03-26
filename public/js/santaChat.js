@@ -3,10 +3,7 @@
 $(function() {
   'use strict';
 
-  $('#menu').load('views/menu', () => {
-    $('#menu-chat').addClass('active');
-    $('#menu-chat').attr('aria-current', 'page');
-  });
+  $.getScript('/js/commons.js');
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 

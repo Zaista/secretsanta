@@ -3,15 +3,14 @@
 $(function() {
   'use strict';
 
-  $('#menu').load('views/menu', () => {
-    $('#menu-admin').addClass('active');
-    $('#menu-admin').attr('aria-current', 'page');
-  });
+  const groupId = JSON.parse(window.localStorage.getItem('group'))._id;
+
+  $.getScript('/js/commons.js');
 
   $('#emailNotifications').change(onChangeDetector);
-  $('#groupName').on('input', onChangeDetector);
+  $('#groupNameSettings').on('input', onChangeDetector);
 
-  $.getJSON('api/users', function(result) {
+  $.getJSON(`api/users?groupId=${groupId}`, function(result) {
     $.get('modules/user.html', userTemplate => {
       $.each(result, function(index, userData) {
         const userElement = $.parseHTML(userTemplate);
@@ -30,19 +29,16 @@ $(function() {
     });
   });
 
-  const groupId = '641205f5773c5e2f26f6f9aa';
-  $.getJSON(`api/group/${groupId}`, result => {
-    $('#groupName').val(result.name);
-    $('#emailNotifications').val(`${result.emailNotifications}`);
+  $.getJSON(`api/group/${groupId}`, group => {
+    $('#groupNameSettings').val(group.name);
+    $('#emailNotifications').val(`${group.emailNotifications}`);
   });
 
   $('#groupForm').on('submit', function() {
-
     const groupData = {
-      name: $('#groupName').val(),
+      name: $('#groupNameSettings').val(),
       emailNotifications: $('#emailNotifications').val()
     }
-
     $.post(`api/group/${groupId}`, groupData, result => {
       $('.alert').removeClass('alert-success alert-danger');
       if (result.error) {
@@ -56,7 +52,12 @@ $(function() {
         $('.alert').hide();
       }, 3000);
     });
-
+    const updatedGroup = {
+      _id: $('#groupSelector option:selected').val(),
+      name: $('#groupNameSettings').val()
+    }
+    window.localStorage.setItem('group', JSON.stringify(updatedGroup));
+    $('#groupName').html(updatedGroup.name);
     return false;
   });
 
@@ -67,6 +68,7 @@ $(function() {
       $('#userButton').removeAttr('disabled');
   }
 
+  // TODO not working
   $('#emailPasswords').on('click', function() {
     const personId = $('#email-select').val();
     $.getJSON('api/email?person=' + personId, function(result) {
@@ -90,20 +92,29 @@ $(function() {
     });
   });
 
-
-        // TODO below was used to display rematch message
-        //        if (false) {
-        //          $('#santa-display').empty();
-        //          $('#santa-display').append('<div class="alert alert-success">' + result[0].firstName + '</div>');
-        //        } else {
-        //          $("#santa-display").empty();
-        //          var name = result[0].firstName;
-        //          if (result[0].lastName) {
-        //            name += " " + result[0].lastName;
-        //          }
-        //          $("#santa-display").append('<p id="santa_name" style="font-size: 30px;"><strong>' + name + '</strong></p>');
-        //          $("#santa-display").append('<img src="resources/images/' + result[0].username + '.png">');
-        //          if (result[0].address)
-        //            $("#santa-display").append('<br><br><p id="santa_address" style="font-size: 20px;">Address: ' + result[0].address + '</p>');
-        //        }
+  // TODO not working
+  $('#rematch-form').on('submit', function() {
+    const password = $('#rematch-password').val();
+    $.getJSON('api/match?password=' + password, function(result) {
+      if (result.error) {
+        $('.alert').removeClass('alert-success alert-danger');
+        $('.alert').addClass('alert-danger');
+        $('.alert span').text(result.error);
+        $('.alert').show();
+        setTimeout(function() {
+          $('.alert').hide();
+        }, 3000);
+      } else {
+        $('.alert').removeClass('alert-success alert-danger');
+        $('.alert').addClass('alert-success');
+        $('.alert span').text(result.match);
+        $('.alert').show();
+        setTimeout(function() {
+          $('.alert').hide();
+        }, 3000);
+        $('#rematch-dialog').modal('hide');
+      }
+    });
+    return false;
+  });
 });
