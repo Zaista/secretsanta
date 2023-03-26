@@ -5,7 +5,7 @@ export async function getSanta(userId) {
   const pipeline = [
     {
       $match: {
-        userId
+        _id: new mongodb.ObjectId(userId)
       }
     }, {
       $lookup: {
@@ -50,7 +50,12 @@ export async function getSanta(userId) {
           ]
         },
         year: '$years.year',
-        _id: 0
+        _id: 0,
+        image: {
+          $arrayElemAt: [
+            '$child.image', 0
+          ]
+        }
       }
     }, {
       $sort: {
