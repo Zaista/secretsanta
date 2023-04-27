@@ -1,18 +1,16 @@
-/* global $, setTimeout */
+/* global $ */
 
 $(function() {
   'use strict';
 
   $.getScript('/js/commons.js');
 
-  let secretSanta;
-
   $.get('api/santa', santa => {
     if (santa.error) {
       // TODO display error
     } else {
       $('#santaYear').html(santa.year);
-      console.log(santa)
+      console.log(santa);
       $('#reveal').on('click', function() {
         if (santa.image) {
           $('#santaImage').attr('src', `resources/images/${santa.image}`);

@@ -1,4 +1,4 @@
-/* global $, setTimeout */
+/* global $, showAlert */
 
 $(function() {
   'use strict';

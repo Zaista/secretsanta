@@ -1,4 +1,4 @@
-/* global $, setTimeout */
+/* global $, getGroupId, showAlert */
 
 $(async function() {
   'use strict';
@@ -40,11 +40,11 @@ $(async function() {
     };
     $.post('api/chat', requestData, function(response) {
       if (response.error) {
-        showAlert(false, result.message);
+        showAlert(false, response.message);
       } else {
         $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
-        showAlert(true, result.message);
+        showAlert(true, response.message);
       }
     });
     return false;

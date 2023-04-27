@@ -1,4 +1,4 @@
-/* global $, setTimeout */
+/* global $, showAlert, getGroupId */
 
 $(async function() {
   'use strict';
@@ -37,10 +37,10 @@ $(async function() {
         _id: $(this).find('[name="userId"]').val(),
         role: $(this).find(':selected').val(),
         active: $(this).find('[name="userStatus"]').is(':checked')
-      }
+      };
       usersRoleAndStatus.push(userData);
     });
-    $.post(`api/users?groupId=${groupId}`, { usersRoleAndStatus: usersRoleAndStatus }, result => {
+    $.post(`api/users?groupId=${groupId}`, { usersRoleAndStatus }, result => {
       showAlert(true, result.success);
       $('#userButton').prop('disabled', true);
     });
@@ -56,14 +56,14 @@ $(async function() {
     const groupData = {
       name: $('#groupNameSettings').val(),
       emailNotifications: $('#emailNotifications').val()
-    }
+    };
     $.post(`api/group/${groupId}`, groupData, result => {
       showAlert(!result.error, result.message);
     });
     const updatedGroup = {
       _id: $('#groupSelector option:selected').val(),
       name: $('#groupNameSettings').val()
-    }
+    };
     window.localStorage.setItem('group', JSON.stringify(updatedGroup));
     $('#groupName').html(updatedGroup.name);
     return false;
@@ -83,12 +83,12 @@ $(async function() {
       $('#forbiddenUser1, #forbiddenUser2').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
   });
-  
+
   $('#forbiddenPairsForm').on('submit', () => {
     const pair = {
       forbiddenUser1: $('#forbiddenUser1').val(),
       forbiddenUser2: $('#forbiddenUser2').val()
-    }
+    };
     $.post(`api/forbidden?groupId=${groupId}`, pair, result => {
       showAlert(true, result.success);
       // TODO reload page or add item to the table manually, close modal
@@ -97,10 +97,7 @@ $(async function() {
   });
 
   function onChangeDetector() {
-    if ($(this).attr('data-onchange') === 'group' )
-      $('#groupButton').removeAttr('disabled');
-    else if ($(this).attr('data-onchange') === 'users' )
-      $('#userButton').removeAttr('disabled');
+    if ($(this).attr('data-onchange') === 'group') { $('#groupButton').removeAttr('disabled'); } else if ($(this).attr('data-onchange') === 'users') { $('#userButton').removeAttr('disabled'); }
   }
 
   // TODO not working

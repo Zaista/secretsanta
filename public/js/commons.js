@@ -1,5 +1,6 @@
-$('#menu').load('/views/menu', () => {
+/* global $ */
 
+$('#menu').load('/views/menu', () => {
   // group selection and info
   const preselectedGroup = JSON.parse(window.localStorage.getItem('group'));
   if (preselectedGroup) {
@@ -9,7 +10,7 @@ $('#menu').load('/views/menu', () => {
     const group = {
       _id: $('#groupSelector option:first').val(),
       name: $('#groupSelector option:first').text()
-    }
+    };
     window.localStorage.setItem('group', JSON.stringify(group));
     $('#groupSelector').val(group._id);
     $('#groupName').html(group.name);
@@ -19,13 +20,13 @@ $('#menu').load('/views/menu', () => {
     const newGroup = {
       _id: $('#groupSelector option:selected').val(),
       name: $('#groupSelector option:selected').text()
-    }
+    };
     window.localStorage.setItem('group', JSON.stringify(newGroup));
     location.reload();
   });
 
   // active page
-  const pageMatcher =  window.location.pathname.match(/\w+/);
+  const pageMatcher = window.location.pathname.match(/\w+/);
   if (pageMatcher) {
     const currentPage = pageMatcher[0];
     $(`#menu-${currentPage}`).addClass('active');
@@ -33,6 +34,7 @@ $('#menu').load('/views/menu', () => {
   }
 });
 
+// eslint-disable-next-line
 function showAlert(success, message) {
   const alertClass = success ? 'alert-success' : 'alert-danger';
   const alertElement = $('.alert');
@@ -45,6 +47,7 @@ function showAlert(success, message) {
   }, 3000);
 }
 
+// eslint-disable-next-line
 function getGroupId() {
   return JSON.parse(window.localStorage.getItem('group'))._id;
 }
