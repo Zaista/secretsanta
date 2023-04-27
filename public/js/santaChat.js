@@ -1,15 +1,17 @@
-/* global $, setTimeout */
+/* global $, getGroupId, showAlert */
 
-$(function() {
+$(async function() {
   'use strict';
 
-  $.getScript('/js/commons.js');
+  await $.getScript('/js/commons.js');
+
+  const groupId = getGroupId();
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-  $.getJSON('api/friends', function(result) {
+  $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
     result.forEach(function(friend) {
-      $('.form-select').append(`<option value="${friend.userId}" data-email="${friend.email}">${friend.name}</option>`);
+      $('.form-select').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
   });
 
@@ -38,11 +40,11 @@ $(function() {
     };
     $.post('api/chat', requestData, function(response) {
       if (response.error) {
-        showAlert(false, result.message);
+        showAlert(false, response.message);
       } else {
         $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
-        showAlert(true, result.message);
+        showAlert(true, response.message);
       }
     });
     return false;

@@ -62,7 +62,7 @@ app.use('/views/menu', (req, res) => {
   const options = {
     isAdmin: false,
     groups: req.user.groups
-  }
+  };
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   else if (req.user.role === 'admin') options.isAdmin = true;
   res.render('menu.html', options);

@@ -122,11 +122,50 @@
                 <div class="mt-5" id="item-user-pairs">
                     <h4>Forbidden pairs</h4>
                     <p>Match users that should never be drafted as pairs.</p>
-                    <button type="button" class="btn btn-primary">Add new pair</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#forbiddenPairsModal">Add new pair</button>
                 </div>
+
+                <table id="forbiddenPairsTable" class="table table-borderless caption-top mt-3">
+                    <caption>List of users</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Other Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="col-2">
+        </div>
+    </div>
+    
+    <!-- Dialog for forbidden pairs -->
+    <div class="modal" id="forbiddenPairsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select users that will not be drafted as pairs</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="forbiddenPairsForm">
+                    <div class="modal-body">
+                        <select class="form-select" id="forbiddenUser1" required>
+                            <option selected value="">Choose...</option>
+                        </select>
+                        <select class="form-select" id="forbiddenUser2" required>
+                            <option selected value="">Choose...</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Forbid</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

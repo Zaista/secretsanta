@@ -81,47 +81,47 @@ export async function getSanta(userId) {
 export async function getUserGroups(userId) {
   const client = await getClient();
   const pipeline = [
-                     {
-                       '$match': {
-                         '_id': userId
-                       }
-                     }, {
-                       '$unwind': {
-                         'path': '$groups'
-                       }
-                     }, {
-                       '$project': {
-                         'groupIds': {
-                           '$toObjectId': '$groups'
-                         },
-                         '_id': 0
-                       }
-                     }, {
-                       '$lookup': {
-                         'from': 'groups',
-                         'localField': 'groupIds',
-                         'foreignField': '_id',
-                         'as': 'group'
-                       }
-                     }, {
-                       '$unwind': {
-                         'path': '$group'
-                       }
-                     }, {
-                       '$replaceRoot': {
-                         'newRoot': '$group'
-                       }
-                     }
-                   ];
+    {
+      $match: {
+        _id: userId
+      }
+    }, {
+      $unwind: {
+        path: '$groups'
+      }
+    }, {
+      $project: {
+        groupIds: {
+          $toObjectId: '$groups'
+        },
+        _id: 0
+      }
+    }, {
+      $lookup: {
+        from: 'groups',
+        localField: 'groupIds',
+        foreignField: '_id',
+        as: 'group'
+      }
+    }, {
+      $unwind: {
+        path: '$group'
+      }
+    }, {
+      $replaceRoot: {
+        newRoot: '$group'
+      }
+    }
+  ];
 
-   try {
-     return await client
-       .db(process.env.database)
-       .collection('users')
-       .aggregate(pipeline)
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .aggregate(pipeline)
       .toArray();
-   } catch (err) {
-     console.log('ERROR: ' + err.stack);
-     return null;
-   }
- }
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
