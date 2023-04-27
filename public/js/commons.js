@@ -32,3 +32,15 @@ $('#menu').load('/views/menu', () => {
     $(`#menu-${currentPage}`).attr('aria-current', 'page');
   }
 });
+
+function showAlert(success, message) {
+  const alertClass = success ? 'alert-success' : 'alert-danger';
+  const alertElement = $('.alert');
+  alertElement.removeClass('alert-success alert-danger');
+  alertElement.addClass(alertClass);
+  $('.alert span').text(message);
+  alertElement.show();
+  setTimeout(function() {
+    $('.alert').hide();
+  }, 3000);
+}

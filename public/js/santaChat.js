@@ -37,19 +37,13 @@ $(function() {
       message: $('#message').val()
     };
     $.post('api/chat', requestData, function(response) {
-      $('.alert').removeClass('alert-success alert-danger');
       if (response.error) {
-        $('.alert').addClass('alert-danger');
+        showAlert(false, result.message);
       } else {
         $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
-        $('.alert').addClass('alert-success');
+        showAlert(true, result.message);
       }
-      $('.alert span').text(response.message);
-      $('.alert').show();
-      setTimeout(function() {
-        $('.alert').hide();
-      }, 3000);
     });
     return false;
   });

@@ -14,31 +14,19 @@ $(function() {
         window.location.href = '/';
       }
     }, 'json').fail((error) => {
-      $('.alert').removeClass('alert-success alert-danger');
-      $('.alert').addClass('alert-danger');
-      $('.alert span').text(`Login failed: ${error.statusText}`);
-      $('.alert').show();
-      setTimeout(function() {
-        $('.alert').hide();
-      }, 3000);
+      showAlert(false, `Login failed: ${error.statusText}`);
     });
     return false;
   });
 
   $('#santa-email-form').on('submit', function() {
     $.post('api/email', { email: $('#santa-email').val() }, function(result) {
-      $('.alert').removeClass('alert-success alert-danger');
       if (result.error) {
-        $('.alert').addClass('alert-danger');
+        showAlert(false, `Email sent to: ${$('#santa-email').val()}`);
       } else {
-        $('.alert').addClass('alert-success');
+        showAlert(true, `Email sent to: ${$('#santa-email').val()}`);
         $('#forgot-password-dialog').toggle();
       }
-      $('.alert span').text(`Email sent to: ${$('#santa-email').val()}`);
-      $('.alert').show();
-      setTimeout(function() {
-        $('.alert').hide();
-      }, 3000);
     }, 'json');
     return false;
   });

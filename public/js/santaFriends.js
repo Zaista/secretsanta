@@ -11,8 +11,8 @@ $(function() {
     $.get('modules/friend.html', friendTemplate => {
       $.each(result, (i, userData) => {
         const friendElement = $.parseHTML(friendTemplate);
-        $(friendElement).attr('id', userData.userId);
-        $(friendElement).find('#userId').text(userData.userId);
+        $(friendElement).attr('id', userData._id);
+        $(friendElement).find('#userId').text(userData._id);
         $(friendElement).find('.card-header').text(userData.name);
         $(friendElement).find('img').attr('src', `/resources/images/old_images/${userData.userId}.jpg`).on('error', function() {
           $(this).attr('src', '/resources/images/old_images/placeholder.png');

@@ -5,7 +5,7 @@ $(function() {
 
   $.getScript('/js/commons.js');
 
-  $.get(`/api/friends/${window.location.pathname.replace('/friends/', '')}`, friend => {
+  $.get(`/api${window.location.pathname}`, friend => {
     $('#image').attr('src', `/resources/images/old_images/${friend.userId}.jpg`).on('error', function() {
       $(this).attr('src', '/resources/images/old_images/placeholder.png');
     });
@@ -21,12 +21,12 @@ $(function() {
       $('#state').val(friend.address.state);
     }
     $('#email').val(friend.email);
-    $('#userId').val(friend.userId);
+    $('#userId').val(friend._id);
   });
 
   $('form').on('submit', function() {
     const friend = {
-      userId: $('#userId').val(),
+      _id: $('#userId').val(),
       name: $('#name').val(),
       description: $('#description').val(),
       address: {
@@ -37,18 +37,8 @@ $(function() {
       },
       email: $('#email').val()
     };
-    $.post(`/api/friends/${friend.userId}`, friend, result => {
-      $('.alert').removeClass('alert-success alert-danger');
-      if (result.error) {
-        $('.alert').addClass('alert-danger');
-      } else {
-        $('.alert').addClass('alert-success');
-      }
-      $('.alert span').text(result.message);
-      $('.alert').show();
-      setTimeout(function() {
-        $('.alert').hide();
-      }, 3000);
+    $.post(`/api/friends/${friend._id}`, friend, result => {
+      showAlert(!result.error, result.message);
     });
     return false;
   });
