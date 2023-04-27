@@ -44,3 +44,7 @@ function showAlert(success, message) {
     $('.alert').hide();
   }, 3000);
 }
+
+function getGroupId() {
+  return JSON.parse(window.localStorage.getItem('group'))._id;
+}

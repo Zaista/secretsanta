@@ -81,3 +81,59 @@ export async function updateGroup(groupId, groupData) {
         return null;
     }
 }
+
+export async function getForbiddenPairs(groupId) {
+    const client = await getClient();
+    const pipeline = [
+        {
+            $match: {
+                groups: new mongodb.ObjectId(groupId)
+            }
+        }, {
+            $lookup: {
+                from: 'users',
+                localField: 'forbiddenPairs',
+                foreignField: '_id',
+                as: 'match'
+            }
+        }, {
+            $unwind: {
+                path: '$match'
+            }
+        }, {
+            $project: {
+                _id: 0,
+                forbiddenPair1: '$name',
+                forbiddenPair2: '$match.name'
+            }
+        }
+    ];
+
+    try {
+        return await client
+            .db(process.env.database)
+            .collection('users')
+            .aggregate(pipeline)
+            .toArray();
+    } catch (err) {
+        console.log('ERROR: ' + err.stack);
+        return null;
+    }
+}
+
+export async function createForbiddenPair(groupId, forbiddenPair) {
+    const client = await getClient();
+    try {
+        const filter = {
+            groups: new mongodb.ObjectId(groupId),
+            _id: new mongodb.ObjectId(forbiddenPair.forbiddenUser1)
+        };
+        const update = {
+            $push: {forbiddenPairs: new mongodb.ObjectId(forbiddenPair.forbiddenUser2)}
+        }
+        return await client.db(process.env.database).collection('users').updateOne(filter, update);
+    } catch (err) {
+        console.log('ERROR: ' + err.stack);
+        return null;
+    }
+}

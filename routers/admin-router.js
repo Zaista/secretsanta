@@ -1,5 +1,5 @@
 import express from 'express';
-import {getUsers, updateUsersRoleAndStatus, getGroup, updateGroup} from '../utils/adminPipeline.js';
+import {getUsers, updateUsersRoleAndStatus, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair} from '../utils/adminPipeline.js';
 
 const adminRouter = express.Router();
 
@@ -30,8 +30,21 @@ adminRouter.get('/api/group/:groupId', async (req, res) => {
 adminRouter.post('/api/group/:groupId', async (req, res) => {
     if (!req.user) return res.status(401).send({error: 'User not logged in'});
     const result = await updateGroup(req.params.groupId, req.body);
-    if (result.modifiedCount === 1) return res.send({error: false, message: 'Group updated'})
+    if (result.modifiedCount === 1) return res.send({error: false, message: 'Group updated'});
     res.send({error: true, message: 'Something went wrong'});
+});
+
+adminRouter.get('/api/forbidden', async (req, res) => {
+    if (!req.user) return res.status(401).send({error: 'User not logged in'});
+    const result = await getForbiddenPairs(req.query.groupId);
+    res.send(result);
+});
+
+adminRouter.post('/api/forbidden', async (req, res) => {
+    if (!req.user) return res.status(401).send({error: 'User not logged in'});
+    const result = await createForbiddenPair(req.query.groupId, req.body);
+    if (result.modifiedCount === 1) return res.send({success: 'Group updated'});
+    res.send({error: 'Something went wrong'});
 });
 
 export {adminRouter};

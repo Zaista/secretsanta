@@ -1,15 +1,17 @@
 /* global $, setTimeout */
 
-$(function() {
+$(async function() {
   'use strict';
 
-  $.getScript('/js/commons.js');
+  await $.getScript('/js/commons.js');
+
+  const groupId = getGroupId();
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-  $.getJSON('api/friends', function(result) {
+  $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
     result.forEach(function(friend) {
-      $('.form-select').append(`<option value="${friend.userId}" data-email="${friend.email}">${friend.name}</option>`);
+      $('.form-select').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
   });
 

@@ -1,11 +1,11 @@
 /* global $, setTimeout */
 
-$(function() {
+$(async function() {
   'use strict';
 
-  const groupId = JSON.parse(window.localStorage.getItem('group'))._id;
+  await $.getScript('/js/commons.js');
 
-  $.getScript('/js/commons.js');
+  const groupId = getGroupId();
 
   $('#emailNotifications').on('change', onChangeDetector);
   $('#groupNameSettings').on('input', onChangeDetector);
@@ -69,6 +69,33 @@ $(function() {
     return false;
   });
 
+  // fill up the forbiddenPair table with forbidden pairs
+  $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
+    // TODO make this beautiful
+    result.forEach((pair, index) => {
+      $('#forbiddenPairsTable tbody').append(`<tr><td>${index}</td><td>${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td></tr>`);
+    });
+  });
+
+  // fill up the forbiddenPair modal select elements with usernames
+  $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
+    result.forEach(function(friend) {
+      $('#forbiddenUser1, #forbiddenUser2').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
+    });
+  });
+  
+  $('#forbiddenPairsForm').on('submit', () => {
+    const pair = {
+      forbiddenUser1: $('#forbiddenUser1').val(),
+      forbiddenUser2: $('#forbiddenUser2').val()
+    }
+    $.post(`api/forbidden?groupId=${groupId}`, pair, result => {
+      showAlert(true, result.success);
+      // TODO reload page or add item to the table manually, close modal
+    });
+    return false;
+  });
+
   function onChangeDetector() {
     if ($(this).attr('data-onchange') === 'group' )
       $('#groupButton').removeAttr('disabled');
@@ -81,13 +108,7 @@ $(function() {
     const personId = $('#email-select').val();
     $.getJSON('api/email?person=' + personId, function(result) {
       if (result.error) {
-        $('.alert').removeClass('alert-success alert-danger');
-        $('.alert').addClass('alert-danger');
-        $('.alert span').text(result.error);
-        $('.alert').show();
-        setTimeout(function() {
-          $('.alert').hide();
-        }, 3000);
+        showAlert(false, result.error);
       } else {
         showAlert(true, result.error);
       }
