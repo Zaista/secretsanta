@@ -10,10 +10,9 @@ $(function() {
       // TODO display error
     } else {
       $('#santaYear').html(santa.year);
-      console.log(santa);
       $('#reveal').on('click', function() {
-        if (santa.image) {
-          $('#santaImage').attr('src', `resources/images/${santa.image}`);
+        if (santa.userId) {
+          $('#santaImage').attr('src', `resources/images/${santa.userId}.png`);
         } else {
           $('#santaImage').attr('src', '/resources/images/old_images/placeholder.png');
         }

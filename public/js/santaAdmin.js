@@ -73,7 +73,7 @@ $(async function() {
   $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
     // TODO make this beautiful
     result.forEach((pair, index) => {
-      $('#forbiddenPairsTable tbody').append(`<tr><td>${index}</td><td>${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td></tr>`);
+      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td>${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td></tr>`);
     });
   });
 

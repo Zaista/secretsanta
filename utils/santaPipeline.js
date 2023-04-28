@@ -51,9 +51,9 @@ export async function getSanta(userId) {
         },
         year: '$years.year',
         _id: 0,
-        image: {
+        userId: {
           $arrayElemAt: [
-            '$child.image', 0
+            '$child.userId', 0
           ]
         }
       }
