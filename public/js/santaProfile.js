@@ -6,7 +6,7 @@ $(function() {
   $.getScript('/js/commons.js');
 
   $.get(`/api${window.location.pathname}`, friend => {
-    $('#image').attr('src', `/resources/images/old_images/${friend.userId}.jpg`).on('error', function() {
+    $('#image').attr('src', `/resources/images/${friend.userId}.png`).on('error', function() {
       $(this).attr('src', '/resources/images/old_images/placeholder.png');
     });
     $('#name').val(friend.name);

@@ -1,20 +1,19 @@
-/* global $ */
+/* global $, getGroupId */
 
-$(function() {
+$(async function() {
   'use strict';
 
-  const groupId = JSON.parse(window.localStorage.getItem('group'))._id;
+  await $.getScript('/js/commons.js');
 
-  $.getScript('/js/commons.js');
+  const groupId = getGroupId();
 
   $.getJSON(`api/friends?groupId=${groupId}`, result => {
     $.get('modules/friend.html', friendTemplate => {
       $.each(result, (i, userData) => {
         const friendElement = $.parseHTML(friendTemplate);
-        $(friendElement).attr('id', userData._id);
-        $(friendElement).find('#userId').text(userData._id);
-        $(friendElement).find('.card-header').text(userData.name);
-        $(friendElement).find('img').attr('src', `/resources/images/old_images/${userData.userId}.jpg`).on('error', function() {
+        $(friendElement).find('#userId').val(userData._id);
+        $(friendElement).find('#name').text(userData.name);
+        $(friendElement).find('img').attr('src', `/resources/images/${userData.userId}.png`).on('error', function() {
           $(this).attr('src', '/resources/images/old_images/placeholder.png');
         });
         $(friendElement).find('#street').text(userData.address.street);
@@ -24,16 +23,9 @@ $(function() {
         $('.friends').append(friendElement);
       });
     }).then(() => {
-      // add card background event
-      $('.card').hover(function() {
-        $(this).addClass('border-danger');
-      }, function() {
-        $(this).removeClass('border-danger');
-      });
-
       // add card click event
-      $('.col.pointer').on('click', function(event) {
-        window.location.href = `/friends/${$(this).attr('id')}`;
+      $('.card.pointer').on('click', function(event) {
+        window.location.href = `/friends/${$(this).find('#userId').val()}`;
       });
     });
   });

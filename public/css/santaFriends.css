@@ -1,5 +1,15 @@
-.margin-top {
-	margin-top: 20px;
+#friendImage {
+	width: 60%;
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+#imageBackground {
+	background: linear-gradient(to bottom, rgba(255,0,0,0.4) 50%, white 0%);
+}
+
+.list-group {
+	font-size: 0.85em;
 }
 
 .pointer {
