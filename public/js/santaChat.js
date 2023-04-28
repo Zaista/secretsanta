@@ -34,10 +34,11 @@ $(async function() {
 
   $('#chat-form').on('submit', function() {
     const requestData = {
-      userId: +$('#user').val(),
+      userId: $('#user option:selected').val(),
       email: $('#user option:selected').attr('data-email'),
       message: $('#message').val()
     };
+    console.log(requestData);
     $.post('api/chat', requestData, function(response) {
       if (response.error) {
         showAlert(false, response.message);
