@@ -13,9 +13,11 @@ $(async function() {
         const friendElement = $.parseHTML(friendTemplate);
         $(friendElement).find('#userId').val(userData._id);
         $(friendElement).find('#name').text(userData.name);
-        $(friendElement).find('img').attr('src', `/resources/images/${userData.userId}.png`).on('error', function() {
-          $(this).attr('src', '/resources/images/old_images/placeholder.png');
-        });
+        if (userData.image) {
+          $(friendElement).find('img').attr('src', `/resources/images/${userData.image}.png`);
+        } else {
+          $(friendElement).find('img').attr('src', '/resources/images/placeholder.png');
+        }
         $(friendElement).find('#street').text(userData.address.street);
         $(friendElement).find('#postalCode').text(userData.address.postalCode);
         $(friendElement).find('#city').text(userData.address.city);

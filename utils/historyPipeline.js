@@ -1,27 +1,33 @@
 import { getClient } from './database.js';
+import mongodb from "mongodb";
 
-export async function getHistory() {
+export async function getHistory(groupId) {
   const pipeline = [
+    {
+      $match: {
+        groupId: new mongodb.ObjectId(groupId)
+      }
+    },
     {
       $unwind: {
         path: '$gifts'
       }
     },
     {
-      // match santaId and userId to get santa info
+      // match santaId and _id to get santa info
       $lookup: {
         from: 'users',
         localField: 'gifts.santaId',
-        foreignField: 'userId',
+        foreignField: '_id',
         as: 'santaUser'
       }
     },
     {
-      // match childId and userId to get child info
+      // match childId and _id to get child info
       $lookup: {
         from: 'users',
         localField: 'gifts.childId',
-        foreignField: 'userId',
+        foreignField: '_id',
         as: 'childUser'
       }
     },
