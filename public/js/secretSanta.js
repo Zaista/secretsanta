@@ -10,7 +10,7 @@ $(async function() {
   $.get(`api/santa?groupId=${groupId}`, result => {
     if (result.length === 0 || result[0].year !== new Date().getFullYear() + 1) {
       $('#unavailableDiv').show();
-      showAlert(false, 'Santa pairs still not drafted for the next year. Ask you group admin to do that now');
+      showAlert(false, 'Santa pairs still not drafted for the next year. Ask your group admin to do that now');
     } else {
       $('#topSecretDiv').show();
       $('#topSecretImage').on('click', function() {
