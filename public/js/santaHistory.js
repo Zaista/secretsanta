@@ -1,4 +1,4 @@
-/* global $, bootstrap, groupId */
+/* global $, bootstrap, getGroupId, showAlert */
 
 $(async () => {
   'use strict';
@@ -23,9 +23,9 @@ $(async () => {
     new bootstrap.ScrollSpy(document.getElementById('scroll-spy-page'), {
       target: '#navbar'
     });
-    
+
     if (result.length === 0) {
-      showAlert(false, 'No recorded history')
+      showAlert(false, 'No recorded history');
     }
   });
 

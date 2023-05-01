@@ -1,9 +1,14 @@
 import { getClient } from './database.js';
 import mongodb from 'mongodb';
 
-export async function getChat() {
+export async function getChat(groupId) {
   const client = await getClient();
   const pipeline = [
+    {
+      $match: {
+        groupId: new mongodb.ObjectId(groupId)
+      }
+    },
     {
       $lookup: {
         from: 'users',
@@ -18,12 +23,11 @@ export async function getChat() {
       }
     },
     {
-      $project:
-                {
-                  name: '$user.name',
-                  message: 1,
-                  timestamp: 1
-                }
+      $project: {
+        name: '$user.name',
+        message: 1,
+        timestamp: 1
+      }
     }, {
       $sort: { timestamp: 1 }
     }];
@@ -40,9 +44,9 @@ export async function getChat() {
   }
 }
 
-export async function sendMessage(message, userId) {
+export async function sendMessage(message, userId, groupId) {
   const client = await getClient();
-  const document = { message, userId: new mongodb.ObjectId(userId), timestamp: new Date() };
+  const document = { message, userId: new mongodb.ObjectId(userId), groupId: new mongodb.ObjectId(groupId), timestamp: new Date() };
   try {
     return await client
       .db(process.env.database)
