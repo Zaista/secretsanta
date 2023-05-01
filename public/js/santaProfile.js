@@ -6,9 +6,11 @@ $(function() {
   $.getScript('/js/commons.js');
 
   $.get(`/api${window.location.pathname}`, friend => {
-    $('#image').attr('src', `/resources/images/${friend.userId}.png`).on('error', function() {
-      $(this).attr('src', '/resources/images/old_images/placeholder.png');
-    });
+    if (friend.image) {
+      $('#image').attr('src', `/resources/images/${friend.image}.png`);
+    } else {
+      $('#image').attr('src', '/resources/images/placeholder.png');
+    }
     $('#name').val(friend.name);
     $('#description').val(friend.description);
     if (friend.description) {

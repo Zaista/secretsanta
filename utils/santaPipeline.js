@@ -1,75 +1,51 @@
 import mongodb from 'mongodb';
 import { getClient } from './database.js';
 
-export async function getSanta(userId) {
-  const pipeline = [
-    {
-      $match: {
-        _id: new mongodb.ObjectId(userId)
-      }
-    }, {
-      $lookup: {
-        from: 'history',
-        localField: 'userId',
-        foreignField: 'gifts.santaId',
-        as: 'years'
-      }
-    }, {
-      $unwind: {
-        path: '$years'
-      }
-    }, {
-      $unwind: {
-        path: '$years.gifts'
-      }
-    }, {
-      $match: {
-        $expr: {
-          $eq: [
-            '$userId', '$years.gifts.santaId'
-          ]
-        }
-      }
-    }, {
-      $lookup: {
-        from: 'users',
-        localField: 'years.gifts.childId',
-        foreignField: 'userId',
-        as: 'child'
-      }
-    }, {
-      $project: {
-        name: {
-          $arrayElemAt: [
-            '$child.name', 0
-          ]
-        },
-        address: {
-          $arrayElemAt: [
-            '$child.address', 0
-          ]
-        },
-        year: '$years.year',
-        _id: 0,
-        userId: {
-          $arrayElemAt: [
-            '$child.userId', 0
-          ]
-        }
-      }
-    }, {
-      $sort: {
-        year: -1
+export async function getSanta(_id, groupId) {
+  const pipeline = [{
+    $match: {
+      groupId: new mongodb.ObjectId(groupId),
+      year: new Date().getFullYear() + 1
+    }
+  }, {
+    $unwind: {
+      path: '$gifts'
+    }
+  }, {
+    $match: {
+      $expr: {
+        $eq: [
+          _id,
+          '$gifts.santaId'
+        ]
       }
     }
-  ];
+  }, {
+    $lookup: {
+      from: 'users',
+      localField: 'gifts.childId',
+      foreignField: '_id',
+      as: 'user'
+    }
+  }, {
+    $unwind: {
+      path: '$user'
+    }
+  }, {
+    $project: {
+      name: '$user.name',
+      address: '$user.address',
+      year: '$year',
+      image: '$user.image'
+    }
+  }];
 
   const client = await getClient();
 
   try {
     return await client
       .db(process.env.database)
-      .collection('users')
+      .collection('history')
       .aggregate(pipeline)
       .toArray();
   } catch (err) {

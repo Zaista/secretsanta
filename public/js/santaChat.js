@@ -11,7 +11,7 @@ $(async function() {
 
   $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
     result.forEach(function(friend) {
-      $('.form-select').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
+      $('#user').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
   });
 

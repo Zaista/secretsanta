@@ -92,9 +92,10 @@
 
                 <div class="mt-5" id="item-user-settings">
                     <h4>User settings</h4>
-                    <p>Settings related to the SecretSanta users. Deactivated users will stop receiving email
-                        notifications even if they are activated. Their participation in the present exchange will not
-                        be removed or hidden, please do this step manually.</p>
+                    <p>Settings related to the SecretSanta users. Deactivated users will stop being part of the SecretSanta group,
+                        they will not be drafted in the next year, and they will stop receiving any emails. 
+                        They will however show up in the history. If you wish to change this, please remove them manually
+                        from the history page.</p>
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary">Invite new users</button>
@@ -126,7 +127,7 @@
                 </div>
 
                 <table id="forbiddenPairsTable" class="table table-borderless caption-top mt-3">
-                    <caption>List of users</caption>
+                    <caption>List of forbidden pairs</caption>
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -168,8 +169,9 @@
             </div>
         </div>
     </div>
-
-    <div class="alert alert-dismissible collapse fixed-bottom col-md-8 offset-md-2" role="alert">
+    
+    <div class="alert alert-dismissible collapse position-absolute bottom-0 start-50 translate-middle-x"
+         role="alert">
         <span></span>
         <button type="button" class="btn-close" aria-label="Close"></button>
     </div>
