@@ -1,5 +1,5 @@
 import { getClient } from './database.js';
-import mongodb from "mongodb";
+import mongodb from 'mongodb';
 
 export async function getHistory(groupId) {
   const pipeline = [

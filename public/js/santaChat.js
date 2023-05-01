@@ -15,7 +15,7 @@ $(async function() {
     });
   });
 
-  $.getJSON('api/chat', chat => {
+  $.getJSON(`api/chat?groupId=${groupId}`, chat => {
     for (const item of chat) {
       const date = new Date(item.timestamp);
 
@@ -36,9 +36,9 @@ $(async function() {
     const requestData = {
       userId: $('#user option:selected').val(),
       email: $('#user option:selected').attr('data-email'),
-      message: $('#message').val()
+      message: $('#message').val(),
+      groupId
     };
-    console.log(requestData);
     $.post('api/chat', requestData, function(response) {
       if (response.error) {
         showAlert(false, response.message);
