@@ -98,7 +98,7 @@
                         from the history page.</p>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary">Invite new users</button>
+                    <button id="newUsersButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newUsersModal">Invite new users</button>
 
                     <table id="users" class="table table-borderless caption-top mt-3">
                         <caption>List of users</caption>
@@ -123,7 +123,7 @@
                 <div class="mt-5" id="item-user-pairs">
                     <h4>Forbidden pairs</h4>
                     <p>Match users that should never be drafted as pairs.</p>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#forbiddenPairsModal">Add new pair</button>
+                    <button id="addNewPairButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#forbiddenPairsModal">Add new pair</button>
                 </div>
 
                 <table id="forbiddenPairsTable" class="table table-borderless caption-top mt-3">
@@ -144,6 +144,31 @@
         </div>
     </div>
     
+    <!-- Dialog for adding new users -->
+    <div class="modal" id="newUsersModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select users that will not be drafted as pairs</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="newUsersForm">
+                    <div class="modal-body">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="newUserEmail" placeholder="name@example.com">
+                            <label for="newUserEmail">Email address</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Invite</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Dialog for forbidden pairs -->
     <div class="modal" id="forbiddenPairsModal" tabindex="-1">
         <div class="modal-dialog">

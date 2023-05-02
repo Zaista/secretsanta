@@ -12,16 +12,16 @@ $(async function() {
       $.each(result, (i, userData) => {
         const friendElement = $.parseHTML(friendTemplate);
         $(friendElement).find('#userId').val(userData._id);
-        $(friendElement).find('#name').text(userData.name);
+        $(friendElement).find('#name').text(userData.name || userData.email);
         if (userData.image) {
           $(friendElement).find('img').attr('src', `/resources/images/${userData.image}.png`);
         } else {
           $(friendElement).find('img').attr('src', '/resources/images/placeholder.png');
         }
-        $(friendElement).find('#street').text(userData.address.street);
-        $(friendElement).find('#postalCode').text(userData.address.postalCode);
-        $(friendElement).find('#city').text(userData.address.city);
-        $(friendElement).find('#state').text(userData.address.state);
+        $(friendElement).find('#street').text(userData.address?.street || 'not set');
+        $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(not set)');
+        $(friendElement).find('#city').text(userData.address?.city || 'not set');
+        $(friendElement).find('#state').text(userData.address?.state || 'not set');
         $('.friends').append(friendElement);
       });
     }).then(() => {

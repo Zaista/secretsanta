@@ -1,4 +1,4 @@
-/* global $, showAlert, getGroupId */
+/* global $, bootstrap, showAlert, getGroupId */
 
 $(async function() {
   'use strict';
@@ -96,8 +96,26 @@ $(async function() {
     return false;
   });
 
+  $('#newUsersForm').on('submit', () => {
+    const newUser = {
+      email: $('#newUserEmail').val(),
+      groupId: groupId
+    };
+    $.post('api/user', newUser, result => {
+      showAlert(true, result.success);
+      // TODO reload page or add item to the table manually, close modal
+    });
+    const modal = $('#newUsersModal');
+    bootstrap.Modal.getInstance(modal).hide();
+    return false;
+  });
+
   function onChangeDetector() {
-    if ($(this).attr('data-onchange') === 'group') { $('#groupButton').removeAttr('disabled'); } else if ($(this).attr('data-onchange') === 'users') { $('#userButton').removeAttr('disabled'); }
+    if ($(this).attr('data-onchange') === 'group') {
+      $('#groupButton').removeAttr('disabled'); 
+    } else if ($(this).attr('data-onchange') === 'users') { 
+      $('#userButton').removeAttr('disabled');
+    }
   }
 
   // TODO not working

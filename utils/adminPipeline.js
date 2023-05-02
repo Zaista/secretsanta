@@ -1,5 +1,6 @@
 import mongodb from 'mongodb';
-import { getClient } from './database.js';
+import {getClient} from './database.js';
+import {ROLES} from './roles.js';
 
 export async function getUsers(groupId) {
   const client = await getClient();
@@ -15,6 +16,61 @@ export async function getUsers(groupId) {
       .collection('users')
       .find(query, options)
       .toArray();
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function checkIfUserExists(email) {
+  const client = await getClient();
+  const query = { email };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .findOne(query);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function addUserToGroup(groupId, email) {
+  const client = await getClient();
+  const filter = { email: email };
+  const update = {
+    $push: {
+      groups: new mongodb.ObjectId(groupId)
+    }
+  };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .updateOne(filter, update);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function createNewUser(groupId, email, temporaryPassword) {
+  const client = await getClient();
+  const user = {
+    password: temporaryPassword,
+    email: email,
+    active: true,
+    role: ROLES.user,
+    groups: [new mongodb.ObjectId(groupId)]
+  }
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .insertOne(user);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;

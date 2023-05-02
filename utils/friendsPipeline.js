@@ -35,7 +35,6 @@ export async function getFriend(_id) {
 }
 
 export async function updateFriend(friend) {
-  console.log(friend);
   const client = await getClient();
   const filter = { _id: new mongodb.ObjectId(friend._id) };
   const update = {
