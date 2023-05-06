@@ -110,6 +110,27 @@ $(async function() {
     return false;
   });
 
+  $.getJSON(`api/draft?groupId=${groupId}`, response => {
+    if (response.success)
+      $('#draft').removeAttr('disabled');
+  });
+
+  $('#draft').on('click', function() {
+    $.ajax({
+      url: `api/draft?groupId=${groupId}`,
+      method: 'PUT',
+      success: result => {
+        if (result.success) {
+          showAlert(true, result.success);
+          $(this).prop('disabled', true);
+        } else {
+          showAlert(false, result.error);
+        }
+      }
+    });
+    return false;
+  });
+
   function onChangeDetector() {
     if ($(this).attr('data-onchange') === 'group') {
       $('#groupButton').removeAttr('disabled'); 
@@ -128,19 +149,5 @@ $(async function() {
         showAlert(true, result.error);
       }
     });
-  });
-
-  // TODO not working
-  $('#rematch-form').on('submit', function() {
-    const password = $('#rematch-password').val();
-    $.getJSON('api/match?password=' + password, function(result) {
-      if (result.error) {
-        showAlert(false, result.error);
-      } else {
-        showAlert(true, result.match);
-        $('#rematch-dialog').modal('hide');
-      }
-    });
-    return false;
   });
 });

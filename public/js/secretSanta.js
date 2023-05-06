@@ -14,13 +14,14 @@ $(async function() {
     } else {
       $('#topSecretDiv').show();
       $('#topSecretImage').on('click', function() {
-        if (result[0]._id) {
+        if (result[0].image) {
           $('#topSecretImage').attr('src', `resources/images/${result[0].image}.png`);
         } else {
           $('#topSecretImage').attr('src', '/resources/images/placeholder.png');
         }
-        $('#santaName').text(`Name: ${result[0].name}`);
-        $('#santaAddress').text(`Address: ${result[0].address.street}`);
+        $('#santaName').text(result[0].name);
+        $('#santaStreet').text(result[0].address.street);
+        $('#santaCity').text(result[0].address.postalCode + " " + result[0].address.city);
         $(this).prop('disabled', true);
       });
     }

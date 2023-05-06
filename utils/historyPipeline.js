@@ -96,3 +96,61 @@ export async function getHistory(groupId) {
     return null;
   }
 }
+
+export async function addDraftsForNextYear(groupId, santaPairs) {
+  const document = {
+    year: new Date().getFullYear() + 1,
+    location: null,
+    location_image: null,
+    gifts: [],
+    groupId: new mongodb.ObjectId(groupId)
+  }
+
+  santaPairs.forEach((santa, child) => {
+
+    const gift = {
+      santaId: new mongodb.ObjectId(santa),
+      childId: new mongodb.ObjectId(child),
+      gift: null,
+      gift_image: null
+    }
+    document.gifts.push(gift)
+  });
+
+  const client = await getClient();
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('history')
+      .insertOne(document);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function isNextYearDrafted(groupId) {
+  const client = await getClient();
+  const query = {
+    groupId: new mongodb.ObjectId(groupId),
+    year: new Date().getFullYear() + 1
+  };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('history')
+      .findOne(query);
+
+    if (result) {
+      return false;
+    } else {
+      return true;
+    }
+
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}

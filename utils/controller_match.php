@@ -20,7 +20,7 @@
             return $response;
         }
         $GLOBALS['output'] = $output;
-    
+
         // HOW TO SANTA
 
         // 1. prepare two Christmas buckets, one for people, and one for naughty pairs
@@ -47,7 +47,7 @@
             $people = array();
 
             $sql = "SELECT UserID, Username FROM users WHERE Active != 0";
-        
+
             if (!$result = $mysqli->query($sql)) {
                 $output->error = "Error code 1.";
                 $response->getBody()->write(json_encode($output));
@@ -66,7 +66,7 @@
             $naughties = array();
 
             $sql = "SELECT User1ID, User2ID FROM forbidden";
-        
+
             if (!$result = $mysqli->query($sql)) {
                 $output->error = "Error code 3.";
                 $response->getBody()->write(json_encode($output));
@@ -153,11 +153,11 @@
         $iterator = 1;
         $santas = $GLOBALS['santas'];
         $mysqli = $GLOBALS['mysqli'];
-    
+
         foreach ($santas as $santa => $child) {
             $match[] = "(" . $iterator++ . ", $santa, $child)";
         }
-    
+
         $match_to_sql = implode(',', $match);
         $sql = 'INSERT INTO matches (MatchID, SantaID, ChildID) VALUES ' . $match_to_sql;
 

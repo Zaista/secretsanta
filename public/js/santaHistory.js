@@ -58,7 +58,7 @@ $(async () => {
     }
     giftTemplate = giftTemplate.replace(/{{santa}}/ig, gifts.santa);
     giftTemplate = giftTemplate.replace(/{{child}}/ig, gifts.child);
-    giftTemplate = giftTemplate.replace(/{{gift}}/ig, gifts.gift);
+    giftTemplate = giftTemplate.replace(/{{gift}}/ig, gifts.gift || '');
 
     $(`#section-${year}`).append(giftTemplate);
   }

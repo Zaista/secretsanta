@@ -6,8 +6,8 @@ export async function getUsers(groupId) {
   const client = await getClient();
   const query = { groups: new mongodb.ObjectId(groupId) };
   const options = {
-    projection: { name: 1, email: 1, active: 1, role: 1 },
-    sort: { active: -1 }
+    projection: { name: 1, email: 1, active: 1, role: 1, userId: 1, forbiddenPairs: 1 },
+    sort: { active: -1, userId: 1 }
   };
 
   try {
