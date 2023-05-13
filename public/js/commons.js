@@ -3,7 +3,7 @@
 $('#menu').load('/views/menu', () => {
   // group selection and info
   const preselectedGroup = JSON.parse(window.localStorage.getItem('group'));
-  if (preselectedGroup) {
+  if (preselectedGroup?._id) {
     $('#groupSelector').val(preselectedGroup._id);
     $('#groupName').html(preselectedGroup.name);
   } else {

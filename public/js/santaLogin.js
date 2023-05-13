@@ -1,7 +1,9 @@
 /* global $, showAlert */
 
-$(function() {
+$(async function() {
   'use strict';
+
+  await $.getScript('/js/commons.js');
 
   $('#santa-login-form').on('submit', function() {
     const userData = {
@@ -14,7 +16,7 @@ $(function() {
         window.location.href = '/';
       }
     }, 'json').fail((error) => {
-      showAlert(false, `Login failed: ${error.statusText}`);
+      showAlert(false, 'Username or password wrong');
     });
     return false;
   });

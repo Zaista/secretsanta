@@ -4,30 +4,33 @@ $(async () => {
   'use strict';
 
   await $.getScript('/js/commons.js');
-
-  const groupId = getGroupId();
-
   const baseYearTemplate = await $.get('modules/year.html');
   const baseGiftTemplate = await $.get('modules/gift.html');
   const baseMenuTemplate = await $.get('modules/side-menu.html');
 
-  $.getJSON(`api/history?groupId=${groupId}`, result => {
-    result.forEach(yearData => {
-      addYear(yearData.year, yearData.location, yearData.location_image);
-      yearData.gifts.forEach(gifts => {
-        addGifts(yearData.year, gifts);
+  const groupId = getGroupId();
+  if (groupId) {
+
+    $.getJSON(`api/history?groupId=${groupId}`, result => {
+      result.forEach(yearData => {
+        addYear(yearData.year, yearData.location, yearData.location_image);
+        yearData.gifts.forEach(gifts => {
+          addGifts(yearData.year, gifts);
+        });
       });
-    });
 
-    // eslint-disable-next-line no-new
-    new bootstrap.ScrollSpy(document.getElementById('scroll-spy-page'), {
-      target: '#navbar'
-    });
+      // eslint-disable-next-line no-new
+      new bootstrap.ScrollSpy(document.getElementById('scroll-spy-page'), {
+        target: '#navbar'
+      });
 
-    if (result.length === 0) {
-      showAlert(false, 'No recorded history');
-    }
-  });
+      if (result.length === 0) {
+        showAlert(true, 'No recorded history'); // TODO switch to yellow/neutral
+      }
+    });
+  } else {
+    showAlert(true, 'No group found'); // TODO switch to yellow/neutral
+  }
 
   function addYear(year, location, image) {
     let yearTemplate = baseYearTemplate;
