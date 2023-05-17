@@ -35,13 +35,14 @@ app.engine('html', (filePath, options, callback) => {
     if (!options.isAdmin) {
       rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
     }
-
     if (options.groups) {
       let groupOptions = '';
       options.groups.forEach(group => {
-        groupOptions += `<option value="${group._id}">${group.name}</option>`;
+        groupOptions += `<li class="liajtem" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`
       });
+//      console.log(rendered);
       rendered = rendered.replace('<!--groupOptions-->', groupOptions);
+//      console.log(groupOptions);
     }
     return callback(null, rendered);
   });
