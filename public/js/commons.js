@@ -16,7 +16,7 @@ $('#menu').load('/views/menu', () => {
     $('#groupName').html(group.name);
   }
 
-  $('.liajtem').on('click', function ()  {
+  $('.groupOp').on('click', function ()  {
     const newGroup = {
       _id: $(this).attr("value"),
       name: $(this).text()
