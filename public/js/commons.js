@@ -16,10 +16,10 @@ $('#menu').load('/views/menu', () => {
     $('#groupName').html(group.name);
   }
 
-  $('#changeGroup').on('click', () => {
+  $('.groupOp').on('click', function ()  {
     const newGroup = {
-      _id: $('#groupSelector option:selected').val(),
-      name: $('#groupSelector option:selected').text()
+      _id: $(this).attr("value"),
+      name: $(this).text()
     };
     window.localStorage.setItem('group', JSON.stringify(newGroup));
     location.reload();
