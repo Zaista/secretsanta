@@ -73,9 +73,9 @@ $(async function() {
   $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
     // TODO make this beautiful
     result.forEach((pair, index) => {
-      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td class="pairColumn1">${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td><i class="bi bi-trash" style="font-size:20px;color:red"></i></td></tr>`);
+      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td class="pairColumn1">${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td><i class="buttonDelete bi bi-trash" style='color:red'></i></td></tr>`);
     });
-    $('.remove1').on('click', function ()  {
+    $('.buttonDelete').on('click', function ()  {
         const pair = {
 
               forbiddenUser1: $('#forbiddenUser1').val(),
