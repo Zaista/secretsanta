@@ -73,8 +73,22 @@ $(async function() {
   $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
     // TODO make this beautiful
     result.forEach((pair, index) => {
-      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td>${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td></tr>`);
+      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td class="pairColumn1">${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td><i class="bi bi-trash" style="font-size:20px;color:red"></i></td></tr>`);
     });
+    $('.remove1').on('click', function ()  {
+        const pair = {
+
+              forbiddenUser1: $('#forbiddenUser1').val(),
+              forbiddenUser2: $('#forbiddenUser2').val()
+
+            };
+            $.post(`api/remove`, { forbiddenPairId: $(this).parents('.pairColumn1').html() }, result => {
+
+                  showAlert(true, result.success);
+                  // TODO reload page or add item to the table manually, close modal
+                });
+                return false;
+        });
   });
 
   // fill up the forbiddenPair modal select elements with usernames
@@ -95,6 +109,7 @@ $(async function() {
     });
     return false;
   });
+
 
   $('#newUsersForm').on('submit', () => {
     const newUser = {
