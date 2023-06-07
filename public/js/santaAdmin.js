@@ -77,13 +77,10 @@ $(async function() {
     });
     $('.buttonDelete').on('click', function ()  {
         const pair = {
-
               forbiddenUser1: $('#forbiddenUser1').val(),
               forbiddenUser2: $('#forbiddenUser2').val()
-
             };
             $.post(`api/remove`, { forbiddenPairId: $(this).parents('.pairColumn1').html() }, result => {
-
                   showAlert(true, result.success);
                   // TODO reload page or add item to the table manually, close modal
                 });
