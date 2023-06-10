@@ -14,7 +14,7 @@ export function draftPairs(users) {
   });
 
   // get an empty list where you will write secret santa pairs
-  let santaPairs = new Map();
+  const santaPairs = new Map();
 
   // pick one name randomly from the bucket to start with
   const first = friends.splice(Math.floor(Math.random() * friends.length), 1)[0];
@@ -23,7 +23,6 @@ export function draftPairs(users) {
   // then for all the other friends, but set a limit
   let counter = 0;
   while (friends.length > 0) {
-
     // if limit is reached, break out
     counter += 1;
     if (counter > 30) {
@@ -35,16 +34,14 @@ export function draftPairs(users) {
     const child = friends[index];
 
     // check if you picked a forbidden pair, and if so try again
-    if (forbiddenPairs.get(santa).includes(child))
-      continue;
-    if (forbiddenPairs.get(child).includes(santa))
-      continue;
+    if (forbiddenPairs.get(santa).includes(child)) { continue; }
+    if (forbiddenPairs.get(child).includes(santa)) { continue; }
 
     // if the pairing is valid, remove the child from the friends group
     friends.splice(index, 1);
 
     // add the two pairs in the list
-    santaPairs.set(santa, child)
+    santaPairs.set(santa, child);
 
     // now a child gets to be santa
     santa = child;

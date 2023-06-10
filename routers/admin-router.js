@@ -1,9 +1,9 @@
 import express from 'express';
 import { getUsers, updateUsersRoleAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair } from '../utils/adminPipeline.js';
 import fs from 'fs';
-import {getMail} from '../utils/mail.js';
-import { addDraftsForNextYear, isNextYearDrafted } from '../utils/historyPipeline.js';
-import { draftPairs } from '../utils/drafter.js'
+import { getMail } from '../utils/mail.js';
+import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
+import { draftPairs } from '../utils/drafter.js';
 
 const adminRouter = express.Router();
 
@@ -97,42 +97,69 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
   });
 }
 
+adminRouter.get('/api/draft', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const draftPossible = await isNextYearDrafted(req.query.groupId);
+  if (draftPossible) {
+    res.send({ success: 'Pairs can be drafted' });
+  } else {
+    res.send({ error: 'Next year pairs already drafted' });
+  }
+});
+
 adminRouter.put('/api/draft', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
 
   const draftPossible = await isNextYearDrafted(req.query.groupId);
   if (!draftPossible) {
-    return res.send({error: 'Next year pairs already drafted'});
+    return res.send({ error: 'Next year pairs already drafted' });
   }
 
   console.log(`Drafting pairs for group ${req.query.groupId}`);
 
   const users = await getUsers(req.query.groupId);
-  const activeUsers = users.filter( user => {
+  const activeUsers = users.filter(user => {
     return user.active;
   });
   const santaPairs = draftPairs(activeUsers);
   if (!santaPairs) {
-  console.log(`Unsuccessful draft for group ${req.query.groupId}`);
-    return res.send({error: 'Error matching pairs, try again or recheck forbidden pairs'});
+    console.log(`Unsuccessful draft for group ${req.query.groupId}`);
+    return res.send({ error: 'Error matching pairs, try again or recheck forbidden pairs' });
   }
 
   const result = await addDraftsForNextYear(req.query.groupId, santaPairs);
 
   if (result.acknowledged) {
-    res.send({success: 'Pairs successfully drafted'});
+    res.send({ success: 'Pairs successfully drafted' });
   } else {
-    res.send({error: 'Error drafting new pairs'});
+    res.send({ error: 'Error drafting new pairs' });
   }
 });
 
-adminRouter.get('/api/draft', async (req, res) => {
+adminRouter.get('/api/reveal', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const draftPossible = await isNextYearDrafted(req.query.groupId);
-  if (draftPossible) {
-    res.send({success: 'Pairs can be drafted'});
+  const yearRevealed = await isLastYearRevealed(req.query.groupId);
+  if (yearRevealed) {
+    res.send({ error: 'Last year already revealed' });
   } else {
-    res.send({error: 'Next year pairs already drafted'});
+    res.send({ success: 'Year can be revealed' });
+  }
+});
+
+adminRouter.put('/api/reveal', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+
+  const history = await getHistory(req.query.groupId);
+  if (history[0].revealed) {
+    return res.send({ error: 'Year already revealed' });
+  }
+
+  const result = await setLastYearRevealed(req.query.groupId, history[0].year);
+
+  if (result.acknowledged) {
+    res.send({ success: 'Last year successfully revealed' });
+  } else {
+    res.send({ error: 'Error revealing the last year' });
   }
 });
 

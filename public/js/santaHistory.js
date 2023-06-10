@@ -10,7 +10,6 @@ $(async () => {
 
   const groupId = getGroupId();
   if (groupId) {
-
     $.getJSON(`api/history?groupId=${groupId}`, result => {
       result.forEach(yearData => {
         addYear(yearData.year, yearData.location, yearData.location_image);

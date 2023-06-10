@@ -50,7 +50,8 @@ export async function getHistory(groupId) {
         gift: '$gifts.gift',
         gift_image: '$gifts.gift_image',
         santa: '$santaUser.name',
-        child: '$childUser.name'
+        child: '$childUser.name',
+        revealed: 1
       }
     },
     {
@@ -72,6 +73,9 @@ export async function getHistory(groupId) {
             gift: '$$ROOT.gift',
             gift_image: '$$ROOT.gift_image'
           }
+        },
+        revealed: {
+          $first: '$$ROOT.revealed'
         }
       }
     },
@@ -103,18 +107,18 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
     location: null,
     location_image: null,
     gifts: [],
-    groupId: new mongodb.ObjectId(groupId)
-  }
+    groupId: new mongodb.ObjectId(groupId),
+    revealed: false
+  };
 
   santaPairs.forEach((santa, child) => {
-
     const gift = {
       santaId: new mongodb.ObjectId(santa),
       childId: new mongodb.ObjectId(child),
       gift: null,
       gift_image: null
-    }
-    document.gifts.push(gift)
+    };
+    document.gifts.push(gift);
   });
 
   const client = await getClient();
@@ -148,7 +152,47 @@ export async function isNextYearDrafted(groupId) {
     } else {
       return true;
     }
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
 
+export async function isLastYearRevealed(groupId) {
+  const client = await getClient();
+  const query = {
+    groupId: new mongodb.ObjectId(groupId)
+  };
+  const options = { sort: { year: -1 }, projection: { year: 1, revealed: 1 } };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('history')
+      .findOne(query, options);
+
+    return result.revealed;
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function setLastYearRevealed(groupId, year) {
+  const client = await getClient();
+  const filter = {
+    groupId: new mongodb.ObjectId(groupId),
+    year
+  };
+  const update = { $set: { revealed: true } };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('history')
+      .updateOne(filter, update);
+
+    return result;
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;

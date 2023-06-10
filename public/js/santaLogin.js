@@ -15,7 +15,7 @@ $(async function() {
       if (result.success) {
         window.location.href = '/';
       }
-    }, 'json').fail((error) => {
+    }, 'json').fail(() => {
       showAlert(false, 'Username or password wrong');
     });
     return false;

@@ -99,7 +99,7 @@ $(async function() {
   $('#newUsersForm').on('submit', () => {
     const newUser = {
       email: $('#newUserEmail').val(),
-      groupId: groupId
+      groupId
     };
     $.post('api/user', newUser, result => {
       showAlert(true, result.success);
@@ -111,8 +111,21 @@ $(async function() {
   });
 
   $.getJSON(`api/draft?groupId=${groupId}`, response => {
-    if (response.success)
+    if (response.success) {
+      $('#yearAlert').text(`Santa pairs for year ${new Date().getFullYear() + 1} were not drafted yet`);
       $('#draft').removeAttr('disabled');
+    } else {
+      $('#yearAlert').text(`Santa pairs for year ${new Date().getFullYear() + 1} were already drafted`);
+    }
+  });
+
+  $.getJSON(`api/reveal?groupId=${groupId}`, response => {
+    if (response.success) {
+      $('#reveal').removeAttr('disabled');
+      $('#yearAlert').append(' but the pairs were not yet revealed');
+    } else {
+      $('#yearAlert').append(' and revealed');
+    }
   });
 
   $('#draft').on('click', function() {
@@ -131,10 +144,26 @@ $(async function() {
     return false;
   });
 
+  $('#reveal').on('click', function() {
+    $.ajax({
+      url: `api/reveal?groupId=${groupId}`,
+      method: 'PUT',
+      success: result => {
+        if (result.success) {
+          showAlert(true, result.success);
+          $(this).prop('disabled', true);
+        } else {
+          showAlert(false, result.error);
+        }
+      }
+    });
+    return false;
+  });
+
   function onChangeDetector() {
     if ($(this).attr('data-onchange') === 'group') {
-      $('#groupButton').removeAttr('disabled'); 
-    } else if ($(this).attr('data-onchange') === 'users') { 
+      $('#groupButton').removeAttr('disabled');
+    } else if ($(this).attr('data-onchange') === 'users') {
       $('#userButton').removeAttr('disabled');
     }
   }

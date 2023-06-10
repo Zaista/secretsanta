@@ -60,8 +60,7 @@
                     </div>
                     <div>
                         <div class="form-floating">
-                            <select class="form-select" id="emailNotifications" data-onchange="group"
-                                    aria-label="Email notifications" placeholder="Email notifications">
+                            <select class="form-select" id="emailNotifications" data-onchange="group" aria-label="Email notifications">
                                 <option value="true">Enabled</option>
                                 <option value="false">Disabled</option>
                             </select>
@@ -78,8 +77,10 @@
                     <p>Draft the new SecretSanta pairs for the next year. This will email (if enabled above) all the users in
                         the group that their secret santa pair has been drafted. There is no undoing this action.</p>
                 </div>
+                <div id="yearAlert" class="alert alert-primary" role="alert"></div>
                 <div class="mb-3">
-                    <button type="button" id="draft" disabled class="btn btn-danger">Draft</button>
+                    <button type="button" id="draft" disabled class="btn btn-primary">Draft</button>
+                    <button type="button" id="reveal" disabled class="btn btn-primary">Reveal</button>
                 </div>
 
                 <div id="item-user-access" class="mt-5">

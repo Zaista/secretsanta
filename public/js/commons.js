@@ -14,9 +14,9 @@ $('#menu').load('/views/menu', () => {
     location.reload();
   }
 
-  $('.groupOp').on('click', function ()  {
+  $('.groupOp').on('click', function() {
     const newGroup = {
-      _id: $(this).attr("value"),
+      _id: $(this).attr('value'),
       name: $(this).text()
     };
     window.localStorage.setItem('group', JSON.stringify(newGroup));
@@ -47,7 +47,6 @@ function showAlert(success, message) {
 
 // eslint-disable-next-line
 function getGroupId() {
-  if (window.localStorage.getItem('group'))
-    return JSON.parse(window.localStorage.getItem('group'))._id;
+  if (window.localStorage.getItem('group')) { return JSON.parse(window.localStorage.getItem('group'))._id; }
   return null;
 }

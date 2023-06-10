@@ -1,4 +1,4 @@
-/* global $, getGroupId */
+/* global $, getGroupId, showAlert */
 
 $(async function() {
   'use strict';

@@ -38,7 +38,7 @@ app.engine('html', (filePath, options, callback) => {
     if (options.groups) {
       let groupOptions = '';
       options.groups.forEach(group => {
-        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`
+        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
       });
       rendered = rendered.replace('<!--groupOptions-->', groupOptions);
     }

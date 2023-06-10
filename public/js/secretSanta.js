@@ -21,7 +21,7 @@ $(async function() {
           }
           $('#santaName').text(result[0].name);
           $('#santaStreet').text(result[0].address.street);
-          $('#santaCity').text(result[0].address.postalCode + " " + result[0].address.city);
+          $('#santaCity').text(result[0].address.postalCode + ' ' + result[0].address.city);
           $(this).prop('disabled', true);
         });
       }

@@ -1,6 +1,6 @@
 import mongodb from 'mongodb';
-import {getClient} from './database.js';
-import {ROLES} from './roles.js';
+import { getClient } from './database.js';
+import { ROLES } from './roles.js';
 
 export async function getUsers(groupId) {
   const client = await getClient();
@@ -39,7 +39,7 @@ export async function checkIfUserExists(email) {
 
 export async function addUserToGroup(groupId, email) {
   const client = await getClient();
-  const filter = { email: email };
+  const filter = { email };
   const update = {
     $push: {
       groups: new mongodb.ObjectId(groupId)
@@ -61,11 +61,11 @@ export async function createNewUser(groupId, email, temporaryPassword) {
   const client = await getClient();
   const user = {
     password: temporaryPassword,
-    email: email,
+    email,
     active: true,
     role: ROLES.user,
     groups: [new mongodb.ObjectId(groupId)]
-  }
+  };
   try {
     return await client
       .db(process.env.database)
