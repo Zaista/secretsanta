@@ -45,8 +45,15 @@ export async function getById(_id) {
             'groups.name': 1,
             'groups._id': 1
           }
-    }
-
+    },
+    { $set: {
+        'groups': {
+          $sortArray: {
+            input: '$groups',
+            sortBy: { name: 1 }
+          }
+        }
+      }}
   ];
 
   try {

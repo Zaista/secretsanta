@@ -4,16 +4,14 @@ $('#menu').load('/views/menu', () => {
   // group selection and info
   const preselectedGroup = JSON.parse(window.localStorage.getItem('group'));
   if (preselectedGroup?._id) {
-    $('#groupSelector').val(preselectedGroup._id);
     $('#groupName').html(preselectedGroup.name);
   } else {
     const group = {
-      _id: $('#groupSelector option:first').val(),
-      name: $('#groupSelector option:first').text()
+      _id: $('.groupOp:first').attr('value'),
+      name: $('.groupOp:first a').text()
     };
     window.localStorage.setItem('group', JSON.stringify(group));
-    $('#groupSelector').val(group._id);
-    $('#groupName').html(group.name);
+    location.reload();
   }
 
   $('.groupOp').on('click', function ()  {
@@ -49,5 +47,7 @@ function showAlert(success, message) {
 
 // eslint-disable-next-line
 function getGroupId() {
-  return JSON.parse(window.localStorage.getItem('group'))._id;
+  if (window.localStorage.getItem('group'))
+    return JSON.parse(window.localStorage.getItem('group'))._id;
+  return null;
 }
