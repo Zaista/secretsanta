@@ -73,16 +73,12 @@ $(async function() {
   $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
     // TODO make this beautiful
     result.forEach((pair, index) => {
-      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td class="pairColumn1">${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td><i class="buttonDelete bi bi-trash" style='color:red'></i></td></tr>`);
+      $('#forbiddenPairsTable tbody').append(`<tr id="forbiddenPairId"><td><b>${++index}</b></td><td class="pairColumn1">${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td class="letsTry"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td><td>${pair._id}</td></tr>`);
     });
     $('.buttonDelete').on('click', function ()  {
-        const pair = {
-              forbiddenUser1: $('#forbiddenUser1').val(),
-              forbiddenUser2: $('#forbiddenUser2').val()
-            };
-            $.post(`api/remove`, { forbiddenPairId: $(this).parents('.pairColumn1').html() }, result => {
-                  showAlert(true, result.success);
-                  // TODO reload page or add item to the table manually, close modal
+         var myId = $(this).parent().parent().find('td').eq(4).html();
+         console.log(myId);
+            $.post(`api/remove`, { forbiddenPairId: myId },  result => {
                 });
                 return false;
         });
@@ -106,7 +102,6 @@ $(async function() {
     });
     return false;
   });
-
 
   $('#newUsersForm').on('submit', () => {
     const newUser = {
