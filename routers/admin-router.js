@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsers, updateUsersRoleAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair } from '../utils/adminPipeline.js';
+import { getUsersAndRoles, updateUserRolesAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair } from '../utils/adminPipeline.js';
 import fs from 'fs';
 import { getMail } from '../utils/mail.js';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
@@ -15,13 +15,13 @@ adminRouter.get('/admin', (req, res) => {
 
 adminRouter.get('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getUsers(req.query.groupId);
+  const result = await getUsersAndRoles(req.query.groupId);
   res.send(result);
 });
 
 adminRouter.post('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const modifiedCount = await updateUsersRoleAndStatus(req.query.groupId, req.body.usersRoleAndStatus);
+  const modifiedCount = await updateUserRolesAndStatus(req.query.groupId, req.body.userRolesAndStatus);
   res.send({ success: `Modified ${modifiedCount} user(s)` });
 });
 
@@ -128,7 +128,6 @@ adminRouter.put('/api/draft', async (req, res) => {
   }
 
   const result = await addDraftsForNextYear(req.query.groupId, santaPairs);
-
   if (result.acknowledged) {
     res.send({ success: 'Pairs successfully drafted' });
   } else {
@@ -141,6 +140,8 @@ adminRouter.get('/api/reveal', async (req, res) => {
   const yearRevealed = await isLastYearRevealed(req.query.groupId);
   if (yearRevealed) {
     res.send({ error: 'Last year already revealed' });
+  } else if (yearRevealed === undefined) {
+    res.send({ warning: 'No year drafted yet' });
   } else {
     res.send({ success: 'Year can be revealed' });
   }

@@ -20,40 +20,65 @@ export async function login(email, password) {
 export async function getById(_id) {
   const client = await getClient();
   const pipeline = [
-
     {
-      $match:
-          {
-            _id: new mongodb.ObjectId(_id)
-          }
+      $match: {
+        _id: new mongodb.ObjectId(_id)
+      }
     },
     {
-      $lookup:
-          {
-            from: 'groups',
-            localField: 'groups',
-            foreignField: '_id',
-            as: 'groups'
-          }
+      $lookup: {
+        from: 'groups',
+        localField: 'groups.groupId',
+        foreignField: '_id',
+        as: 'groupInfo'
+      }
     },
     {
-      $project:
-          {
-            name: 1,
-            email: 1,
-            role: 1,
-            'groups.name': 1,
-            'groups._id': 1
-          }
+      $project: {
+        name: 1,
+        email: 1,
+        'groupInfo.name': 1,
+        'groupInfo._id': 1,
+        groups: 1
+      }
     },
     {
-      $set: {
+      $project: {
         groups: {
-          $sortArray: {
-            input: '$groups',
-            sortBy: { name: 1 }
+          $map: {
+            input: '$groupInfo',
+            in: {
+              $let: {
+                vars: {
+                  m: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: '$groups',
+                          cond: {
+                            $eq: [
+                              '$$mb.groupId', '$$this._id'
+                            ]
+                          },
+                          as: 'mb'
+                        }
+                      }, 0
+                    ]
+                  }
+                },
+                in: {
+                  $mergeObjects: [
+                    '$$this', {
+                      role: '$$m.role'
+                    }
+                  ]
+                }
+              }
+            }
           }
-        }
+        },
+        email: 1,
+        name: 1
       }
     }
   ];

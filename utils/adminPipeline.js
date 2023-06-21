@@ -1,12 +1,12 @@
-import mongodb from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
 import { ROLES } from './roles.js';
 
 export async function getUsers(groupId) {
   const client = await getClient();
-  const query = { groups: new mongodb.ObjectId(groupId) };
+  const query = { groups: new ObjectId(groupId) };
   const options = {
-    projection: { name: 1, email: 1, active: 1, role: 1, userId: 1, forbiddenPairs: 1 },
+    projection: { name: 1, email: 1, active: 1, forbiddenPairs: 1 },
     sort: { active: -1, userId: 1 }
   };
 
@@ -15,6 +15,38 @@ export async function getUsers(groupId) {
       .db(process.env.database)
       .collection('users')
       .find(query, options)
+      .toArray();
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function getUsersAndRoles(groupId) {
+  const client = await getClient();
+
+  const pipeline = [{
+   $unwind: {
+     path: '$groups'
+   }
+  }, {
+   $match: {
+     'groups.groupId': new ObjectId(groupId)
+   }
+  }, {
+   $project: {
+     name: 1,
+     email: 1,
+     groups: 1,
+     active: 1
+   }
+  }];
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .aggregate(pipeline)
       .toArray();
   } catch (err) {
     console.log('ERROR: ' + err.stack);
@@ -42,7 +74,7 @@ export async function addUserToGroup(groupId, email) {
   const filter = { email };
   const update = {
     $push: {
-      groups: new mongodb.ObjectId(groupId)
+      groups: new ObjectId(groupId)
     }
   };
 
@@ -64,7 +96,7 @@ export async function createNewUser(groupId, email, temporaryPassword) {
     email,
     active: true,
     role: ROLES.user,
-    groups: [new mongodb.ObjectId(groupId)]
+    groups: [new ObjectId(groupId)]
   };
   try {
     return await client
@@ -77,17 +109,17 @@ export async function createNewUser(groupId, email, temporaryPassword) {
   }
 }
 
-export async function updateUsersRoleAndStatus(groupId, usersRoleAndStatus) {
+export async function updateUserRolesAndStatus(groupId, userRolesAndStatus) {
   const client = await getClient();
   try {
     let modifiedCount = 0;
-    for (const userData of usersRoleAndStatus) {
+    for (const userData of userRolesAndStatus) {
       const filter = {
-        groups: new mongodb.ObjectId(groupId),
-        _id: new mongodb.ObjectId(userData._id)
+        'groups.groupId': new ObjectId(groupId),
+        _id: new ObjectId(userData._id)
       };
       const update = {
-        $set: { role: userData.role, active: userData.active === 'true' }
+        $set: { 'groups.$.role': userData.role, active: userData.active === 'true' }
       };
       const result = await client.db(process.env.database).collection('users').updateOne(filter, update);
       if (result.modifiedCount !== 0) {
@@ -103,7 +135,7 @@ export async function updateUsersRoleAndStatus(groupId, usersRoleAndStatus) {
 
 export async function getGroup(groupId) {
   const client = await getClient();
-  const query = { _id: new mongodb.ObjectId(groupId) };
+  const query = { _id: new ObjectId(groupId) };
 
   try {
     return await client
@@ -118,7 +150,7 @@ export async function getGroup(groupId) {
 
 export async function updateGroup(groupId, groupData) {
   const client = await getClient();
-  const filter = { _id: new mongodb.ObjectId(groupId) };
+  const filter = { _id: new ObjectId(groupId) };
   const flag = (groupData.emailNotifications === 'true');
   const update = {
     $set: {
@@ -143,7 +175,7 @@ export async function getForbiddenPairs(groupId) {
   const pipeline = [
     {
       $match: {
-        groups: new mongodb.ObjectId(groupId)
+        'groups.groupId': new ObjectId(groupId)
       }
     }, {
       $lookup: {
@@ -181,11 +213,11 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
   const client = await getClient();
   try {
     const filter = {
-      groups: new mongodb.ObjectId(groupId),
-      _id: new mongodb.ObjectId(forbiddenPair.forbiddenUser1)
+      groups: new ObjectId(groupId),
+      _id: new ObjectId(forbiddenPair.forbiddenUser1)
     };
     const update = {
-      $push: { forbiddenPairs: new mongodb.ObjectId(forbiddenPair.forbiddenUser2) }
+      $push: { forbiddenPairs: new ObjectId(forbiddenPair.forbiddenUser2) }
     };
     return await client.db(process.env.database).collection('users').updateOne(filter, update);
   } catch (err) {

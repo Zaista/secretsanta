@@ -171,7 +171,7 @@ export async function isLastYearRevealed(groupId) {
       .collection('history')
       .findOne(query, options);
 
-    return result.revealed;
+    return result?.revealed;
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;

@@ -59,7 +59,7 @@ app.use('/', adminRouter);
 // view routers
 app.use('/views/menu', (req, res) => {
   const options = {
-    isAdmin: false,
+    isAdmin: true, // TODO fix admin selection
     groups: req.user.groups
   };
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });

@@ -19,7 +19,7 @@ $(async function() {
         $(userElement).find('a').attr('href', `/friends/${userData._id}`);
         $(userElement).find('[name="userId"]').val(userData._id);
         $(userElement).find('[name="userEmail"]').text(userData.email);
-        $(userElement).find('[name="userRole"]').val(userData.role);
+        $(userElement).find('[name="userRole"]').val(userData.groups.role);
         $(userElement).find('[name="userRole"]').on('input', onChangeDetector);
         if (userData.active) {
           $(userElement).find('[name="userStatus"]').attr('checked', true);
@@ -31,16 +31,16 @@ $(async function() {
   });
 
   $('#userButton').on('click', () => {
-    const usersRoleAndStatus = [];
+    const userRolesAndStatus = [];
     $('tr[name="userRow"]').each(function() {
       const userData = {
         _id: $(this).find('[name="userId"]').val(),
         role: $(this).find(':selected').val(),
         active: $(this).find('[name="userStatus"]').is(':checked')
       };
-      usersRoleAndStatus.push(userData);
+      userRolesAndStatus.push(userData);
     });
-    $.post(`api/users?groupId=${groupId}`, { usersRoleAndStatus }, result => {
+    $.post(`api/users?groupId=${groupId}`, { userRolesAndStatus }, result => {
       showAlert(true, result.success);
       $('#userButton').prop('disabled', true);
     });
@@ -129,8 +129,6 @@ $(async function() {
     if (response.success) {
       $('#reveal').removeAttr('disabled');
       $('#yearAlert').append(' but the pairs were not yet revealed');
-    } else {
-      $('#yearAlert').append(' and revealed');
     }
   });
 

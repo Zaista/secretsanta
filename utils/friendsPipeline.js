@@ -1,9 +1,9 @@
-import mongodb from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
 
 export async function getFriends(groupId) {
   const client = await getClient();
-  const query = { active: true, groups: new mongodb.ObjectId(groupId) };
+  const query = { active: true, 'groups.groupId': new ObjectId(groupId) };
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
@@ -20,7 +20,7 @@ export async function getFriends(groupId) {
 
 export async function getFriend(_id) {
   const client = await getClient();
-  const query = { _id: new mongodb.ObjectId(_id) };
+  const query = { _id: new ObjectId(_id) };
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
@@ -36,7 +36,7 @@ export async function getFriend(_id) {
 
 export async function updateFriend(friend) {
   const client = await getClient();
-  const filter = { _id: new mongodb.ObjectId(friend._id) };
+  const filter = { _id: new ObjectId(friend._id) };
   const update = {
     $set: {
       name: friend.name,
