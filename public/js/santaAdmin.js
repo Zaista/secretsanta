@@ -76,13 +76,12 @@ $(async function() {
       $('#forbiddenPairsTable tbody').append(`<tr id="forbiddenPairId"><td><b>${++index}</b></td><td class="pairColumn1">${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td class="letsTry"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td><td>${pair._id}</td></tr>`);
     });
     $('.buttonDelete').on('click', function ()  {
-         var myId = $(this).parent().parent().find('td').eq(4).html();
-         console.log(myId);
-            $.post(`api/remove`, { forbiddenPairId: myId },  result => {
-                });
-                return false;
-        });
-  });
+      var myId = $(this).parent().parent().find('td').eq(4).html();
+      $.post(`api/remove`, { forbiddenPairId: myId },  result => {
+      // TODO Handle the response once backend is finished
+          });
+       });
+    });
 
   // fill up the forbiddenPair modal select elements with usernames
   $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
