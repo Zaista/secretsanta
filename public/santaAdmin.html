@@ -74,8 +74,9 @@
 
                 <div id="item-group-rematch" class="mt-5">
                     <h4>SecretSanta pairs</h4>
-                    <p>Draft the new SecretSanta pairs for the next year. This will email (if enabled above) all the users in
-                        the group that their secret santa pair has been drafted. There is no undoing this action.</p>
+                    <p>Draft the new SecretSanta pairs for the next year. This will email (if enabled above) all the
+                        users in the group that their secret santa pair has been drafted. There is no undoing this
+                        action.</p>
                 </div>
                 <div id="yearAlert" class="alert alert-primary" role="alert"></div>
                 <div class="mb-3">
@@ -93,13 +94,17 @@
 
                 <div class="mt-5" id="item-user-settings">
                     <h4>User settings</h4>
-                    <p>Settings related to the SecretSanta users. Deactivated users will stop being part of the SecretSanta group,
-                        they will not be drafted in the next year, and they will stop receiving any emails. 
-                        They will however show up in the history. If you wish to change this, please remove them manually
-                        from the history page.</p>
+                    <p>Settings related to the SecretSanta users. Deactivated users will stop being part of the
+                        SecretSanta group, they will not be drafted in the next year, and they will stop receiving any
+                        emails.
+                        They will however show up in the history. If you wish to change this, please remove them
+                        manually from the history page.
+                    </p>
                 </div>
                 <div>
-                    <button id="newUsersButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newUsersModal">Invite new users</button>
+                    <button id="newUsersButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#newUsersModal">Invite new users
+                    </button>
 
                     <table id="users" class="table table-borderless caption-top mt-3">
                         <caption>List of users</caption>
@@ -124,7 +129,9 @@
                 <div class="mt-5" id="item-user-pairs">
                     <h4>Forbidden pairs</h4>
                     <p>Match users that should never be drafted as pairs.</p>
-                    <button id="addNewPairButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#forbiddenPairsModal">Add new pair</button>
+                    <button id="addNewPairButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#forbiddenPairsModal">Add new pair
+                    </button>
                 </div>
 
                 <table id="forbiddenPairsTable" class="table table-borderless caption-top mt-3">
@@ -134,6 +141,8 @@
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Other Name</th>
+                        <th scope="col">Delete pairs</th>
+                        <th scope="col">ID</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -144,7 +153,7 @@
         <div class="col-2">
         </div>
     </div>
-    
+
     <!-- Dialog for adding new users -->
     <div class="modal" id="newUsersModal" tabindex="-1">
         <div class="modal-dialog">
@@ -168,7 +177,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Dialog for forbidden pairs -->
     <div class="modal" id="forbiddenPairsModal" tabindex="-1">
@@ -195,7 +203,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="alert alert-dismissible collapse position-absolute bottom-0 start-50 translate-middle-x"
          role="alert">
         <span></span>

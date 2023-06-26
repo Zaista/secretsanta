@@ -73,9 +73,15 @@ $(async function() {
   $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
     // TODO make this beautiful
     result.forEach((pair, index) => {
-      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td>${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td></tr>`);
+      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td>${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td class="letsTry"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td><td>${pair._id}</td></tr>`);
     });
-  });
+    $('.buttonDelete').on('click', function ()  {
+      var myId = $(this).parent().parent().find('td').eq(4).html();
+      $.post(`api/remove`, { forbiddenPairId: myId },  result => {
+      // TODO Handle the response once backend is finished
+          });
+       });
+    });
 
   // fill up the forbiddenPair modal select elements with usernames
   $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
