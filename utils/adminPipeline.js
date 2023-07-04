@@ -170,6 +170,21 @@ export async function updateGroup(groupId, groupData) {
   }
 }
 
+export async function deleteForbiddenPair(myId){
+  const client = await getClient();
+  const filter = { _id: new ObjectId(myId) };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('forbiddenPairs')
+      .deleteOne(filter);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
 export async function getForbiddenPairs(groupId) {
   const client = await getClient();
   const pipeline = [
@@ -190,7 +205,6 @@ export async function getForbiddenPairs(groupId) {
       }
     }, {
       $project: {
-        _id: 0,
         forbiddenPair1: '$name',
         forbiddenPair2: '$match.name'
       }
