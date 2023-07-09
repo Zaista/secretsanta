@@ -129,7 +129,7 @@ adminRouter.put('/api/draft', async (req, res) => {
 
   const users = await getUsers(req.query.groupId);
   const forbiddenPairs = await getForbiddenPairs(req.query.groupId);
-  const activeUsers = users.filter(user =>  user.active);
+  const activeUsers = users.filter(user => user.active);
   const santaPairs = draftPairs(activeUsers, forbiddenPairs);
   if (!santaPairs) {
     console.log(`Unsuccessful draft for group ${req.query.groupId}`);

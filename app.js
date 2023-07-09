@@ -64,7 +64,7 @@ app.use('/', adminRouter);
 app.use('/views/menu', (req, res) => {
   const activeGroupRole = req.user.groups.filter(group => group._id.toString() === req.session.activeGroup._id)[0].role;
   const options = {
-    isAdmin: activeGroupRole === ROLES.admin ? true : false,
+    isAdmin: activeGroupRole === ROLES.admin,
     groups: req.user.groups
   };
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
@@ -74,7 +74,7 @@ app.use('/views/menu', (req, res) => {
 
 app.use('/api/setActiveGroup', (req, res) => {
   req.session.activeGroup = req.user.groups.filter(group => group._id.toString() === req.query.groupId)[0];
-  res.send({success: 'Group changed'});
+  res.send({ success: 'Group changed' });
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise
