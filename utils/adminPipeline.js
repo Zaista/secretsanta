@@ -26,20 +26,20 @@ export async function getUsersAndRoles(groupId) {
   const client = await getClient();
 
   const pipeline = [{
-   $unwind: {
-     path: '$groups'
-   }
+    $unwind: {
+      path: '$groups'
+    }
   }, {
-   $match: {
-     'groups.groupId': new ObjectId(groupId)
-   }
+    $match: {
+      'groups.groupId': new ObjectId(groupId)
+    }
   }, {
-   $project: {
-     name: 1,
-     email: 1,
-     groups: 1,
-     active: 1
-   }
+    $project: {
+      name: 1,
+      email: 1,
+      groups: 1,
+      active: 1
+    }
   }];
 
   try {
@@ -170,7 +170,7 @@ export async function updateGroup(groupId, groupData) {
   }
 }
 
-export async function deleteForbiddenPair(myId){
+export async function deleteForbiddenPair(myId) {
   const client = await getClient();
   const filter = { _id: new ObjectId(myId) };
 
@@ -190,23 +190,28 @@ export async function getForbiddenPairs(groupId) {
   const pipeline = [
     {
       $match: {
-        'groups.groupId': new ObjectId(groupId)
+        groupId: new ObjectId(groupId)
       }
     }, {
       $lookup: {
         from: 'users',
-        localField: 'forbiddenPairs',
+        localField: 'userId',
         foreignField: '_id',
-        as: 'match'
+        as: 'user'
       }
     }, {
-      $unwind: {
-        path: '$match'
+      $lookup: {
+        from: 'users',
+        localField: 'forbiddenPairId',
+        foreignField: '_id',
+        as: 'forbiddenPair'
       }
     }, {
       $project: {
-        forbiddenPair1: '$name',
-        forbiddenPair2: '$match.name'
+        user: { $first: '$user.name' },
+        userId: { $first: '$user._id' },
+        forbiddenPair: { $first: '$forbiddenPair.name' },
+        forbiddenPairId: { $first: '$forbiddenPair._id' }
       }
     }
   ];
@@ -214,7 +219,7 @@ export async function getForbiddenPairs(groupId) {
   try {
     return await client
       .db(process.env.database)
-      .collection('users')
+      .collection('forbiddenPairs')
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
@@ -226,14 +231,15 @@ export async function getForbiddenPairs(groupId) {
 export async function createForbiddenPair(groupId, forbiddenPair) {
   const client = await getClient();
   try {
-    const filter = {
-      groups: new ObjectId(groupId),
-      _id: new ObjectId(forbiddenPair.forbiddenUser1)
+    const document = {
+      groupId: new ObjectId(groupId),
+      userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
+      forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
     };
-    const update = {
-      $push: { forbiddenPairs: new ObjectId(forbiddenPair.forbiddenUser2) }
-    };
-    return await client.db(process.env.database).collection('users').updateOne(filter, update);
+    return await client
+      .db(process.env.database)
+      .collection('forbiddenPairs')
+      .insertOne(document);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;

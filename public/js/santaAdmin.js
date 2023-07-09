@@ -73,15 +73,15 @@ $(async function() {
   $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
     // TODO make this beautiful
     result.forEach((pair, index) => {
-      $('#forbiddenPairsTable tbody').append(`<tr><td><b>${++index}</b></td><td>${pair.forbiddenPair1}</td><td>${pair.forbiddenPair2}</td><td class="letsTry"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td><td>${pair._id}</td></tr>`);
+      $('#forbiddenPairsTable tbody').append(`<tr value="${pair._id}"><td><b>${++index}</b></td><td>${pair.user}</td><td>${pair.forbiddenPair}</td><td><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td></tr>`);
     });
-    $('.buttonDelete').on('click', function ()  {
-      var myId = $(this).parent().parent().find('td').eq(4).html();
-      $.post(`api/remove`, { forbiddenPairId: myId },  result => {
-      // TODO Handle the response once backend is finished
-          });
-       });
+    $('.buttonDelete').on('click', function() {
+      const _id = $(this).parents('tr').attr('value');
+      $.post('api/remove', { _id }, result => {
+        // TODO Handle the response once backend is finished
+      });
     });
+  });
 
   // fill up the forbiddenPair modal select elements with usernames
   $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
@@ -92,12 +92,14 @@ $(async function() {
 
   $('#forbiddenPairsForm').on('submit', () => {
     const pair = {
-      forbiddenUser1: $('#forbiddenUser1').val(),
-      forbiddenUser2: $('#forbiddenUser2').val()
+      forbiddenUser1Id: $('#forbiddenUser1').val(),
+      forbiddenUser2Id: $('#forbiddenUser2').val()
     };
     $.post(`api/forbidden?groupId=${groupId}`, pair, result => {
       showAlert(true, result.success);
-      // TODO reload page or add item to the table manually, close modal
+      const modal = $('#forbiddenPairsModal');
+      bootstrap.Modal.getInstance(modal).hide();
+      // TODO reload page or add item to the table manually
     });
     return false;
   });
