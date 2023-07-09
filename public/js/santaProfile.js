@@ -40,7 +40,7 @@ $(function() {
       email: $('#email').val()
     };
     $.post(`/api/friends/${friend._id}`, friend, result => {
-      showAlert(!result.error, result.message);
+      showAlert(result);
     });
     return false;
   });

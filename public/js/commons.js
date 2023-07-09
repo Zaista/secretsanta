@@ -33,8 +33,19 @@ $('#menu').load('/views/menu', () => {
 });
 
 // eslint-disable-next-line
-function showAlert(success, message) {
-  const alertClass = success ? 'alert-success' : 'alert-danger';
+function showAlert(alert) {
+  let alertClass;
+  let message;
+  if (alert.warning) {
+    alertClass = 'alert-warning';
+    message = alert.warning;
+  } else if (alert.success) {
+    alertClass = 'alert-success';
+    message = alert.success;
+  } else {
+    alertClass = 'alert-danger';
+    message = alert.error;
+  }
   const alertElement = $('.alert');
   alertElement.removeClass('alert-success alert-danger');
   alertElement.addClass(alertClass);

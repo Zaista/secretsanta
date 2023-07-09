@@ -41,7 +41,7 @@ $(async function() {
       userRolesAndStatus.push(userData);
     });
     $.post(`api/users?groupId=${groupId}`, { userRolesAndStatus }, result => {
-      showAlert(true, result.success);
+      showAlert(result);
       $('#userButton').prop('disabled', true);
     });
     return false;
@@ -58,10 +58,10 @@ $(async function() {
       emailNotifications: $('#emailNotifications').val()
     };
     $.post(`api/group/${groupId}`, groupData, result => {
-      showAlert(!result.error, result.message);
+      showAlert(result);
     });
     const updatedGroup = {
-      _id: $('#groupSelector option:selected').val(),
+      _id: groupId,
       name: $('#groupNameSettings').val()
     };
     window.localStorage.setItem('group', JSON.stringify(updatedGroup));
@@ -77,8 +77,9 @@ $(async function() {
     });
     $('.buttonDelete').on('click', function() {
       const _id = $(this).parents('tr').attr('value');
-      $.post('api/remove', { _id }, result => {
+      $.post('api/delete', { _id }, result => {
         // TODO Handle the response once backend is finished
+        showAlert(result);
       });
     });
   });
@@ -96,7 +97,7 @@ $(async function() {
       forbiddenUser2Id: $('#forbiddenUser2').val()
     };
     $.post(`api/forbidden?groupId=${groupId}`, pair, result => {
-      showAlert(true, result.success);
+      showAlert(result);
       const modal = $('#forbiddenPairsModal');
       bootstrap.Modal.getInstance(modal).hide();
       // TODO reload page or add item to the table manually
@@ -110,7 +111,7 @@ $(async function() {
       groupId
     };
     $.post('api/user', newUser, result => {
-      showAlert(true, result.success);
+      showAlert(result);
       // TODO reload page or add item to the table manually, close modal
     });
     const modal = $('#newUsersModal');
@@ -140,11 +141,9 @@ $(async function() {
       method: 'PUT',
       success: result => {
         if (result.success) {
-          showAlert(true, result.success);
           $(this).prop('disabled', true);
-        } else {
-          showAlert(false, result.error);
         }
+        showAlert(result);
       }
     });
     return false;
@@ -156,11 +155,9 @@ $(async function() {
       method: 'PUT',
       success: result => {
         if (result.success) {
-          showAlert(true, result.success);
           $(this).prop('disabled', true);
-        } else {
-          showAlert(false, result.error);
         }
+        showAlert(result);
       }
     });
     return false;
@@ -178,11 +175,7 @@ $(async function() {
   $('#emailPasswords').on('click', function() {
     const personId = $('#email-select').val();
     $.getJSON('api/email?person=' + personId, function(result) {
-      if (result.error) {
-        showAlert(false, result.error);
-      } else {
-        showAlert(true, result.error);
-      }
+      showAlert(result);
     });
   });
 });

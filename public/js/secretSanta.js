@@ -10,7 +10,7 @@ $(async function() {
     $.get(`api/santa?groupId=${groupId}`, result => {
       if (result.length === 0 || result[0].year !== new Date().getFullYear() + 1) {
         $('#unavailableDiv').show();
-        showAlert(false, 'Santa pairs still not drafted for the next year. Ask your group admin to do that now');
+        showAlert({ warning: 'Santa pairs still not drafted for the next year. Ask your group admin to do that now' });
       } else {
         $('#topSecretDiv').show();
         $('#topSecretImage').on('click', function() {
@@ -27,6 +27,6 @@ $(async function() {
       }
     });
   } else {
-    showAlert(true, 'You are not part of any group. Create a new one and invite your friends'); // TODO switch to yellow/neutral
+    showAlert({ warning: 'You are not part of any group. Create a new one and invite your friends' });
   }
 });
