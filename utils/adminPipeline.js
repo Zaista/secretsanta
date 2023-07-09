@@ -4,10 +4,10 @@ import { ROLES } from './roles.js';
 
 export async function getUsers(groupId) {
   const client = await getClient();
-  const query = { groups: new ObjectId(groupId) };
+  const query = { 'groups.groupId': new ObjectId(groupId) };
   const options = {
-    projection: { name: 1, email: 1, active: 1, forbiddenPairs: 1 },
-    sort: { active: -1, userId: 1 }
+    projection: { name: 1, email: 1, active: 1 },
+    sort: { active: -1, name: 1 }
   };
 
   try {

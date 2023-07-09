@@ -126,10 +126,11 @@ adminRouter.put('/api/draft', async (req, res) => {
   console.log(`Drafting pairs for group ${req.query.groupId}`);
 
   const users = await getUsers(req.query.groupId);
+  const forbiddenPairs = await getForbiddenPairs(req.query.groupId);
   const activeUsers = users.filter(user => {
     return user.active;
   });
-  const santaPairs = draftPairs(activeUsers);
+  const santaPairs = draftPairs(activeUsers, forbiddenPairs);
   if (!santaPairs) {
     console.log(`Unsuccessful draft for group ${req.query.groupId}`);
     return res.send({ error: 'Error matching pairs, try again or recheck forbidden pairs' });

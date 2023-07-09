@@ -1,16 +1,18 @@
-export function draftPairs(users) {
+export function draftPairs(users, forbiddenPairs) {
   // prepare a bucket of friends and forbidden pairs
   const friends = [];
-  const forbiddenPairs = new Map();
+  const forbiddenPairsMap = new Map();
 
   users.forEach(user => {
     friends.push(user._id.toString());
+  });
 
-    const forbiddenUsers = [];
-    user.forbiddenPairs?.forEach(pair => {
-      forbiddenUsers.push(pair.toString());
-    });
-    forbiddenPairs.set(user._id.toString(), forbiddenUsers);
+  forbiddenPairs.forEach(pair => {
+    if (forbiddenPairsMap.get(pair.userId.toString()) === undefined) {
+      forbiddenPairsMap.set(pair.userId.toString(), [pair.forbiddenPairId.toString()]);
+    } else {
+      forbiddenPairsMap.get(pair.userId.toString()).push(pair.forbiddenPairId.toString());
+    }
   });
 
   // get an empty list where you will write secret santa pairs
@@ -34,8 +36,8 @@ export function draftPairs(users) {
     const child = friends[index];
 
     // check if you picked a forbidden pair, and if so try again
-    if (forbiddenPairs.get(santa).includes(child)) { continue; }
-    if (forbiddenPairs.get(child).includes(santa)) { continue; }
+    if (forbiddenPairsMap.get(santa)?.includes(child)) { continue; }
+    if (forbiddenPairsMap.get(child)?.includes(santa)) { continue; }
 
     // if the pairing is valid, remove the child from the friends group
     friends.splice(index, 1);
@@ -50,7 +52,7 @@ export function draftPairs(users) {
   }
 
   // finally, set the last picked friend as a santa for the first one, unless it's forbidden
-  if (forbiddenPairs.get(santa).includes(first) || forbiddenPairs.get(first).includes(santa)) {
+  if (forbiddenPairsMap.get(santa)?.includes(first) || forbiddenPairsMap.get(first)?.includes(santa)) {
     return null;
   }
 
