@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsersAndRoles, updateUserRolesAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair, deleteForbiddenPair } from '../utils/adminPipeline.js';
+import { getUsers, getUsersAndRoles, updateUserRolesAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair, deleteForbiddenPair } from '../utils/adminPipeline.js';
 import fs from 'fs';
 import { getMail } from '../utils/mail.js';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
@@ -68,7 +68,7 @@ adminRouter.get('/api/forbidden', async (req, res) => {
 adminRouter.post('/api/forbidden', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await createForbiddenPair(req.query.groupId, req.body);
-  if (result.modifiedCount === 1) return res.send({ success: 'Group updated' });
+  if (result.insertedId) return res.send({ success: 'Forbidden pair added' });
   res.send({ error: 'Something went wrong' });
 });
 
