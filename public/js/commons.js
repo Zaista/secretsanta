@@ -20,7 +20,10 @@ $('#menu').load('/views/menu', () => {
       name: $(this).text()
     };
     window.localStorage.setItem('group', JSON.stringify(newGroup));
-    location.reload();
+    $.get(`/api/setActiveGroup?groupId=${newGroup._id}`, response => {
+      if (response.success) location.reload();
+      else showAlert(response);
+    });
   });
 
   // active page

@@ -4,12 +4,14 @@ import fs from 'fs';
 import { getMail } from '../utils/mail.js';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
+import { ROLES } from '../utils/roles.js';
 
 const adminRouter = express.Router();
 
 // define the home page route
 adminRouter.get('/admin', (req, res) => {
   if (!req.user) return res.status(401).redirect('/login');
+  else if (req.session.activeGroup.role !== ROLES.admin) return res.status(401).redirect('/');
   res.sendFile('public/santaAdmin.html', { root: '.' });
 });
 
@@ -127,9 +129,7 @@ adminRouter.put('/api/draft', async (req, res) => {
 
   const users = await getUsers(req.query.groupId);
   const forbiddenPairs = await getForbiddenPairs(req.query.groupId);
-  const activeUsers = users.filter(user => {
-    return user.active;
-  });
+  const activeUsers = users.filter(user =>  user.active);
   const santaPairs = draftPairs(activeUsers, forbiddenPairs);
   if (!santaPairs) {
     console.log(`Unsuccessful draft for group ${req.query.groupId}`);

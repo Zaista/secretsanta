@@ -2,6 +2,7 @@ import express from 'express';
 import './utils/environment.js';
 import session from 'cookie-session';
 import fs from 'fs';
+import { ROLES } from './utils/roles.js';
 
 // routers
 import { loginRouter, passport } from './routers/login-router.js';
@@ -61,13 +62,19 @@ app.use('/', adminRouter);
 
 // view routers
 app.use('/views/menu', (req, res) => {
+  const activeGroupRole = req.user.groups.filter(group => group._id.toString() === req.session.activeGroup._id)[0].role;
   const options = {
-    isAdmin: true, // TODO fix admin selection
+    isAdmin: activeGroupRole === ROLES.admin ? true : false,
     groups: req.user.groups
   };
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  else if (req.user.role === 'admin') options.isAdmin = true;
+  else if (req.user.role === ROLES.admin) options.isAdmin = true;
   res.render('menu.html', options);
+});
+
+app.use('/api/setActiveGroup', (req, res) => {
+  req.session.activeGroup = req.user.groups.filter(group => group._id.toString() === req.query.groupId)[0];
+  res.send({success: 'Group changed'});
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise
