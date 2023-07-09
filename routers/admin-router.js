@@ -73,11 +73,10 @@ adminRouter.post('/api/forbidden', async (req, res) => {
 });
 
 adminRouter.post('/api/remove', async (req, res) => {
-    if(!req.user) return res.status(401).send({ error: 'User not logged in' });
-    var myId = req.body.forbiddenPairId;
-    const result = await deleteForbiddenPair(myId);
-    if(result.modifiedCount === 1) return res.send({ success: "The pair was successfully deleted!"})
-    res.send({error: 'Something went wrong'})
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const result = await deleteForbiddenPair(req.body.forbiddenPairId);
+  if (result.modifiedCount === 1) return res.send({ success: 'The pair was successfully deleted' });
+  res.send({ error: 'Something went wrong' });
 });
 
 async function sendWelcomeEmail(email, groupName, temporaryPassword) {
