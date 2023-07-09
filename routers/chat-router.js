@@ -40,13 +40,13 @@ chatRouter.post('/api/chat', async (req, res) => {
     const mail = await getMail();
     mail.send(email).then(() => {
       console.log(`Email with question sent to ${req.body.email}`);
-      res.send({ error: false, message: 'Message posted in chat and email sent to the selected person' });
+      res.send({ error: 'Message posted in chat and email sent to the selected person' });
     }).catch((error) => {
       console.error(error);
-      res.send({ error: true, message: 'There was an error sending the email. Contact the administrator' });
+      res.send({ error: 'There was an error sending the email. Contact the administrator' });
     });
   } else {
-    res.send({ error: true, message: 'Failed to ask the question. Contact the administrator' });
+    res.send({ error: 'Failed to ask the question. Contact the administrator' });
   }
 });
 

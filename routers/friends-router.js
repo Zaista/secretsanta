@@ -30,9 +30,9 @@ friendsRouter.post('/api/friends/:_id', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await updateFriend(req.body);
   if (result.modifiedCount) {
-    res.send({ message: 'Profile update successfully' });
+    res.send({ success: 'Profile update successfully' });
   } else {
-    res.send({ error: true, message: 'Failed to update the profile' });
+    res.send({ error: 'Failed to update the profile' });
   }
 });
 

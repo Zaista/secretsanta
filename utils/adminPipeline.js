@@ -170,9 +170,9 @@ export async function updateGroup(groupId, groupData) {
   }
 }
 
-export async function deleteForbiddenPair(myId) {
+export async function deleteForbiddenPair(_id) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(myId) };
+  const filter = { _id: new ObjectId(_id) };
 
   try {
     return await client

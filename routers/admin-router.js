@@ -55,8 +55,8 @@ adminRouter.get('/api/group/:groupId', async (req, res) => {
 adminRouter.post('/api/group/:groupId', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await updateGroup(req.params.groupId, req.body);
-  if (result.modifiedCount === 1) return res.send({ error: false, message: 'Group updated' });
-  res.send({ error: true, message: 'Something went wrong' });
+  if (result.modifiedCount === 1) return res.send({ success: 'Group updated' });
+  res.send({ error: 'Something went wrong' });
 });
 
 adminRouter.get('/api/forbidden', async (req, res) => {
@@ -72,10 +72,11 @@ adminRouter.post('/api/forbidden', async (req, res) => {
   res.send({ error: 'Something went wrong' });
 });
 
-adminRouter.post('/api/remove', async (req, res) => {
+adminRouter.post('/api/delete', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await deleteForbiddenPair(req.body.forbiddenPairId);
-  if (result.modifiedCount === 1) return res.send({ success: 'The pair was successfully deleted' });
+  const result = await deleteForbiddenPair(req.body._id);
+  if (result.deletedCount === 1) return res.send({ success: 'The pair was successfully deleted' });
+  // TODO remove the row from the table
   res.send({ error: 'Something went wrong' });
 });
 

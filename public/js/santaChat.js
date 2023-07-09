@@ -33,7 +33,7 @@ $(async function() {
       $('#chat').scrollTop($('#chat').prop('scrollHeight'));
     });
   } else {
-    showAlert(true, 'No group found'); // TODO switch to yellow/neutral
+    showAlert({ warning: 'No group found' });
   }
 
   $('#chat-form').on('submit', function() {
@@ -44,13 +44,11 @@ $(async function() {
       groupId
     };
     $.post('api/chat', requestData, function(response) {
-      if (response.error) {
-        showAlert(false, response.message);
-      } else {
+      if (!response.error) {
         $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
-        showAlert(true, response.message);
       }
+      showAlert(response);
     });
     return false;
   });

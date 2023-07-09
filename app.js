@@ -36,6 +36,9 @@ app.engine('html', (filePath, options, callback) => {
       rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
     }
     if (options.groups) {
+      options.groups.sort(
+        (o1, o2) => (o1.name > o2.name) ? 1 : (o1.name < o2.name) ? -1 : 0
+      );
       let groupOptions = '';
       options.groups.forEach(group => {
         groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;

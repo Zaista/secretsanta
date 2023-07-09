@@ -16,7 +16,7 @@ $(async function() {
         window.location.href = '/';
       }
     }, 'json').fail(() => {
-      showAlert(false, 'Username or password wrong');
+      showAlert({ error: 'Username or password wrong' });
     });
     return false;
   });
@@ -24,9 +24,9 @@ $(async function() {
   $('#santa-email-form').on('submit', function() {
     $.post('api/email', { email: $('#santa-email').val() }, function(result) {
       if (result.error) {
-        showAlert(false, `Email sent to: ${$('#santa-email').val()}`);
+        showAlert({ error: `Email sent to: ${$('#santa-email').val()}` });
       } else {
-        showAlert(true, `Email sent to: ${$('#santa-email').val()}`);
+        showAlert({ success: `Email sent to: ${$('#santa-email').val()}` });
         $('#forgot-password-dialog').toggle();
       }
     }, 'json');

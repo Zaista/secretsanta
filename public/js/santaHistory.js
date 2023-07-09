@@ -24,11 +24,11 @@ $(async () => {
       });
 
       if (result.length === 0) {
-        showAlert(true, 'No recorded history'); // TODO switch to yellow/neutral
+        showAlert({ warning: 'No recorded history' });
       }
     });
   } else {
-    showAlert(true, 'No group found'); // TODO switch to yellow/neutral
+    showAlert({ warning: 'No group found' });
   }
 
   function addYear(year, location, image) {

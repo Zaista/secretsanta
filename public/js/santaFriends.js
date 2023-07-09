@@ -33,6 +33,6 @@ $(async function() {
       });
     });
   } else {
-    showAlert(true, 'No group found'); // TODO switch to yellow/neutral
+    showAlert({ warning: 'No group found' });
   }
 });
