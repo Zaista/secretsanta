@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsersAndRoles, updateUserRolesAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair } from '../utils/adminPipeline.js';
+import { getUsersAndRoles, updateUserRolesAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair, deleteForbiddenPair } from '../utils/adminPipeline.js';
 import fs from 'fs';
 import { getMail } from '../utils/mail.js';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
@@ -70,6 +70,14 @@ adminRouter.post('/api/forbidden', async (req, res) => {
   const result = await createForbiddenPair(req.query.groupId, req.body);
   if (result.modifiedCount === 1) return res.send({ success: 'Group updated' });
   res.send({ error: 'Something went wrong' });
+});
+
+adminRouter.post('/api/remove', async (req, res) => {
+    if(!req.user) return res.status(401).send({ error: 'User not logged in' });
+    var myId = req.body.forbiddenPairId;
+    const result = await deleteForbiddenPair(myId);
+    if(result.modifiedCount === 1) return res.send({ success: "The pair was successfully deleted!"})
+    res.send({error: 'Something went wrong'})
 });
 
 async function sendWelcomeEmail(email, groupName, temporaryPassword) {
