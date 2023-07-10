@@ -17,30 +17,30 @@ adminRouter.get('/admin', (req, res) => {
 
 adminRouter.get('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getUsersAndRoles(req.query.groupId);
+  const result = await getUsersAndRoles(req.session.activeGroup._id);
   res.send(result);
 });
 
 adminRouter.post('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const modifiedCount = await updateUserRolesAndStatus(req.query.groupId, req.body.userRolesAndStatus);
+  const modifiedCount = await updateUserRolesAndStatus(req.session.activeGroup._id, req.body.userRolesAndStatus);
   res.send({ success: `Modified ${modifiedCount} user(s)` });
 });
 
 adminRouter.post('/api/user', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const user = await checkIfUserExists(req.body.email);
-  const group = await getGroup(req.body.groupId);
+  const group = await getGroup(req.session.activeGroup._id);
 
   if (user) {
-    const result = await addUserToGroup(req.body.groupId, req.body.email);
+    const result = await addUserToGroup(req.session.activeGroup._id, req.body.email);
     if (result) {
       await sendWelcomeEmail(req.body.email, group.name);
     }
     return res.send({ success: `User ${req.body.email} added to group ${group.name}` });
   } else {
     const temporaryPassword = Math.random().toString(36).slice(2, 10);
-    const result = await createNewUser(req.body.groupId, req.body.email, temporaryPassword);
+    const result = await createNewUser(req.session.activeGroup._id, req.body.email, temporaryPassword);
     if (result.acknowledged) {
       await sendWelcomeEmail(req.body.email, group.name, temporaryPassword);
     }
@@ -48,28 +48,31 @@ adminRouter.post('/api/user', async (req, res) => {
   }
 });
 
-adminRouter.get('/api/group/:groupId', async (req, res) => {
+adminRouter.get('/api/group', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getGroup(req.params.groupId);
+  const result = await getGroup(req.session.activeGroup._id);
   res.send(result);
 });
 
-adminRouter.post('/api/group/:groupId', async (req, res) => {
+adminRouter.post('/api/group', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await updateGroup(req.params.groupId, req.body);
-  if (result.modifiedCount === 1) return res.send({ success: 'Group updated' });
+  const result = await updateGroup(req.session.activeGroup._id, req.body);
+  if (result.modifiedCount === 1) {
+    req.session.activeGroup.name = req.body.name;
+    return res.send({ success: 'Group updated' });
+  }
   res.send({ error: 'Something went wrong' });
 });
 
 adminRouter.get('/api/forbidden', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getForbiddenPairs(req.query.groupId);
+  const result = await getForbiddenPairs(req.session.activeGroup._id);
   res.send(result);
 });
 
 adminRouter.post('/api/forbidden', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await createForbiddenPair(req.query.groupId, req.body);
+  const result = await createForbiddenPair(req.session.activeGroup._id, req.body);
   if (result.insertedId) return res.send({ success: 'Forbidden pair added' });
   res.send({ error: 'Something went wrong' });
 });
@@ -109,7 +112,7 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
 
 adminRouter.get('/api/draft', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const draftPossible = await isNextYearDrafted(req.query.groupId);
+  const draftPossible = await isNextYearDrafted(req.session.activeGroup._id);
   if (draftPossible) {
     res.send({ success: 'Pairs can be drafted' });
   } else {
@@ -120,23 +123,23 @@ adminRouter.get('/api/draft', async (req, res) => {
 adminRouter.put('/api/draft', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
 
-  const draftPossible = await isNextYearDrafted(req.query.groupId);
+  const draftPossible = await isNextYearDrafted(req.session.activeGroup._id);
   if (!draftPossible) {
     return res.send({ error: 'Next year pairs already drafted' });
   }
 
-  console.log(`Drafting pairs for group ${req.query.groupId}`);
+  console.log(`Drafting pairs for group ${req.session.activeGroup._id}`);
 
-  const users = await getUsers(req.query.groupId);
-  const forbiddenPairs = await getForbiddenPairs(req.query.groupId);
+  const users = await getUsers(req.session.activeGroup._id);
+  const forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
   const activeUsers = users.filter(user => user.active);
   const santaPairs = draftPairs(activeUsers, forbiddenPairs);
   if (!santaPairs) {
-    console.log(`Unsuccessful draft for group ${req.query.groupId}`);
+    console.log(`Unsuccessful draft for group ${req.session.activeGroup._id}`);
     return res.send({ error: 'Error matching pairs, try again or recheck forbidden pairs' });
   }
 
-  const result = await addDraftsForNextYear(req.query.groupId, santaPairs);
+  const result = await addDraftsForNextYear(req.session.activeGroup._id, santaPairs);
   if (result.acknowledged) {
     res.send({ success: 'Pairs successfully drafted' });
   } else {
@@ -146,7 +149,7 @@ adminRouter.put('/api/draft', async (req, res) => {
 
 adminRouter.get('/api/reveal', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const yearRevealed = await isLastYearRevealed(req.query.groupId);
+  const yearRevealed = await isLastYearRevealed(req.session.activeGroup._id);
   if (yearRevealed) {
     res.send({ error: 'Last year already revealed' });
   } else if (yearRevealed === undefined) {
@@ -159,12 +162,12 @@ adminRouter.get('/api/reveal', async (req, res) => {
 adminRouter.put('/api/reveal', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
 
-  const history = await getHistory(req.query.groupId);
+  const history = await getHistory(req.session.activeGroup._id);
   if (history[0].revealed) {
     return res.send({ error: 'Year already revealed' });
   }
 
-  const result = await setLastYearRevealed(req.query.groupId, history[0].year);
+  const result = await setLastYearRevealed(req.session.activeGroup._id, history[0].year);
 
   if (result.acknowledged) {
     res.send({ success: 'Last year successfully revealed' });

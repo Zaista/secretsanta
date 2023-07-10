@@ -1,16 +1,14 @@
-/* global $, bootstrap, showAlert, getGroupId */
+/* global $, bootstrap, showAlert */
 
 $(async function() {
   'use strict';
 
   await $.getScript('/js/commons.js');
 
-  const groupId = getGroupId();
-
   $('#emailNotifications').on('change', onChangeDetector);
   $('#groupNameSettings').on('input', onChangeDetector);
 
-  $.getJSON(`api/users?groupId=${groupId}`, function(result) {
+  $.getJSON('api/users', function(result) {
     $.get('modules/user.html', userTemplate => {
       $.each(result, function(index, userData) {
         const userElement = $.parseHTML(userTemplate);
@@ -40,14 +38,14 @@ $(async function() {
       };
       userRolesAndStatus.push(userData);
     });
-    $.post(`api/users?groupId=${groupId}`, { userRolesAndStatus }, result => {
+    $.post('api/users', { userRolesAndStatus }, result => {
       showAlert(result);
       $('#userButton').prop('disabled', true);
     });
     return false;
   });
 
-  $.getJSON(`api/group/${groupId}`, group => {
+  $.getJSON('api/group', group => {
     $('#groupNameSettings').val(group.name);
     $('#emailNotifications').val(`${group.emailNotifications}`);
   });
@@ -57,20 +55,17 @@ $(async function() {
       name: $('#groupNameSettings').val(),
       emailNotifications: $('#emailNotifications').val()
     };
-    $.post(`api/group/${groupId}`, groupData, result => {
+    $.post('api/group', groupData, result => {
       showAlert(result);
+      if (result.success) {
+        $('#groupName').html($('#groupNameSettings').val());
+      }
     });
-    const updatedGroup = {
-      _id: groupId,
-      name: $('#groupNameSettings').val()
-    };
-    window.localStorage.setItem('group', JSON.stringify(updatedGroup));
-    $('#groupName').html(updatedGroup.name);
     return false;
   });
 
   // fill up the forbiddenPair table with forbidden pairs
-  $.getJSON(`api/forbidden?groupId=${groupId}`, function(result) {
+  $.getJSON('api/forbidden', function(result) {
     // TODO make this beautiful
     result.forEach((pair, index) => {
       $('#forbiddenPairsTable tbody').append(`<tr value="${pair._id}"><td><b>${++index}</b></td><td>${pair.user}</td><td>${pair.forbiddenPair}</td><td><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td></tr>`);
@@ -85,7 +80,7 @@ $(async function() {
   });
 
   // fill up the forbiddenPair modal select elements with usernames
-  $.getJSON(`api/friends?groupId=${groupId}`, function(result) {
+  $.getJSON('api/friends', function(result) {
     result.forEach(function(friend) {
       $('#forbiddenUser1, #forbiddenUser2').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
@@ -96,7 +91,7 @@ $(async function() {
       forbiddenUser1Id: $('#forbiddenUser1').val(),
       forbiddenUser2Id: $('#forbiddenUser2').val()
     };
-    $.post(`api/forbidden?groupId=${groupId}`, pair, result => {
+    $.post('api/forbidden', pair, result => {
       showAlert(result);
       const modal = $('#forbiddenPairsModal');
       bootstrap.Modal.getInstance(modal).hide();
@@ -107,8 +102,7 @@ $(async function() {
 
   $('#newUsersForm').on('submit', () => {
     const newUser = {
-      email: $('#newUserEmail').val(),
-      groupId
+      email: $('#newUserEmail').val()
     };
     $.post('api/user', newUser, result => {
       showAlert(result);
@@ -119,7 +113,7 @@ $(async function() {
     return false;
   });
 
-  $.getJSON(`api/draft?groupId=${groupId}`, response => {
+  $.getJSON('api/draft', response => {
     if (response.success) {
       $('#yearAlert').text(`Santa pairs for year ${new Date().getFullYear() + 1} were not drafted yet`);
       $('#draft').removeAttr('disabled');
@@ -128,7 +122,7 @@ $(async function() {
     }
   });
 
-  $.getJSON(`api/reveal?groupId=${groupId}`, response => {
+  $.getJSON('api/reveal', response => {
     if (response.success) {
       $('#reveal').removeAttr('disabled');
       $('#yearAlert').append(' but the pairs were not yet revealed');
@@ -137,7 +131,7 @@ $(async function() {
 
   $('#draft').on('click', function() {
     $.ajax({
-      url: `api/draft?groupId=${groupId}`,
+      url: 'api/draft',
       method: 'PUT',
       success: result => {
         if (result.success) {
@@ -151,7 +145,7 @@ $(async function() {
 
   $('#reveal').on('click', function() {
     $.ajax({
-      url: `api/reveal?groupId=${groupId}`,
+      url: 'api/reveal',
       method: 'PUT',
       success: result => {
         if (result.success) {

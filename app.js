@@ -44,7 +44,8 @@ app.engine('html', (filePath, options, callback) => {
       options.groups.forEach(group => {
         groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
       });
-      rendered = rendered.replace('<!--groupOptions-->', groupOptions);
+      rendered = rendered.replace('<!--groupOptions-->', groupOptions)
+        .replace('<!--groupName-->', options.activeGroup.name);
     }
     return callback(null, rendered);
   });
@@ -65,7 +66,8 @@ app.use('/views/menu', (req, res) => {
   const activeGroupRole = req.user.groups.filter(group => group._id.toString() === req.session.activeGroup._id)[0].role;
   const options = {
     isAdmin: activeGroupRole === ROLES.admin,
-    groups: req.user.groups
+    groups: req.user.groups,
+    activeGroup: req.session.activeGroup
   };
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   else if (req.user.role === ROLES.admin) options.isAdmin = true;

@@ -13,14 +13,14 @@ chatRouter.get('/chat', (req, res) => {
 
 chatRouter.get('/api/chat', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getChat(req.query.groupId);
+  const result = await getChat(req.session.activeGroup._id);
   res.send(result);
 });
 
 chatRouter.post('/api/chat', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let emailText;
-  const queryInfo = await sendMessage(req.body.message, req.body.userId, req.body.groupId);
+  const queryInfo = await sendMessage(req.body.message, req.body.userId, req.session.activeGroup._id);
   if (queryInfo.acknowledged) { // TODO acknowledged does not mean updated
     const data = fs.readFileSync('./templates/question.html');
     emailText = data.toString().replace(/{{question}}/, req.body.message);

@@ -1,4 +1,4 @@
-/* global $, bootstrap, getGroupId, showAlert */
+/* global $, bootstrap, showAlert */
 
 $(async () => {
   'use strict';
@@ -8,28 +8,23 @@ $(async () => {
   const baseGiftTemplate = await $.get('modules/gift.html');
   const baseMenuTemplate = await $.get('modules/side-menu.html');
 
-  const groupId = getGroupId();
-  if (groupId) {
-    $.getJSON(`api/history?groupId=${groupId}`, result => {
-      result.forEach(yearData => {
-        addYear(yearData.year, yearData.location, yearData.location_image);
-        yearData.gifts.forEach(gifts => {
-          addGifts(yearData.year, gifts);
-        });
+  $.getJSON('api/history', result => {
+    result.forEach(yearData => {
+      addYear(yearData.year, yearData.location, yearData.location_image);
+      yearData.gifts.forEach(gifts => {
+        addGifts(yearData.year, gifts);
       });
-
-      // eslint-disable-next-line no-new
-      new bootstrap.ScrollSpy(document.getElementById('scroll-spy-page'), {
-        target: '#navbar'
-      });
-
-      if (result.length === 0) {
-        showAlert({ warning: 'No recorded history' });
-      }
     });
-  } else {
-    showAlert({ warning: 'No group found' });
-  }
+
+    // eslint-disable-next-line no-new
+    new bootstrap.ScrollSpy(document.getElementById('scroll-spy-page'), {
+      target: '#navbar'
+    });
+
+    if (result.length === 0) {
+      showAlert({ warning: 'No recorded history' });
+    }
+  });
 
   function addYear(year, location, image) {
     let yearTemplate = baseYearTemplate;
