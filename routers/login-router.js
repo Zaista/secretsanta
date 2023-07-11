@@ -2,7 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import { login, getById, checkEmail } from '../utils/loginPipeline.js';
+import { getUserByEmailAndPassword, getUserById, checkEmail } from '../utils/loginPipeline.js';
 import { getMail } from '../utils/mail.js';
 
 const loginRouter = express.Router();
@@ -15,6 +15,7 @@ loginRouter.get('/login', (req, res) => {
 
 loginRouter.post('/api/login', passport.authenticate('local'), async (req, res) => {
   console.log(`User ${req.user.email} logged in`);
+  req.session.activeGroup = req.user.groups[0];
   res.send({ success: 'Logged in' });
 });
 
@@ -71,9 +72,9 @@ loginRouter.post('/api/email', async (req, res) => {
 
 passport.use(
   new LocalStrategy(async function(email, password, done) {
-    const user = await login(email, password);
+    const user = await getUserByEmailAndPassword(email, password);
     if (user) {
-      return done(null, user);
+      return done(null, user[0]);
     } else {
       return done(null, false);
     }
@@ -85,7 +86,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(async function(_id, done) {
-  const user = await getById(_id);
+  const user = await getUserById(_id);
   done(null, user[0]);
 });
 

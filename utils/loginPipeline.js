@@ -1,10 +1,27 @@
 import mongodb from 'mongodb';
 import { getClient } from './database.js';
 
-export async function login(email, password) {
+export function getUserByEmailAndPassword(email, password) {
+  const $match = {
+    email: email,
+    password: password
+  };
+
+  return getUser($match);
+}
+
+export function getUserById(_id) {
+  const $match = {
+    _id: new mongodb.ObjectId(_id)
+  };
+
+  return getUser($match);
+}
+
+export async function checkEmail(email) {
   const client = await getClient();
-  const query = { email, password };
-  const options = { projection: { name: 1, email: 1 } };
+  const query = { email };
+  const options = { projection: { _id: 0 } };
 
   try {
     return await client
@@ -17,13 +34,11 @@ export async function login(email, password) {
   }
 }
 
-export async function getById(_id) {
+async function getUser($match) {
   const client = await getClient();
   const pipeline = [
     {
-      $match: {
-        _id: new mongodb.ObjectId(_id)
-      }
+      $match: $match
     },
     {
       $lookup: {
@@ -89,22 +104,6 @@ export async function getById(_id) {
       .collection('users')
       .aggregate(pipeline)
       .toArray();
-  } catch (err) {
-    console.log('ERROR: ' + err.stack);
-    return null;
-  }
-}
-
-export async function checkEmail(email) {
-  const client = await getClient();
-  const query = { email };
-  const options = { projection: { _id: 0 } };
-
-  try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .findOne(query, options);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
