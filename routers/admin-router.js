@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsers, getUsersAndRoles, updateUserRolesAndStatus, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair, deleteForbiddenPair } from '../utils/adminPipeline.js';
+import { getUsers, getUsersAndRoles, updateUsersRoles, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair, deleteForbiddenPair } from '../utils/adminPipeline.js';
 import fs from 'fs';
 import { getMail } from '../utils/mail.js';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
@@ -23,7 +23,7 @@ adminRouter.get('/api/users', async (req, res) => {
 
 adminRouter.post('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const modifiedCount = await updateUserRolesAndStatus(req.session.activeGroup._id, req.body.userRolesAndStatus);
+  const modifiedCount = await updateUsersRoles(req.session.activeGroup._id, req.body.usersRoles);
   res.send({ success: `Modified ${modifiedCount} user(s)` });
 });
 

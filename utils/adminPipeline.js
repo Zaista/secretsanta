@@ -89,10 +89,10 @@ export async function addUserToGroup(groupId, email) {
   }
 }
 
-export async function createNewUser(groupId, email, temporaryPassword) {
+export async function createNewUser(groupId, email, password) {
   const client = await getClient();
   const user = {
-    password: temporaryPassword,
+    password,
     email,
     active: true,
     role: ROLES.user,
@@ -109,19 +109,21 @@ export async function createNewUser(groupId, email, temporaryPassword) {
   }
 }
 
-export async function updateUserRolesAndStatus(groupId, userRolesAndStatus) {
+export async function updateUsersRoles(groupId, usersRoles) {
   const client = await getClient();
   try {
     let modifiedCount = 0;
-    for (const userData of userRolesAndStatus) {
+    for (const userData of usersRoles) {
       const filter = {
         'groups.groupId': new ObjectId(groupId),
         _id: new ObjectId(userData._id)
       };
       const update = {
-        $set: { 'groups.$.role': userData.role, active: userData.active === 'true' }
+        $set: { 'groups.$.role': userData.role }
       };
-      const result = await client.db(process.env.database).collection('users').updateOne(filter, update);
+      const result = await client.db(process.env.database)
+        .collection('users')
+        .updateOne(filter, update);
       if (result.modifiedCount !== 0) {
         modifiedCount += result.modifiedCount;
       }

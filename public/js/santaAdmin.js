@@ -19,26 +19,22 @@ $(async function() {
         $(userElement).find('[name="userEmail"]').text(userData.email);
         $(userElement).find('[name="userRole"]').val(userData.groups.role);
         $(userElement).find('[name="userRole"]').on('input', onChangeDetector);
-        if (userData.active) {
-          $(userElement).find('[name="userStatus"]').attr('checked', true);
-        }
-        $(userElement).find('[name="userStatus"]').on('input', onChangeDetector);
         $('#users tbody').append(userElement);
       });
     });
   });
 
   $('#userButton').on('click', () => {
-    const userRolesAndStatus = [];
+    const usersRoles = [];
     $('tr[name="userRow"]').each(function() {
       const userData = {
         _id: $(this).find('[name="userId"]').val(),
         role: $(this).find(':selected').val(),
         active: $(this).find('[name="userStatus"]').is(':checked')
       };
-      userRolesAndStatus.push(userData);
+      usersRoles.push(userData);
     });
-    $.post('api/users', { userRolesAndStatus }, result => {
+    $.post('api/users', { usersRoles }, result => {
       showAlert(result);
       $('#userButton').prop('disabled', true);
     });
