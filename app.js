@@ -33,10 +33,12 @@ app.engine('html', (filePath, options, callback) => {
   fs.readFile(filePath, (err, content) => {
     if (err) return callback(err);
     let rendered = content.toString();
+
     if (!options.isAdmin) {
       rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
     }
-    if (options.groups) {
+
+    if (filePath.includes('menu.html')) {
       options.groups.sort(
         (o1, o2) => (o1.name > o2.name) ? 1 : (o1.name < o2.name) ? -1 : 0
       );
@@ -47,10 +49,14 @@ app.engine('html', (filePath, options, callback) => {
       rendered = rendered.replace('<!--groupOptions-->', groupOptions)
         .replace('<!--groupName-->', options.activeGroup.name);
     }
+
+    if (filePath.includes('santaProfile.html')) {
+      rendered = rendered.replace('{{isHidden}}', options.currentUser ? '' : 'hidden');
+    }
     return callback(null, rendered);
   });
 });
-app.set('views', './views');
+app.set('views', './public');
 app.set('view engine', 'html');
 
 // page routers
@@ -71,7 +77,7 @@ app.use('/views/menu', (req, res) => {
   };
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   else if (req.user.role === ROLES.admin) options.isAdmin = true;
-  res.render('menu.html', options);
+  res.render('modules/menu.html', options);
 });
 
 app.use('/api/setActiveGroup', (req, res) => {
