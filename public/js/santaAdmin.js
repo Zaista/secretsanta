@@ -88,6 +88,7 @@ $(async function() {
       forbiddenUser2Id: $('#forbiddenUser2').val()
     };
     $.post('api/forbidden', pair, result => {
+      showAlert(result);
       var rowIndex =  $('#forbiddenPairsTable tr').length;
        // TODO after adding try delete last pair
       if (result.success)  $('#forbiddenPairsTable > tbody:last-child').append(`<tr value="${result.id}"><td><b>${rowIndex}</b></td><td>${$('#forbiddenUser1 option:selected').text()}</td></td><td>${$('#forbiddenUser2 option:selected').text()}</td><td><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td></td></tr>`);
