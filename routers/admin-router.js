@@ -73,7 +73,7 @@ adminRouter.get('/api/forbidden', async (req, res) => {
 adminRouter.post('/api/forbidden', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await createForbiddenPair(req.session.activeGroup._id, req.body);
-  if (result.insertedId) return res.send({ success: 'Forbidden pair added' });
+  if (result.insertedId) return res.send({ success: 'Forbidden pair added', id: result.insertedId });
   res.send({ error: 'Something went wrong' });
 });
 
