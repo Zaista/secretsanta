@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'production') {
 
   const [mongodbUri, sendgridApi, sessionKey] = await Promise.all([
     secretManager.accessSecretVersion({
-      name: `projects/${projectId}/secrets/secretsanta-mongodb-url/versions/latest`
+      name: `projects/${projectId}/secrets/secretsanta-test-mongodb-url/versions/latest`
     }),
     secretManager.accessSecretVersion({
       name: `projects/${projectId}/secrets/sendgrid-api/versions/latest`
