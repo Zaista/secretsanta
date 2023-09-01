@@ -1,6 +1,2 @@
 runtime: nodejs18
 service: secretsanta
-
-handlers:
-- url: /resources
-  static_dir: public/resources

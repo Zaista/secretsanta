@@ -1,110 +1,92 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import mongodb from 'mongodb';
-import {SecretManagerServiceClient} from '@google-cloud/secret-manager';
-import santaPipeline from './utils/santaPipeline.js';
-import historyPipeline from './utils/historyPipeline.js';
-import friendsPipeline from './utils/friendsPipeline.js';
-import chatPipeline from './utils/chatPipeline.js';
+import './utils/environment.js';
+import session from 'cookie-session';
+import fs from 'fs';
+import { ROLES } from './utils/roles.js';
+
+// routers
+import { loginRouter, passport } from './routers/login-router.js';
+import { santaRouter } from './routers/santa-router.js';
+import { historyRouter } from './routers/history-router.js';
+import { friendsRouter } from './routers/friends-router.js';
+import { chatRouter } from './routers/chat-router.js';
+import { adminRouter } from './routers/admin-router.js';
 
 const app = express();
-app.use(express.static('public'));
+app.use(express.static('./public'));
 app.use(express.json());
-app.use(express.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-if (process.env.NODE_ENV === 'production') {
-  let projectId = 'deductive-span-313911';
-  const client = new SecretManagerServiceClient();
-  const [accessResponse] = await client.accessSecretVersion({
-    name: `projects/${projectId}/secrets/secretsanta-mongodb-url/versions/latest`,
+app.use(
+  session({
+    secret: process.env.sessionKey,
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// template engine
+app.engine('html', (filePath, options, callback) => {
+  fs.readFile(filePath, (err, content) => {
+    if (err) return callback(err);
+    let rendered = content.toString();
+
+    if (!options.isAdmin) {
+      rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
+    }
+
+    if (filePath.includes('menu.html')) {
+      options.groups.sort(
+        (o1, o2) => (o1.name > o2.name) ? 1 : (o1.name < o2.name) ? -1 : 0
+      );
+      let groupOptions = '';
+      options.groups.forEach(group => {
+        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
+      });
+      rendered = rendered.replace('<!--groupOptions-->', groupOptions)
+        .replace('<!--groupName-->', options.activeGroup.name);
+    }
+
+    if (filePath.includes('santaProfile.html')) {
+      rendered = rendered.replace('{{isHidden}}', options.currentUser ? '' : 'hidden');
+    }
+    return callback(null, rendered);
   });
+});
+app.set('views', './public');
+app.set('view engine', 'html');
 
-  const responsePayload = accessResponse.payload.data.toString('utf8');
-  process.env.mongodb_uri = responsePayload;
-} else {
-  dotenv.config();
-}
+// page routers
+app.use('/', loginRouter);
+app.use('/', santaRouter);
+app.use('/', historyRouter);
+app.use('/', friendsRouter);
+app.use('/', chatRouter);
+app.use('/', adminRouter);
 
-const {MongoClient} = mongodb;
-const client = new MongoClient(process.env.mongodb_uri, {
-    useUnifiedTopology: true,
+// view routers
+app.use('/views/menu', (req, res) => {
+  const activeGroupRole = req.user.groups.filter(group => group._id.toString() === req.session.activeGroup._id)[0].role;
+  const options = {
+    isAdmin: activeGroupRole === ROLES.admin,
+    groups: req.user.groups,
+    activeGroup: req.session.activeGroup
+  };
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  else if (req.user.role === ROLES.admin) options.isAdmin = true;
+  res.render('modules/menu.html', options);
+});
+
+app.use('/api/setActiveGroup', (req, res) => {
+  req.session.activeGroup = req.user.groups.filter(group => group._id.toString() === req.query.groupId)[0];
+  res.send({ success: 'Group changed' });
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server app listening at http://localhost:${PORT}`);
-});
-
-app.get('/', (req, res) => {
-    res.sendFile('public/secretSanta.html', {root: '.'});
-});
-
-app.get('/api/santa', async (req, res) => {
-    const result = await santaPipeline.getSanta(client, req.query.username, req.query.password);
-    if (result.length === 0) {
-      res.send({error: 'Invalid username or password'});
-    } else {
-      res.send(result);
-    }
-});
-
-app.get('/history', (req, res) => {
-    res.sendFile('public/santaHistory.html', {root: '.'});
-});
-
-app.get('/api/history', async (req, res) => {
-    let result = await historyPipeline.getHistory(client);
-    res.send(result);
-});
-
-app.get('/friends', async (req, res) => {
-    res.sendFile('public/santaFriends.html', {root: '.'});
-});
-
-app.get('/api/friends', async (req, res) => {
-    let result = await friendsPipeline.getFriends(client);
-    res.send(result);
-});
-
-app.get('/chat', async (req, res) => {
-    res.sendFile('public/santaChat.html', {root: '.'});
-});
-
-app.get('/api/chat', async (req, res) => {
-    let result = await chatPipeline.getChat(client);
-    res.send(result);
-});
-
-app.post('/api/chat', async (req, res) => {
-    let userInfo = await chatPipeline.sendMessage(client, req.body.userId, req.body.message);
-    
-    let email_subject = 'A new question has been asked in Secret Santa chat!';
-    
-    let email_headers = 'From: secretsanta@jovanilic.com\r\n';
-    email_headers += 'MIME-Version: 1.0\r\n';
-    email_headers += 'Content-Type: text/html; charset=utf-8\r\n';
-    
-    let email_text = '<html><body>';
-    email_text += '<p>Somebody asked you a question:</p>';
-    email_text += `<p>${req.body.message}</p><br>`;
-    email_text += '<p>Go to <a href="https://secretsanta.jovanilic.com/santachat.html" target="_blank">SecretSanta</a> website and answer it!</p>';
-    email_text += '<p>Merry shopping und Alles Gute zum Gechristmas :)</p>';
-    email_text += '</body></html>';
-    
-    // TODO wrap body if lines are longer than 70 characters
-    // email_text = wordwrap($email_text, 70);
-    
-    // TODO send email
-    // mail($output->email, $email_subject, $email_text, $email_headers);
-    
-    let output = {};
-    output.result = 'Message posted in chat and email sent to the selected person.';
-    output.message = req.body.message;
-    console.log(`info: email sent to ${userInfo.value.email}`);
-    res.send(JSON.stringify(output));
-});
-
-app.get('/stats', async (req, res) => {
-    res.sendFile('public/santaStats.html', {root: '.'});
+  console.log(`Server app listening at http://localhost:${PORT}`);
 });

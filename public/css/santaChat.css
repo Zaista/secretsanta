@@ -1,23 +1,9 @@
-body {
-	overflow-y: scroll;
-}
-
-#img {
-	width: 100%;
-}
-
 .margin-top {
 	margin-top: 20px;
 }
 
-.red-border {
-	border: 2px lightgray dashed;
-}
-
 #chat {
-	height: 250px;
     margin-top: 20px;
-    overflow-y: scroll;
 }
 
 #chat p {

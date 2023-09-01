@@ -1,110 +1,200 @@
-async function getHistory(client) {
+import { getClient } from './database.js';
+import mongodb from 'mongodb';
 
-    const stage1 = {
-        '$unwind': {
-            'path': '$gifts'
+export async function getHistory(groupId) {
+  const pipeline = [
+    {
+      $match: {
+        groupId: new mongodb.ObjectId(groupId)
+      }
+    },
+    {
+      $unwind: {
+        path: '$gifts'
+      }
+    },
+    {
+      // match santaId and _id to get santa info
+      $lookup: {
+        from: 'users',
+        localField: 'gifts.santaId',
+        foreignField: '_id',
+        as: 'santaUser'
+      }
+    },
+    {
+      // match childId and _id to get child info
+      $lookup: {
+        from: 'users',
+        localField: 'gifts.childId',
+        foreignField: '_id',
+        as: 'childUser'
+      }
+    },
+    {
+      $unwind: {
+        path: '$santaUser'
+      }
+    },
+    {
+      $unwind: {
+        path: '$childUser'
+      }
+    },
+    {
+      // filter only necessary fields
+      $project: {
+        year: 1,
+        location: 1,
+        location_image: 1,
+        gift: '$gifts.gift',
+        gift_image: '$gifts.gift_image',
+        santa: '$santaUser.name',
+        child: '$childUser.name',
+        revealed: 1
+      }
+    },
+    {
+      $group: {
+        _id: '$year',
+        year: {
+          $first: '$$ROOT.year'
+        },
+        location: {
+          $first: '$$ROOT.location'
+        },
+        location_image: {
+          $first: '$$ROOT.location_image'
+        },
+        gifts: {
+          $push: {
+            santa: '$$ROOT.santa',
+            child: '$$ROOT.child',
+            gift: '$$ROOT.gift',
+            gift_image: '$$ROOT.gift_image'
+          }
+        },
+        revealed: {
+          $first: '$$ROOT.revealed'
         }
-    };
-
-    // match santaId and userId to get santa info
-    const stage2 = {
-        '$lookup': {
-            'from': 'users',
-            'localField': 'gifts.santaId',
-            'foreignField': 'userId',
-            'as': 'santaUser'
-        }
-    };
-
-    // match childId and userId to get child info
-    const stage3 = {
-        '$lookup': {
-            'from': 'users',
-            'localField': 'gifts.childId',
-            'foreignField': 'userId',
-            'as': 'childUser'
-        }
-    };
-
-    const stage4 = {
-        '$unwind': {
-            'path': '$santaUser'
-        }
-    };
-
-    const stage5 = {
-        '$unwind': {
-            'path': '$childUser'
-        }
-    };
-
-    // filter only necessary fields
-    const stage6 = {
-        '$project': {
-            'year': 1,
-            'location': 1,
-            'location_image': 1,
-            'gift': '$gifts.gift',
-            'gift_image': '$gifts.gift_image',
-            'santa': '$santaUser.firstName',
-            'child': '$childUser.firstName'
-        }
-    };
-
-    const stage7 = {
-        '$group': {
-            '_id': '$year',
-            'year': {
-                '$first': '$$ROOT.year'
-            },
-            'location': {
-                '$first': '$$ROOT.location'
-            },
-            'location_image': {
-                '$first': '$$ROOT.location_image'
-            },
-            'gifts': {
-                '$push': {
-                    'santa': '$$ROOT.santa',
-                    'child': '$$ROOT.child',
-                    'gift': '$$ROOT.gift',
-                    'gift_image': '$$ROOT.gift_image'
-                }
-            }
-        }
-    };
-
-    const stage8 = {
-        '$project': { '_id': 0 }
-    };
-
-    const stage9 = {
-         '$sort' : { year : -1 }
-    };
-
-    const pipeline = [];
-    pipeline.push(
-        stage1,
-        stage2,
-        stage3,
-        stage4,
-        stage5,
-        stage6,
-        stage7,
-        stage8,
-        stage9
-    );
-
-    try {
-        return await client
-            .db(process.env.database)
-            .collection('history')
-            .aggregate(pipeline)
-            .toArray()
-    } catch (err) {
-        console.log('ERROR: ' + err.stack);
-        return null;
+      }
+    },
+    {
+      $project: { _id: 0 }
+    },
+    {
+      $sort: { year: -1 }
     }
+  ];
+
+  const client = await getClient();
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('history')
+      .aggregate(pipeline)
+      .toArray();
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
 }
 
-export default {getHistory};
+export async function addDraftsForNextYear(groupId, santaPairs) {
+  const document = {
+    year: new Date().getFullYear() + 1,
+    location: null,
+    location_image: null,
+    gifts: [],
+    groupId: new mongodb.ObjectId(groupId),
+    revealed: false
+  };
+
+  santaPairs.forEach((santa, child) => {
+    const gift = {
+      santaId: new mongodb.ObjectId(santa),
+      childId: new mongodb.ObjectId(child),
+      gift: null,
+      gift_image: null
+    };
+    document.gifts.push(gift);
+  });
+
+  const client = await getClient();
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('history')
+      .insertOne(document);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function isNextYearDrafted(groupId) {
+  const client = await getClient();
+  const query = {
+    groupId: new mongodb.ObjectId(groupId),
+    year: new Date().getFullYear() + 1
+  };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('history')
+      .findOne(query);
+
+    if (result) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function isLastYearRevealed(groupId) {
+  const client = await getClient();
+  const query = {
+    groupId: new mongodb.ObjectId(groupId)
+  };
+  const options = { sort: { year: -1 }, projection: { year: 1, revealed: 1 } };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('history')
+      .findOne(query, options);
+
+    return result?.revealed;
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function setLastYearRevealed(groupId, year) {
+  const client = await getClient();
+  const filter = {
+    groupId: new mongodb.ObjectId(groupId),
+    year
+  };
+  const update = { $set: { revealed: true } };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('history')
+      .updateOne(filter, update);
+
+    return result;
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}

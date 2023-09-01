@@ -1,61 +1,52 @@
-/*global $, document, setTimeout */
+/* global $, showAlert */
 
-$(function () {
-    'use strict';
+$(async function() {
+  'use strict';
 
-    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  await $.getScript('/js/commons.js');
 
-    $.getJSON('api/chat', function (result) {
-        for (let message of result) {
-            let date = new Date(message.timestamp);
+  const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-            let hours = date.getHours();
-            hours = hours < 10 ? '0' + hours : hours;
+  $.getJSON('api/friends', function(result) {
+    result.forEach(function(friend) {
+      $('#user').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
+    });
+  });
 
-            let minutes = date.getMinutes();
-            minutes = minutes < 10 ? '0' + minutes : minutes;
+  $.getJSON('api/chat', chat => {
+    for (const item of chat) {
+      const date = new Date(item.timestamp);
 
-            let dateStr = hours + ':' + minutes + ' - ' + date.getDate() + '. ' + months[date.getMonth()];
-            $('#chat').append('<p>' + message.message + '<span>@' + message.firstName + ' (' + dateStr + ')' + '</span></p>');
-        }
+      let hours = date.getHours();
+      hours = hours < 10 ? '0' + hours : hours;
 
+      let minutes = date.getMinutes();
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+
+      const dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
+      $('#chat').append('<p>' + item.message + '<span>To: ' + item.name + ' (' + dateStr + ')' + '</span></p>');
+    }
+
+    $('#chat').scrollTop($('#chat').prop('scrollHeight'));
+  });
+
+  $('#chat-form').on('submit', function() {
+    const requestData = {
+      userId: $('#user option:selected').val(),
+      email: $('#user option:selected').attr('data-email'),
+      message: $('#message').val()
+    };
+    $.post('api/chat', requestData, function(response) {
+      if (!response.error) {
+        $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
+      }
+      showAlert(response);
     });
+    return false;
+  });
 
-    $('#chat-form').on('submit', function () {
-
-        let requestData = $(this).serialize();
-
-        $.post('api/chat', requestData, function (data) {
-            let result = JSON.parse(data);
-            console.log(result);
-            if (result.error) {
-                $('.alert').removeClass('alert-success alert-danger');
-                $('.alert').addClass('alert-danger');
-                $('.alert span').text(result.error);
-                $('.alert').show();
-                setTimeout(function () {
-                    $('.alert').hide();
-                }, 3000);
-            } else {
-                $('#chat-message').val('');
-                $('#chat').append('<p>' + result.message + '<span>Just now...</span></p>');
-                $('#chat').scrollTop($('#chat').prop('scrollHeight'));
-
-                $('.alert').removeClass('alert-success alert-danger');
-                $('.alert').addClass('alert-success');
-                $('.alert span').text(result.result);
-                $('.alert').show();
-                setTimeout(function () {
-                    $('.alert').hide();
-                }, 3000);
-            }
-        });
-
-        return false;
-    });
-
-    $('.alert .btn-close').on('click', function () {
-        $('.alert').hide();
-    });
+  $('.alert .btn-close').on('click', function() {
+    $('.alert').hide();
+  });
 });

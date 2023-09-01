@@ -1,47 +1,32 @@
-/*global $, document, setTimeout */
+/* global $ */
 
-$(function () {
-    'use strict';
+$(async function() {
+  'use strict';
 
-    let users = [];
+  await $.getScript('/js/commons.js');
 
-    $.getJSON('api/friends', function (result) {
-        $.each(result, function (i, userData) {
-            let santaTemplate = $('#santa-template').html();
-
-            santaTemplate = santaTemplate.replace(/{{user}}/g, userData.username);
-            santaTemplate = santaTemplate.replace(/{{index}}/, i);
-            $(".friends").append(santaTemplate);
-            users.push(userData);
-        });
-    });
-
-    // if friend sheet is open
-    $('#friend').on('show.bs.modal', function (event) {
-        let picture = $(event.relatedTarget).data('picture');
-        let userId = $(event.relatedTarget).data('index');
-        $('#santa_sheet').attr('src', 'resources/images/' + picture);
-        let name = users[userId].firstName;
-        if (users[userId].lastName) {
-            name += ' ' + users[userId].lastName;
-        }
-        $('#santa_name').html('<b>Name:</b> ' + name);
-
-        if (users[userId].email) {
-            $('#santa_email').html('<b>Email:</b> ' + users[userId].email);
+  $.getJSON('api/friends', result => {
+    $.get('modules/friend.html', friendTemplate => {
+      $.each(result, (i, userData) => {
+        const friendElement = $.parseHTML(friendTemplate);
+        $(friendElement).find('#userId').val(userData._id);
+        $(friendElement).find('#name').text(userData.name || userData.email);
+        if (userData.image) {
+          $(friendElement).find('img').attr('src', `/resources/images/${userData.image}.png`);
         } else {
-            $('#santa_email').html('<b>Email:</b> No email set.');
+          $(friendElement).find('img').attr('src', '/resources/images/placeholder.png');
         }
-
-        if (users[userId].address) {
-            $('#santa_address').html('<b>Address:</b> ' + users[userId].address);
-        } else {
-            $('#santa_address').html("<b>Address:</b> No address set.");
-        }
+        $(friendElement).find('#street').text(userData.address?.street || 'not set');
+        $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(not set)');
+        $(friendElement).find('#city').text(userData.address?.city || 'not set');
+        $(friendElement).find('#state').text(userData.address?.state || 'not set');
+        $('.friends').append(friendElement);
+      });
+    }).then(() => {
+      // add card click event
+      $('.card.pointer').on('click', function(event) {
+        window.location.href = `/friends/${$(this).find('#userId').val()}`;
+      });
     });
-
-    // if friend sheet is closed
-    $('#friend').on('hidden.bs.modal', function () {
-        $('#santa_sheet').attr('src', '');
-    });
+  });
 });
