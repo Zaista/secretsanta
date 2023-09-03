@@ -6,6 +6,6 @@ export async function sendRealMail(emailTemplate) {
     console.log(`Email with question sent to ${emailTemplate.to}`);
     return { success: true };
   }).catch((error) => {
-    return { error: error };
+    return { error };
   });
 }

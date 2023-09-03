@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import { getChat, sendMessage } from '../utils/chatPipeline.js';
-import {sendEmail} from "../utils/environment.js";
+import { sendEmail } from '../utils/environment.js';
 
 const chatRouter = express.Router();
 
@@ -28,19 +28,20 @@ chatRouter.post('/api/chat', async (req, res) => {
     // TODO wrap body if lines are longer than 70 characters
     // email_text = wordwrap($email_text, 70);
 
-    let emailTemplate = {
+    const emailTemplate = {
       from: 'SecretSanta <secretsanta@jovanilic.com>',
       to: req.body.email,
       subject: 'Secret Santa Question',
       html: emailText
     };
-    
+
     const emailStatus = await sendEmail(emailTemplate);
 
-    if (emailStatus.success)
-      res.send( {success: `Message posted in chat and email sent to ${emailTemplate.to}` } )
-    else
-      res.send( { error: `Error sending email: ${emailStatus.error}`});
+    if (emailStatus.success) {
+      res.send({ success: `Message posted in chat and email sent to ${emailTemplate.to}` });
+    } else {
+      res.send({ error: `Error sending email: ${emailStatus.error}` });
+    }
   } else {
     res.send({ error: 'Failed to ask the question. Contact the administrator' });
   }

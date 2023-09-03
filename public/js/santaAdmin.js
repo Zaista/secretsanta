@@ -70,7 +70,7 @@ $(async function() {
       const _id = $(this).parents('tr').attr('value');
       $.post('api/delete', { _id }, result => {
         // TODO Handle the response once backend is finished
-        if (result.success) $(this).parents("tr").remove();
+        if (result.success) $(this).parents('tr').remove();
         showAlert(result);
       });
     });
@@ -89,9 +89,9 @@ $(async function() {
     };
     $.post('api/forbidden', pair, result => {
       showAlert(result);
-      var rowIndex =  $('#forbiddenPairsTable tr').length;
-       // TODO after adding try delete last pair
-      if (result.success)  $('#forbiddenPairsTable > tbody:last-child').append(`<tr value="${result.id}"><td><b>${rowIndex}</b></td><td>${$('#forbiddenUser1 option:selected').text()}</td></td><td>${$('#forbiddenUser2 option:selected').text()}</td><td><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td></td></tr>`);
+      const rowIndex = $('#forbiddenPairsTable tr').length;
+      // TODO after adding try delete last pair
+      if (result.success) $('#forbiddenPairsTable > tbody:last-child').append(`<tr value="${result.id}"><td><b>${rowIndex}</b></td><td>${$('#forbiddenUser1 option:selected').text()}</td></td><td>${$('#forbiddenUser2 option:selected').text()}</td><td><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td></td></tr>`);
       const modal = $('#forbiddenPairsModal');
       bootstrap.Modal.getInstance(modal).hide();
       // TODO reload page or add item to the table manually

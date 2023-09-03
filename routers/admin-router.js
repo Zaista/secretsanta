@@ -4,7 +4,7 @@ import fs from 'fs';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
-import {sendEmail} from "../utils/environment.js";
+import { sendEmail } from '../utils/environment.js';
 
 const adminRouter = express.Router();
 
@@ -31,27 +31,29 @@ adminRouter.post('/api/user', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const user = await checkIfUserExists(req.body.email);
   const group = await getGroup(req.session.activeGroup._id);
-  
-  // TODO check if user is already in the group 
+
+  // TODO check if user is already in the group
 
   if (user) {
     const result = await addUserToGroup(req.session.activeGroup._id, user.email);
     if (result) {
       const emailStatus = await sendWelcomeEmail(user.email, group.name);
-      if (emailStatus.success)
-        res.send( {success: `User ${req.body.email} added to group ${group.name}` } )
-      else
-        res.send( { error: `Error adding user to the group: ${emailStatus.error}`});
+      if (emailStatus.success) {
+        res.send({ success: `User ${req.body.email} added to group ${group.name}` });
+      } else {
+        res.send({ error: `Error adding user to the group: ${emailStatus.error}` });
+      }
     }
   } else {
     const temporaryPassword = Math.random().toString(36).slice(2, 10);
     const result = await createNewUser(req.session.activeGroup._id, req.body.email, temporaryPassword);
     if (result.acknowledged) {
       const emailStatus = await sendWelcomeEmail(req.body.email, group.name, temporaryPassword);
-      if (emailStatus.success)
-        res.send( {success: `Welcome email sent to ${req.body.email}` } )
-      else
-        res.send( { error: `Error sending welcome email: ${emailStatus.error}`});
+      if (emailStatus.success) {
+        res.send({ success: `Welcome email sent to ${req.body.email}` });
+      } else {
+        res.send({ error: `Error sending welcome email: ${emailStatus.error}` });
+      }
     }
   }
 });
@@ -100,14 +102,14 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
   if (temporaryPassword) {
     emailText = emailText.replace(/{{temporaryPassword}}/, temporaryPassword);
   }
-  
-  let emailTemplate = {
+
+  const emailTemplate = {
     from: 'SecretSanta <secretsanta@jovanilic.com>',
     to: email,
     subject: 'Welcome to Secret Santa',
     html: emailText
   };
-  
+
   return await sendEmail(emailTemplate);
 }
 

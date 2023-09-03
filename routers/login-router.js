@@ -3,7 +3,7 @@ import fs from 'fs';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import { getUserByEmailAndPassword, getUserById, checkEmail } from '../utils/loginPipeline.js';
-import {sendEmail} from "../utils/environment.js";
+import { sendEmail } from '../utils/environment.js';
 
 const loginRouter = express.Router();
 
@@ -44,19 +44,20 @@ loginRouter.post('/api/email', async (req, res) => {
     emailText = data.toString();
   }
 
-  let emailTemplate = {
+  const emailTemplate = {
     from: 'SecretSanta <secretsanta@jovanilic.com>',
     to: req.body.email,
     subject: 'Secret Santa Credentials',
     html: emailText
   };
-  
+
   const emailStatus = await sendEmail(emailTemplate);
-  
-  if (emailStatus.success)
-    res.send( {success: `Email successfully sent to ${emailTemplate.to}` } )
-  else
-    res.send( { error: `Error sending email: ${emailStatus.error}`});
+
+  if (emailStatus.success) {
+    res.send({ success: `Email successfully sent to ${emailTemplate.to}` });
+  } else {
+    res.send({ error: `Error sending email: ${emailStatus.error}` });
+  }
 });
 
 passport.use(
