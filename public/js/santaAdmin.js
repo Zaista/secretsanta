@@ -29,8 +29,7 @@ $(async function() {
     $('tr[name="userRow"]').each(function() {
       const userData = {
         _id: $(this).find('[name="userId"]').val(),
-        role: $(this).find(':selected').val(),
-        active: $(this).find('[name="userStatus"]').is(':checked')
+        role: $(this).find(':selected').val()
       };
       usersRoles.push(userData);
     });
