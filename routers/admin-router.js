@@ -4,7 +4,7 @@ import fs from 'fs';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
-import { sendEmail } from "../utils/environment.js";
+import { sendEmail } from '../utils/environment.js';
 
 const adminRouter = express.Router();
 
