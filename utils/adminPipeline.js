@@ -6,8 +6,8 @@ export async function getUsers(groupId) {
   const client = await getClient();
   const query = { 'groups.groupId': new ObjectId(groupId) };
   const options = {
-    projection: { name: 1, email: 1, active: 1 },
-    sort: { active: -1, name: 1 }
+    projection: { name: 1, email: 1 },
+    sort: { name: 1 }
   };
 
   try {
@@ -37,8 +37,7 @@ export async function getUsersAndRoles(groupId) {
     $project: {
       name: 1,
       email: 1,
-      groups: 1,
-      active: 1
+      groups: 1
     }
   }];
 
@@ -74,7 +73,7 @@ export async function addUserToGroup(groupId, email) {
   const filter = { email };
   const update = {
     $push: {
-      groups: new ObjectId(groupId)
+      groups: { groupId: new ObjectId(groupId), role: ROLES.user }
     }
   };
 
@@ -94,9 +93,7 @@ export async function createNewUser(groupId, email, password) {
   const user = {
     password,
     email,
-    active: true,
-    role: ROLES.user,
-    groups: [new ObjectId(groupId)]
+    groups: [{ groupId: new ObjectId(groupId), role: ROLES.user }]
   };
   try {
     return await client

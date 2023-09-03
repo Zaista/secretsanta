@@ -3,8 +3,8 @@ import { getClient } from './database.js';
 
 export function getUserByEmailAndPassword(email, password) {
   const $match = {
-    email: email,
-    password: password
+    email,
+    password
   };
 
   return getUser($match);
@@ -38,7 +38,7 @@ async function getUser($match) {
   const client = await getClient();
   const pipeline = [
     {
-      $match: $match
+      $match
     },
     {
       $lookup: {

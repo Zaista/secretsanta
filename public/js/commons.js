@@ -17,8 +17,7 @@ $('#menu').load('/views/menu', () => {
   const pageMatcher = window.location.pathname.match(/\w+/);
   if (pageMatcher) {
     const currentPage = pageMatcher[0];
-    $(`#menu-${currentPage}`).addClass('active');
-    $(`#menu-${currentPage}`).attr('aria-current', 'page');
+    $(`#menu-${currentPage}`).addClass('active').attr('aria-current', 'page');
   }
 });
 
