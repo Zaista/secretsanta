@@ -1,5 +1,7 @@
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import dotenv from 'dotenv';
+import {sendRealMail} from "./mail.js";
+import {sendSandboxMail} from "./mail-local.js";
 
 if (process.env.NODE_ENV === 'production') {
   console.log('Environment variables loaded from the secret manager');
@@ -24,4 +26,12 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   console.log('Environment variables loaded from the .env file');
   dotenv.config();
+}
+
+export function sendEmail(emailTemplate) {
+  if (process.env.NODE_ENV === 'production') {
+    return sendRealMail(emailTemplate);
+  } else {
+    return sendSandboxMail(emailTemplate);
+  }
 }

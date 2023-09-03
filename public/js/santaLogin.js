@@ -23,12 +23,8 @@ $(async function() {
 
   $('#santa-email-form').on('submit', function() {
     $.post('api/email', { email: $('#santa-email').val() }, function(result) {
-      if (result.error) {
-        showAlert({ error: `Email sent to: ${$('#santa-email').val()}` });
-      } else {
-        showAlert({ success: `Email sent to: ${$('#santa-email').val()}` });
-        $('#forgot-password-dialog').toggle();
-      }
+      $('#forgot-password-dialog').modal('hide');
+      showAlert(result);
     }, 'json');
     return false;
   });
