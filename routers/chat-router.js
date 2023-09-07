@@ -2,7 +2,6 @@ import express from 'express';
 import fs from 'fs';
 import { getChat, sendMessage, deleteChatMessage } from '../utils/chatPipeline.js';
 import { getMail } from '../utils/mail.js';
-import { getChat, sendMessage } from '../utils/chatPipeline.js';
 import { sendEmail } from '../utils/environment.js';
 
 
