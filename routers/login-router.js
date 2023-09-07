@@ -3,7 +3,7 @@ import fs from 'fs';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import { getUserByEmailAndPassword, getUserById, checkEmail } from '../utils/loginPipeline.js';
-import { getMail } from '../utils/mail.js';
+import { sendEmail } from '../utils/environment.js';
 
 const loginRouter = express.Router();
 
@@ -31,43 +31,33 @@ loginRouter.get('/logout', (req, res, next) => {
 });
 
 loginRouter.post('/api/email', async (req, res) => {
-  let message;
   let emailText;
-  const error = false;
   const user = await checkEmail(req.body.email);
 
   if (user) {
     const data = fs.readFileSync('./templates/password.html');
     emailText = data.toString()
-      .replace(/{{firstName}}/, user.firstName)
-      .replace(/{{password}}/, user.password)
-      .replace(/{{address}}/, user.address);
+      .replace(/{{name}}/, user.name)
+      .replace(/{{password}}/, user.password);
   } else {
     const data = fs.readFileSync('./templates/unknown.html');
     emailText = data.toString();
   }
 
-  const email = {
+  const emailTemplate = {
+    from: 'SecretSanta <secretsanta@jovanilic.com>',
     to: req.body.email,
-    from: {
-      email: 'mail@jovanilic.com',
-      name: 'SecretSanta'
-    },
     subject: 'Secret Santa Credentials',
     html: emailText
   };
-  const mail = await getMail();
-  mail.send(email).then(() => {
-    console.log(`Email with credentials sent to ${req.body.email}`);
-    message = 'Email sent';
-  }).catch((error) => {
-    console.error(error);
-    message = 'There was an error sending the email. Contact the administrator.';
-    error = true;
-  });
 
-  const output = { error, message };
-  res.send(output);
+  const emailStatus = await sendEmail(emailTemplate);
+
+  if (emailStatus.success) {
+    res.send({ success: `Email successfully sent to ${emailTemplate.to}` });
+  } else {
+    res.send({ error: `Error sending email: ${emailStatus.error}` });
+  }
 });
 
 passport.use(

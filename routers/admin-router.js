@@ -1,10 +1,10 @@
 import express from 'express';
 import { getUsers, getUsersAndRoles, updateUsersRoles, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair, deleteForbiddenPair } from '../utils/adminPipeline.js';
 import fs from 'fs';
-import { getMail } from '../utils/mail.js';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
+import { sendEmail } from '../utils/environment.js';
 
 const adminRouter = express.Router();
 
@@ -32,19 +32,29 @@ adminRouter.post('/api/user', async (req, res) => {
   const user = await checkIfUserExists(req.body.email);
   const group = await getGroup(req.session.activeGroup._id);
 
+  // TODO check if user is already in the group
+
   if (user) {
-    const result = await addUserToGroup(req.session.activeGroup._id, req.body.email);
+    const result = await addUserToGroup(req.session.activeGroup._id, user.email);
     if (result) {
-      await sendWelcomeEmail(req.body.email, group.name);
+      const emailStatus = await sendWelcomeEmail(user.email, group.name);
+      if (emailStatus.success) {
+        res.send({ success: `User ${req.body.email} added to group ${group.name}` });
+      } else {
+        res.send({ error: `Error adding user to the group: ${emailStatus.error}` });
+      }
     }
-    return res.send({ success: `User ${req.body.email} added to group ${group.name}` });
   } else {
     const temporaryPassword = Math.random().toString(36).slice(2, 10);
     const result = await createNewUser(req.session.activeGroup._id, req.body.email, temporaryPassword);
     if (result.acknowledged) {
-      await sendWelcomeEmail(req.body.email, group.name, temporaryPassword);
+      const emailStatus = await sendWelcomeEmail(req.body.email, group.name, temporaryPassword);
+      if (emailStatus.success) {
+        res.send({ success: `Welcome email sent to ${req.body.email}` });
+      } else {
+        res.send({ error: `Error sending welcome email: ${emailStatus.error}` });
+      }
     }
-    return res.send({ success: `New user created ${req.body.email} in group ${group.name}` });
   }
 });
 
@@ -93,21 +103,14 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
     emailText = emailText.replace(/{{temporaryPassword}}/, temporaryPassword);
   }
 
-  const emailToSend = {
+  const emailTemplate = {
+    from: 'SecretSanta <secretsanta@jovanilic.com>',
     to: email,
-    from: {
-      email: 'mail@jovanilic.com',
-      name: 'SecretSanta'
-    },
     subject: 'Welcome to Secret Santa',
     html: emailText
   };
-  const mail = await getMail();
-  mail.send(emailToSend).then(() => {
-    console.log(`Welcome email sent to ${email}`);
-  }).catch((error) => {
-    console.error(`Error sending welcome email to the user: ${error}`);
-  });
+
+  return await sendEmail(emailTemplate);
 }
 
 adminRouter.get('/api/draft', async (req, res) => {
@@ -132,8 +135,7 @@ adminRouter.put('/api/draft', async (req, res) => {
 
   const users = await getUsers(req.session.activeGroup._id);
   const forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
-  const activeUsers = users.filter(user => user.active);
-  const santaPairs = draftPairs(activeUsers, forbiddenPairs);
+  const santaPairs = draftPairs(users, forbiddenPairs);
   if (!santaPairs) {
     console.log(`Unsuccessful draft for group ${req.session.activeGroup._id}`);
     return res.send({ error: 'Error matching pairs, try again or recheck forbidden pairs' });

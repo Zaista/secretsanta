@@ -11,7 +11,7 @@ friendsRouter.get('/friends', async (req, res) => {
 
 friendsRouter.get('/friends/:_id', async (req, res) => {
   if (!req.user) return res.status(401).redirect('/login');
-  res.sendFile('public/santaProfile.html', { root: '.' });
+  res.render('santaProfile.html', { currentUser: req.user._id.toString() === req.params._id });
 });
 
 friendsRouter.get('/api/friends', async (req, res) => {

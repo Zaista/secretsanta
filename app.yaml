@@ -1,2 +1,2 @@
 runtime: nodejs18
-service: test-secretsanta
+service: secretsanta
