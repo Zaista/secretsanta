@@ -1,7 +1,10 @@
 import express from 'express';
 import fs from 'fs';
-import { getChat, sendMessage } from '../utils/chatPipeline.js';
+import { getChat, sendMessage, deleteChatMessage } from '../utils/chatPipeline.js';
 import { getMail } from '../utils/mail.js';
+import { getChat, sendMessage } from '../utils/chatPipeline.js';
+import { sendEmail } from '../utils/environment.js';
+
 
 const chatRouter = express.Router();
 
@@ -17,6 +20,15 @@ chatRouter.get('/api/chat', async (req, res) => {
   res.send(result);
 });
 
+// DELETE CHAT MESSAGE
+
+chatRouter.post('/api/delete', async (req, res) => {
+    if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+    const result = await deleteChatMessage(req.body._id);
+    if (result.deletedCount === 1) return res.send({ success: 'The message was successfully deleted' });
+    res.send({ error: 'Something went wrong' });
+});
+
 chatRouter.post('/api/chat', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let emailText;
@@ -28,23 +40,20 @@ chatRouter.post('/api/chat', async (req, res) => {
     // TODO wrap body if lines are longer than 70 characters
     // email_text = wordwrap($email_text, 70);
 
-    const email = {
+    const emailTemplate = {
+      from: 'SecretSanta <secretsanta@jovanilic.com>',
       to: req.body.email,
-      from: {
-        email: 'mail@jovanilic.com',
-        name: 'SecretSanta'
-      },
       subject: 'Secret Santa Question',
       html: emailText
     };
-    const mail = await getMail();
-    mail.send(email).then(() => {
-      console.log(`Email with question sent to ${req.body.email}`);
-      res.send({ error: 'Message posted in chat and email sent to the selected person' });
-    }).catch((error) => {
-      console.error(error);
-      res.send({ error: 'There was an error sending the email. Contact the administrator' });
-    });
+
+    const emailStatus = await sendEmail(emailTemplate);
+
+    if (emailStatus.success) {
+      res.send({ success: `Message posted in chat and email sent to ${emailTemplate.to}` });
+    } else {
+      res.send({ error: `Error sending email: ${emailStatus.error}` });
+    }
   } else {
     res.send({ error: 'Failed to ask the question. Contact the administrator' });
   }
