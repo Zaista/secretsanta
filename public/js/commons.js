@@ -41,7 +41,7 @@ function showAlert(alert, timeout = 3000) {
   $('.alert span').text(message);
   alertElement.show();
   if (timeout !== 0) {
-    setTimeout(function () {
+    setTimeout(function() {
       $('.alert').hide();
     }, timeout);
   }
