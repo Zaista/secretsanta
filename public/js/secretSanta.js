@@ -13,8 +13,8 @@ $(async function() {
       showAlert({ success: 'Click the image to reveal your pair' }, 0);
       $('#topSecretDiv').show();
       $('#topSecretImage').on('click', function() {
-          $('#topSecretVideo').show();
-          $('#rickRoll')[0].play();
+        $('#topSecretVideo').show();
+        $('#rickRoll')[0].play();
         // if (result[0].image) {
         //   $('#topSecretImage').attr('src', `resources/images/${result[0].image}.png`);
         // } else {
