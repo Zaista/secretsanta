@@ -16,10 +16,10 @@ $(async function() {
         } else {
           $(friendElement).find('img').attr('src', '/resources/images/placeholder.png');
         }
-        $(friendElement).find('#street').text(userData.address?.street || 'not set');
-        $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(not set)');
-        $(friendElement).find('#city').text(userData.address?.city || 'not set');
-        $(friendElement).find('#state').text(userData.address?.state || 'not set');
+        $(friendElement).find('#street').text(userData.address?.street || 'N/A');
+        $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(N/A)');
+        $(friendElement).find('#city').text(userData.address?.city || 'N/A');
+        $(friendElement).find('#state').text(userData.address?.state || 'N/A');
         $('.friends').append(friendElement);
       });
     }).then(() => {

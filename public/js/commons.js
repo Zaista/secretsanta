@@ -17,13 +17,12 @@ $('#menu').load('/views/menu', () => {
   const pageMatcher = window.location.pathname.match(/\w+/);
   if (pageMatcher) {
     const currentPage = pageMatcher[0];
-    $(`#menu-${currentPage}`).addClass('active');
-    $(`#menu-${currentPage}`).attr('aria-current', 'page');
+    $(`#menu-${currentPage}`).addClass('active').attr('aria-current', 'page');
   }
 });
 
 // eslint-disable-next-line
-function showAlert(alert) {
+function showAlert(alert, timeout = 3000) {
   let alertClass;
   let message;
   if (alert.warning) {
@@ -41,7 +40,9 @@ function showAlert(alert) {
   alertElement.addClass(alertClass);
   $('.alert span').text(message);
   alertElement.show();
-  setTimeout(function() {
-    $('.alert').hide();
-  }, 3000);
+  if (timeout !== 0) {
+    setTimeout(function() {
+      $('.alert').hide();
+    }, timeout);
+  }
 }

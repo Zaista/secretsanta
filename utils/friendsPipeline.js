@@ -3,7 +3,7 @@ import { getClient } from './database.js';
 
 export async function getFriends(groupId) {
   const client = await getClient();
-  const query = { active: true, 'groups.groupId': new ObjectId(groupId) };
+  const query = { 'groups.groupId': new ObjectId(groupId) };
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
