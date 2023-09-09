@@ -1,2 +1,6 @@
 runtime: nodejs18
 service: secretsanta
+handlers:
+  - url: /.*
+    script: auto
+    secure: always
