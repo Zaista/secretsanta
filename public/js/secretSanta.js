@@ -8,8 +8,9 @@ $(async function() {
   $.get('api/santa', result => {
     if (result.length === 0 || result[0].year !== new Date().getFullYear() + 1) {
       $('#unavailableDiv').show();
-      showAlert({ warning: 'Santa pairs still not drafted for the next year. Ask your group admin to do that now' });
+      showAlert({ warning: 'Santa pairs still not drafted for the next year. Ask your group admin to do that now' }, 0);
     } else {
+      showAlert({ success: 'Click the image to reveal your pair' }, 0);
       $('#topSecretDiv').show();
       $('#topSecretImage').on('click', function() {
         if (result[0].image) {

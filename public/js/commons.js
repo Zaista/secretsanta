@@ -22,7 +22,7 @@ $('#menu').load('/views/menu', () => {
 });
 
 // eslint-disable-next-line
-function showAlert(alert) {
+function showAlert(alert, timeout = 3000) {
   let alertClass;
   let message;
   if (alert.warning) {
@@ -40,7 +40,9 @@ function showAlert(alert) {
   alertElement.addClass(alertClass);
   $('.alert span').text(message);
   alertElement.show();
-  setTimeout(function() {
-    $('.alert').hide();
-  }, 3000);
+  if (timeout !== 0) {
+    setTimeout(function () {
+      $('.alert').hide();
+    }, timeout);
+  }
 }
