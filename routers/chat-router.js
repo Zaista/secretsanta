@@ -1,9 +1,7 @@
 import express from 'express';
 import fs from 'fs';
 import { getChat, sendMessage, deleteChatMessage } from '../utils/chatPipeline.js';
-import { sendRealMail } from '../utils/mail.js';
 import { sendEmail } from '../utils/environment.js';
-
 
 const chatRouter = express.Router();
 
@@ -22,10 +20,10 @@ chatRouter.get('/api/chat', async (req, res) => {
 // DELETE CHAT MESSAGE
 
 chatRouter.post('/api/delete/msg', async (req, res) => {
-    if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-    const result = await deleteChatMessage(req.body._id);
-    if (result.deletedCount === 1) return res.send({ success: 'The message was successfully deleted' });
-    res.send({ error: 'Something went wrong' });
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const result = await deleteChatMessage(req.body._id);
+  if (result.deletedCount === 1) return res.send({ success: 'The message was successfully deleted' });
+  res.send({ error: 'Something went wrong' });
 });
 
 chatRouter.post('/api/chat', async (req, res) => {
