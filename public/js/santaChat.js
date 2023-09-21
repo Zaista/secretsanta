@@ -25,15 +25,15 @@ $(async function() {
 
       const dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
       $('#chat').append(`<div id="deleteMsg" class="row position-relative"><div class="col-11" value="${item._id}" ><p>` + item.message + '<span>To: ' + item.name + ' (' + dateStr + ')' + '</span></p></div><div class="col-1 position-absolute top-50 start-100 translate-middle"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></div></div>');
-          }
+    }
     $('.buttonDelete').on('click', function() {
-       const _id = $(this).parent('div').siblings('div').attr('value');
-       $.post('api/delete/msg', { _id }, result => {
+      const _id = $(this).parent('div').siblings('div').attr('value');
+      $.post('api/delete/msg', { _id }, result => {
       // TODO Handle the response once backend is finished
-        if (result.success) $(this).closest("#deleteMsg").remove();
+        if (result.success) $(this).closest('#deleteMsg').remove();
         showAlert(result);
-        });
       });
+    });
 
     $('#chat').scrollTop($('#chat').prop('scrollHeight'));
   });

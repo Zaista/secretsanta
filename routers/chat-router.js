@@ -22,7 +22,6 @@ chatRouter.get('/api/chat', async (req, res) => {
 chatRouter.post('/api/delete/msg', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await deleteChatMessage(req.body._id);
-  console.log(res);
   if (result.deletedCount === 1) return res.send({ success: 'The message was successfully deleted' });
   res.send({ error: 'Something went wrong' });
 });
