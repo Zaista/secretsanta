@@ -28,7 +28,7 @@ $(async function() {
           }
     $('.buttonDelete').on('click', function() {
        const _id = $(this).parent('div').siblings('div').attr('value');
-       $.post('api/delete', { _id }, result => {
+       $.post('api/delete/msg', { _id }, result => {
       // TODO Handle the response once backend is finished
         if (result.success) $(this).closest("#deleteMsg").remove();
         showAlert(result);
