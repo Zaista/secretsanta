@@ -46,7 +46,7 @@ $(async function() {
     };
     $.post('api/chat', requestData, function(response) {
       if (!response.error) {
-        $('#chat').append(`<p>${$('input').val()}<span>Just now...</span></p>`);
+        $('#chat').append(`<div class="row position-relative"><div class="col-11"><p>${$('input').val()}<span>Just now...</span></p></div><div class="col-1 position-absolute top-50 start-100 translate-middle"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></div></div>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
       }
       showAlert(response);
