@@ -22,7 +22,7 @@ chatRouter.get('/api/chat', async (req, res) => {
 
 chatRouter.post('/api/delete/msg', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  if (req.session.activeGroup.role !== ROLES.admin)  return res.send({ error: 'User not allowed to delete messages' });
+  if (req.session.activeGroup.role !== ROLES.admin)  return res.send({ error: 'User not allowed to delete messages!' });
   const result = await deleteChatMessage(req.body._id);
   if (result.deletedCount === 1) return res.send({ success: 'The message was successfully deleted' });
   res.send({ error: 'Something went wrong' });
