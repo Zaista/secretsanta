@@ -1,7 +1,8 @@
 import express from 'express';
 import fs from 'fs';
-import { getChat, sendMessage } from '../utils/chatPipeline.js';
+import { getChat, sendMessage, deleteChatMessage } from '../utils/chatPipeline.js';
 import { sendEmail } from '../utils/environment.js';
+import { ROLES } from '../utils/roles.js';
 
 const chatRouter = express.Router();
 
@@ -15,6 +16,16 @@ chatRouter.get('/api/chat', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await getChat(req.session.activeGroup._id);
   res.send(result);
+});
+
+// DELETE CHAT MESSAGE
+
+chatRouter.post('/api/delete/msg', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  if (req.session.activeGroup.role !== ROLES.admin) return res.send({ error: 'User not allowed to delete messages!' });
+  const result = await deleteChatMessage(req.body._id);
+  if (result.deletedCount === 1) return res.send({ success: 'The message was successfully deleted' });
+  res.send({ error: 'Something went wrong' });
 });
 
 chatRouter.post('/api/chat', async (req, res) => {

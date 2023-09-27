@@ -1,5 +1,5 @@
+import mongodb, { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
-import mongodb from 'mongodb';
 
 export async function getChat(groupId) {
   const client = await getClient();
@@ -38,6 +38,21 @@ export async function getChat(groupId) {
       .collection('chat')
       .aggregate(pipeline)
       .toArray();
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function deleteChatMessage(_id) {
+  const client = await getClient();
+  const filter = { _id: new ObjectId(_id) };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('chat')
+      .deleteOne(filter);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
