@@ -13,17 +13,15 @@ $(async function() {
       showAlert({ success: 'Click the image to reveal your pair' }, 0);
       $('#topSecretDiv').show();
       $('#topSecretImage').on('click', function() {
-        $('#topSecretVideo').show();
-        $('#rickRoll')[0].play();
-        // if (result[0].image) {
-        //   $('#topSecretImage').attr('src', `resources/images/${result[0].image}.png`);
-        // } else {
-        //   $('#topSecretImage').attr('src', '/resources/images/placeholder.png');
-        // }
-        // $('#santaName').text(result[0].name);
-        // $('#santaStreet').text(result[0].address.street);
-        // $('#santaCity').text(result[0].address.postalCode + ' ' + result[0].address.city);
-        // $(this).prop('disabled', true);
+        if (result[0].image) {
+          $('#topSecretImage').attr('src', `resources/images/${result[0].image}.png`);
+        } else {
+          $('#topSecretImage').attr('src', '/resources/images/placeholder.png');
+        }
+        $('#santaName').text(result[0].name);
+        $('#santaStreet').text(result[0].address.street);
+        $('#santaCity').text(result[0].address.postalCode + ' ' + result[0].address.city);
+        $(this).prop('disabled', true);
       });
     }
   });
