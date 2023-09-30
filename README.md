@@ -7,4 +7,4 @@ Checkout the live thing here: https://secretsanta.jovanilic.com
 $ npm run start
 ```
 
-See the LICENSE.md for license information.
+See the LICENSE.md for license information
