@@ -14,19 +14,17 @@
         "lint:fix": "npx eslint . --fix"
     },
     "dependencies": {
-        "@google-cloud/secret-manager": "^4.2.1",
+        "@google-cloud/secret-manager": "^5.0.1",
         "@sendgrid/mail": "^7.7.0",
         "cookie-session": "^2.0.0",
-        "dotenv": "^10.0.0",
-        "express": "^4.17.1",
-        "mongodb": "^4.13",
-        "nodemailer": "^6.9.4",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "mongodb": "^6.1.0",
+        "nodemailer": "^6.9.5",
         "passport": "^0.5.3",
         "passport-local": "^1.0.0"
     },
     "devDependencies": {
-        "cy2": "^3.4.3",
-        "cypress": "^12.1.0",
         "eslint": "^8.39.0",
         "eslint-config-standard": "^17.0.0",
         "eslint-plugin-import": "^2.27.5",
