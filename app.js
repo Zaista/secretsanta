@@ -52,6 +52,7 @@ app.engine('html', (filePath, options, callback) => {
 
     if (filePath.includes('santaProfile.html')) {
       rendered = rendered.replace('{{isHidden}}', options.currentUser ? '' : 'hidden');
+      rendered = rendered.replace('{{isDisabled}}', options.currentUser ? '' : 'disabled');
     }
     return callback(null, rendered);
   });
@@ -78,6 +79,11 @@ app.use('/views/menu', (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   else if (req.user.role === ROLES.admin) options.isAdmin = true;
   res.render('modules/menu.html', options);
+});
+
+app.use('/views/footer', (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  res.render('modules/footer.html');
 });
 
 app.use('/api/setActiveGroup', (req, res) => {

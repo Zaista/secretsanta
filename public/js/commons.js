@@ -21,6 +21,8 @@ $('#menu').load('/views/menu', () => {
   }
 });
 
+$('#footer').load('/views/footer');
+
 // eslint-disable-next-line
 function showAlert(alert, timeout = 3000) {
   let alertClass;
@@ -35,14 +37,14 @@ function showAlert(alert, timeout = 3000) {
     alertClass = 'alert-danger';
     message = alert.error;
   }
-  const alertElement = $('.alert');
+  const alertElement = $('#footerAlert');
   alertElement.removeClass('alert-success alert-danger');
   alertElement.addClass(alertClass);
   $('.alert span').text(message);
   alertElement.show();
   if (timeout !== 0) {
     setTimeout(function() {
-      $('.alert').hide();
+      $('#footerAlert').hide();
     }, timeout);
   }
 }
