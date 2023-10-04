@@ -91,6 +91,10 @@ app.use('/api/setActiveGroup', (req, res) => {
   res.send({ success: 'Group changed' });
 });
 
+app.use(function(req, res, next) {
+  res.status(404).render('404.html');
+});
+
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
