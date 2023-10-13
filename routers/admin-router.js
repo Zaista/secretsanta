@@ -1,5 +1,18 @@
 import express from 'express';
-import { getUsers, getUsersAndRoles, updateUsersRoles, checkIfUserExists, addUserToGroup, createNewUser, getGroup, updateGroup, getForbiddenPairs, createForbiddenPair, deleteForbiddenPair } from '../utils/adminPipeline.js';
+import {
+  getUsers,
+  getUsersAndRoles,
+  updateUsersRoles,
+  checkIfUserExists,
+  addUserToGroup,
+  createNewUser,
+  getGroup,
+  updateGroup,
+  createGroup,
+  getForbiddenPairs,
+  createForbiddenPair,
+  deleteForbiddenPair
+} from '../utils/adminPipeline.js';
 import fs from 'fs';
 import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
@@ -14,6 +27,8 @@ adminRouter.get('/admin', (req, res) => {
   else if (req.session.activeGroup.role !== ROLES.admin) return res.status(401).redirect('/');
   res.sendFile('public/santaAdmin.html', { root: '.' });
 });
+
+// Secret Santa users
 
 adminRouter.get('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
@@ -35,8 +50,8 @@ adminRouter.post('/api/user', async (req, res) => {
   // TODO check if user is already in the group
 
   if (user) {
-    const result = await addUserToGroup(req.session.activeGroup._id, user.email);
-    if (result) {
+    const result = await addUserToGroup(req.session.activeGroup._id, user.email, ROLES.user);
+    if (result === true) {
       const emailStatus = await sendWelcomeEmail(user.email, group.name);
       if (emailStatus.success) {
         res.send({ success: `User ${req.body.email} added to group ${group.name}` });
@@ -58,6 +73,8 @@ adminRouter.post('/api/user', async (req, res) => {
   }
 });
 
+// Secret Santa groups
+
 adminRouter.get('/api/group', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await getGroup(req.session.activeGroup._id);
@@ -71,8 +88,24 @@ adminRouter.post('/api/group', async (req, res) => {
     req.session.activeGroup.name = req.body.name;
     return res.send({ success: 'Group updated' });
   }
-  res.send({ error: 'Something went wrong' });
+  res.send({ error: 'Something went wrong when updating the group' });
 });
+
+adminRouter.post('/api/group/create', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const group = await createGroup(req.body.groupName);
+  if (group === null) {
+    res.send({ error: 'Something went wrong during group creation' });
+  }
+  const result = await addUserToGroup(group._id, req.user.email, ROLES.admin);
+  if (result === true) {
+    req.session.activeGroup = { _id: group._id, name: group.name, role: ROLES.admin };
+    return res.send({ success: 'Group created', groupId: group._id });
+  }
+  return res.send({ error: 'Something went wrong during group creation' });
+});
+
+// Secret Santa forbidden pairs
 
 adminRouter.get('/api/forbidden', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
@@ -95,23 +128,7 @@ adminRouter.post('/api/delete', async (req, res) => {
   res.send({ error: 'Something went wrong' });
 });
 
-async function sendWelcomeEmail(email, groupName, temporaryPassword) {
-  const data = fs.readFileSync('./templates/user.html');
-  let emailText = data.toString().replace(/{{groupName}}/, groupName);
-
-  if (temporaryPassword) {
-    emailText = emailText.replace(/{{temporaryPassword}}/, temporaryPassword);
-  }
-
-  const emailTemplate = {
-    from: 'SecretSanta <secretsanta@jovanilic.com>',
-    to: email,
-    subject: 'Welcome to Secret Santa',
-    html: emailText
-  };
-
-  return await sendEmail(emailTemplate);
-}
+// Secret Santa drafting and revealing
 
 adminRouter.get('/api/draft', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
@@ -177,5 +194,23 @@ adminRouter.put('/api/reveal', async (req, res) => {
     res.send({ error: 'Error revealing the last year' });
   }
 });
+
+async function sendWelcomeEmail(email, groupName, temporaryPassword) {
+  const data = fs.readFileSync('./templates/user.html');
+  let emailText = data.toString().replace(/{{groupName}}/, groupName);
+
+  if (temporaryPassword) {
+    emailText = emailText.replace(/{{temporaryPassword}}/, temporaryPassword);
+  }
+
+  const emailTemplate = {
+    from: 'SecretSanta <secretsanta@jovanilic.com>',
+    to: email,
+    subject: 'Welcome to Secret Santa',
+    html: emailText
+  };
+
+  return await sendEmail(emailTemplate);
+}
 
 export { adminRouter };
