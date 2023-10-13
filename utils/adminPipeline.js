@@ -73,7 +73,7 @@ export async function addUserToGroup(groupId, email, role) {
   const filter = { email };
   const update = {
     $push: {
-      groups: { groupId: new ObjectId(groupId), role: role }
+      groups: { groupId: new ObjectId(groupId), role }
     }
   };
 
@@ -155,19 +155,19 @@ export async function getGroup(groupId) {
 export async function createGroup(groupName) {
   const client = await getClient();
   const group = {
-      name: groupName,
-      emailNotifications: false
+    name: groupName,
+    emailNotifications: false
   };
 
   try {
     const result = await client
-        .db(process.env.database)
-        .collection('groups')
-        .insertOne(group);
-    
+      .db(process.env.database)
+      .collection('groups')
+      .insertOne(group);
+
     if (result.acknowledged !== true) {
       console.log('ERROR: failed to create new group');
-      return null
+      return null;
     }
     group._id = result.insertedId;
     return group;

@@ -102,7 +102,7 @@ adminRouter.post('/api/group/create', async (req, res) => {
     req.session.activeGroup = { _id: group._id, name: group.name, role: ROLES.admin };
     return res.send({ success: 'Group created', groupId: group._id });
   }
-  return res.send({ error: 'Something went wrong during group creation'});
+  return res.send({ error: 'Something went wrong during group creation' });
 });
 
 // Secret Santa forbidden pairs
