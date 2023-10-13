@@ -11,8 +11,12 @@ historyRouter.get('/history', (req, res) => {
 
 historyRouter.get('/api/history', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const history = await getHistory(req.session.activeGroup._id);
-  res.send(history.filter(item => item.revealed));
+  if (req.session.activeGroup !== undefined) {
+    const history = await getHistory(req.session.activeGroup._id);
+    res.send(history.filter(item => item.revealed));
+  }
+  else
+    return res.send([]); // TODO show that user is not part of any group
 });
 
 export { historyRouter };
