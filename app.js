@@ -69,7 +69,7 @@ app.use('/', chatRouter);
 app.use('/', adminRouter);
 
 // view routers
-app.use('/views/menu', (req, res) => {
+app.use('/modules/menu', (req, res) => {
   const activeGroupRole = req.user.groups.filter(group => group._id.toString() === req.session.activeGroup._id)[0].role;
   const options = {
     isAdmin: activeGroupRole === ROLES.admin,
@@ -81,8 +81,7 @@ app.use('/views/menu', (req, res) => {
   res.render('modules/menu.html', options);
 });
 
-app.use('/views/footer', (req, res) => {
-  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+app.use('/modules/footer', (req, res) => {
   res.render('modules/footer.html');
 });
 
