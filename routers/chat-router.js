@@ -14,8 +14,10 @@ chatRouter.get('/chat', (req, res) => {
 
 chatRouter.get('/api/chat', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await getChat(req.session.activeGroup._id);
-  res.send(result);
+  if (req.session.activeGroup !== undefined) {
+    const result = await getChat(req.session.activeGroup._id);
+    res.send(result);
+  } else { return res.send([]); } // TODO show that user is not part of any group
 });
 
 // DELETE CHAT MESSAGE
