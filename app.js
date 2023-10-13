@@ -35,7 +35,7 @@ app.engine('html', (filePath, options, callback) => {
     if (err) return callback(err);
     let rendered = content.toString();
 
-    if (!options.isAdmin) {
+    if (options.activeGroup === undefined || options.activeGroup.role !== ROLES.admin) {
       rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
     }
 
@@ -48,7 +48,11 @@ app.engine('html', (filePath, options, callback) => {
         groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
       });
       rendered = rendered.replace('<!--groupOptions-->', groupOptions)
-        .replace('<!--groupName-->', options.activeGroup.name);
+      
+      if (options.activeGroup === undefined)
+        rendered = rendered.replace('<!--groupName-->', 'N/A');
+      else
+        rendered = rendered.replace('<!--groupName-->', options.activeGroup.name);
     }
 
     if (filePath.includes('santaProfile.html')) {
@@ -72,18 +76,12 @@ app.use('/', adminRouter);
 
 // view routers
 app.use('/modules/menu', (req, res) => {
-  let activeGroup = req.user.groups.filter(group => group._id.toString() === req.session.activeGroup._id)[0];
-  if (activeGroup === undefined) {
-    activeGroup = req.user.groups[0]; // TODO this might be a bad idea since req.user.group is not same as req.session.activeGroup
-  }
-  const activeGroupRole = activeGroup.role;
   const options = {
-    isAdmin: activeGroupRole === ROLES.admin,
     groups: req.user.groups,
     activeGroup: req.session.activeGroup
   };
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  else if (req.user.role === ROLES.admin) options.isAdmin = true;
+  // else if (req.user.role === ROLES.admin) options.isAdmin = true;
   res.render('modules/menu.html', options);
 });
 
