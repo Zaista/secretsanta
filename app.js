@@ -46,12 +46,9 @@ app.engine('html', (filePath, options, callback) => {
       options.groups.forEach(group => {
         groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
       });
-      rendered = rendered.replace('<!--groupOptions-->', groupOptions)
-      
-      if (options.activeGroup === undefined)
-        rendered = rendered.replace('<!--groupName-->', 'N/A');
-      else
-        rendered = rendered.replace('<!--groupName-->', options.activeGroup.name);
+      rendered = rendered.replace('<!--groupOptions-->', groupOptions);
+
+      if (options.activeGroup === undefined) { rendered = rendered.replace('<!--groupName-->', 'N/A'); } else { rendered = rendered.replace('<!--groupName-->', options.activeGroup.name); }
     }
 
     if (filePath.includes('santaProfile.html')) {
