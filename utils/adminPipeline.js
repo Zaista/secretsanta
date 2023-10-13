@@ -68,20 +68,25 @@ export async function checkIfUserExists(email) {
   }
 }
 
-export async function addUserToGroup(groupId, email) {
+export async function addUserToGroup(groupId, email, role) {
   const client = await getClient();
   const filter = { email };
   const update = {
     $push: {
-      groups: { groupId: new ObjectId(groupId), role: ROLES.user }
+      groups: { groupId: new ObjectId(groupId), role: role }
     }
   };
 
   try {
-    return await client
+    const result = await client
       .db(process.env.database)
       .collection('users')
       .updateOne(filter, update);
+    if (result.acknowledged !== true || result.modifiedCount !== 1) {
+      console.log('ERROR: failed to add user to the group');
+      return null;
+    }
+    return true;
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
@@ -141,6 +146,31 @@ export async function getGroup(groupId) {
       .db(process.env.database)
       .collection('groups')
       .findOne(query);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function createGroup(groupName) {
+  const client = await getClient();
+  const group = {
+      name: groupName,
+      emailNotifications: false
+  };
+
+  try {
+    const result = await client
+        .db(process.env.database)
+        .collection('groups')
+        .insertOne(group);
+    
+    if (result.acknowledged !== true) {
+      console.log('ERROR: failed to create new group');
+      return null
+    }
+    group._id = result.insertedId;
+    return group;
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
