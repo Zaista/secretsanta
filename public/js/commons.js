@@ -1,6 +1,6 @@
 /* global $ */
 
-$('#menu').load('/views/menu', () => {
+$('#menu').load('/modules/menu', () => {
   // group selection and info
   $('.groupOp').on('click', function() {
     const newGroup = {
@@ -21,7 +21,7 @@ $('#menu').load('/views/menu', () => {
   }
 });
 
-$('#footer').load('/views/footer');
+$('#footer').load('/modules/footer');
 
 // eslint-disable-next-line
 function showAlert(alert, timeout = 3000) {
