@@ -19,11 +19,23 @@ $('#menu').load('/modules/menu', () => {
     const currentPage = pageMatcher[0];
     $(`#menu-${currentPage}`).addClass('active').attr('aria-current', 'page');
   }
+
+  // create new group
+  $('#create-group-form').on('submit', () => {
+    const groupName = $('#group-name').val();
+    $.post('/api/group/create', { groupName }, result => {
+      if (result.success) {
+        window.location.href = '/admin';
+      } else {
+        showAlert({error: 'Something went wrong'});
+      }
+    });
+    return false;
+  });
 });
 
 $('#footer').load('/modules/footer');
 
-// eslint-disable-next-line
 function showAlert(alert, timeout = 3000) {
   let alertClass;
   let message;
