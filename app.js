@@ -74,7 +74,7 @@ app.use('/', adminRouter);
 app.use('/modules/menu', (req, res) => {
   let activeGroup = req.user.groups.filter(group => group._id.toString() === req.session.activeGroup._id)[0];
   if (activeGroup === undefined) {
-    activeGroup = req.user.groups[0] // TODO this might be a bad idea since req.user.group is not same as req.session.activeGroup
+    activeGroup = req.user.groups[0]; // TODO this might be a bad idea since req.user.group is not same as req.session.activeGroup
   }
   const activeGroupRole = activeGroup.role;
   const options = {

@@ -27,7 +27,7 @@ $('#menu').load('/modules/menu', () => {
       if (result.success) {
         window.location.href = '/admin';
       } else {
-        showAlert({error: 'Something went wrong'});
+        showAlert({ error: 'Something went wrong' });
       }
     });
     return false;
