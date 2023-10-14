@@ -17,8 +17,8 @@ $(async () => {
     });
 
     // eslint-disable-next-line no-new
-    new bootstrap.ScrollSpy(document.getElementById('scroll-spy-page'), {
-      target: '#navbar'
+    new bootstrap.ScrollSpy(document.getElementById('scrollspy-div'), {
+      target: '#scrollspy-nav'
     });
 
     if (result.length === 0) {
@@ -40,8 +40,8 @@ $(async () => {
     }
 
     const menuTemplate = baseMenuTemplate.replace(/{{year}}/g, year);
-    $('#scroll-spy-menu').append(menuTemplate);
-    $('#scroll-spy-page').append(yearTemplate);
+    $('#scrollspy-menu').append(menuTemplate);
+    $('#scrollspy-div').append(yearTemplate);
   }
 
   function addGifts(year, gifts) {

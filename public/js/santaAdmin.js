@@ -1,6 +1,6 @@
 /* global $, bootstrap, showAlert */
 
-$(async function() {
+$(async () => {
   'use strict';
 
   await $.getScript('/js/commons.js');
@@ -162,12 +162,4 @@ $(async function() {
       $('#userButton').removeAttr('disabled');
     }
   }
-
-  // TODO not working
-  $('#emailPasswords').on('click', function() {
-    const personId = $('#email-select').val();
-    $.getJSON('api/email?person=' + personId, function(result) {
-      showAlert(result);
-    });
-  });
 });
