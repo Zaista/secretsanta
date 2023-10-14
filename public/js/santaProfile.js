@@ -1,9 +1,9 @@
 /* global $, showAlert */
 
-$(function() {
+$(async () => {
   'use strict';
 
-  $.getScript('/js/commons.js');
+  await $.getScript('/js/commons.js');
 
   $.get(`/api${window.location.pathname}`, friend => {
     if (friend.image) {

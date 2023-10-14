@@ -29,6 +29,21 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// register regenerate & save until passport v0.6 is fixed
+app.use(function(request, response, next) {
+  if (request.session && !request.session.regenerate) {
+    request.session.regenerate = (cb) => {
+      cb()
+    }
+  }
+  if (request.session && !request.session.save) {
+    request.session.save = (cb) => {
+      cb()
+    }
+  }
+  next()
+});
+
 // template engine
 app.engine('html', (filePath, options, callback) => {
   fs.readFile(filePath, (err, content) => {
@@ -91,7 +106,7 @@ app.use('/api/setActiveGroup', (req, res) => {
   res.send({ success: 'Group changed' });
 });
 
-app.use(function(req, res, next) {
+app.use(function(req, res) {
   res.status(404).render('404.html');
 });
 
