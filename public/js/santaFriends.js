@@ -11,11 +11,7 @@ $(async function() {
         const friendElement = $.parseHTML(friendTemplate);
         $(friendElement).find('#userId').val(userData._id);
         $(friendElement).find('#name').text(userData.name || userData.email);
-        if (userData.image) {
-          $(friendElement).find('img').attr('src', `/resources/images/${userData.image}.png`);
-        } else {
-          $(friendElement).find('img').attr('src', '/resources/images/placeholder.png');
-        }
+        $(friendElement).find('img').attr('src', `/api/friends/friend/image?_id=${userData._id}`);
         $(friendElement).find('#street').text(userData.address?.street || 'N/A');
         $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(N/A)');
         $(friendElement).find('#city').text(userData.address?.city || 'N/A');
@@ -25,7 +21,7 @@ $(async function() {
     }).then(() => {
       // add card click event
       $('.card.pointer').on('click', function(event) {
-        window.location.href = `/friends/${$(this).find('#userId').val()}`;
+        window.location.href = `/friends/friend?_id=${$(this).find('#userId').val()}`;
       });
     });
   });
