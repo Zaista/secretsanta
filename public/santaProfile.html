@@ -24,6 +24,10 @@
     <meta property="og:title" content="Secret Santa"/>
     <meta property="og:type" content="website"/>
     <meta property="og:description" content="Secret Santa for my friends"/>
+    
+    <!-- Croppie -->
+    <link rel="stylesheet" href="/croppie/croppie.css" />
+    <script src="/croppie/croppie.min.js"></script>
 </head>
 
 <body>
@@ -32,10 +36,15 @@
 
     <div class="row mt-3 mb-3">
 
+        <!-- user image -->
         <div class="col-md-2 col-xs-12 text-center">
             <img id="image" class="img-fluid" alt="Profile image" src="">
+            <button id="uploadButton" class="btn btn-primary">Edit</button>
+            <input accept="image/*" type='file' id="uploadImage" style="display: none"/>
         </div>
+        <!-- end user image -->
 
+        <!-- user data -->
         <div class="col-md-8 col-xs-12">
             <form>
                 <fieldset {{isDisabled}}>
@@ -73,6 +82,26 @@
                 </fieldset>
             </form>
         </div>
+        <!-- end user data -->
+
+        <!-- image cropper -->
+        <div class="modal fade" id="imageCropperModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Crop your image</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div id="cropper" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button id="submitImage" type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end image cropper -->
     </div>
 </div>
 <div id="footer"></div>
