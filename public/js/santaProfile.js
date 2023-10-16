@@ -68,10 +68,10 @@ $(async () => {
   
   $('#submitImage').on('click', () => {
     $('#cropper').croppie('result').then(function(croppedImage) {
-      $.post('/api/profile/image', { image: croppedImage }, (result) => {
-        showAlert(result);
+      $.post('/api/profile/image', { image: croppedImage }, result => {
         modal.hide();
-        // TODO reload the image or the page
+        showAlert(result);
+        $('#image').attr('src', croppedImage);
       })
     });
   });

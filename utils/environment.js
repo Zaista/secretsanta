@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'production') {
   const projectId = 'deductive-span-313911';
   const secretManager = new SecretManagerServiceClient();
 
-  const [mongodbUri, sendgridApi, sessionKey] = await Promise.all([
+  const [mongodbUri, sendgridApi, sessionKey, minioEndPoint, minioAccessKey, minioSecretKey] = await Promise.all([
     secretManager.accessSecretVersion({
       name: `projects/${projectId}/secrets/secretsanta-test-mongodb-url/versions/latest`
     }),
@@ -17,12 +17,26 @@ if (process.env.NODE_ENV === 'production') {
     }),
     secretManager.accessSecretVersion({
       name: `projects/${projectId}/secrets/session-cookie-key/versions/latest`
+    }),
+    secretManager.accessSecretVersion({
+      name: `projects/${projectId}/secrets/minio_url/versions/latest`
+    }),
+    secretManager.accessSecretVersion({
+      name: `projects/${projectId}/secrets/minio_user/versions/latest`
+    }),
+    secretManager.accessSecretVersion({
+      name: `projects/${projectId}/secrets/minio_pass/versions/latest`
     })
   ]);
 
   process.env.mongodbUri = mongodbUri[0].payload.data.toString();
   process.env.sendgridApi = sendgridApi[0].payload.data.toString();
   process.env.sessionKey = sessionKey[0].payload.data.toString();
+  process.env.minioEndPoint = minio_url[0].payload.data.toString();
+  process.env.minioPort = 9000;
+  process.env.minioUseSSL = true;
+  process.env.minioAccessKey = minio_user[0].payload.data.toString();
+  process.env.minioSecretKey = minio_pass[0].payload.data.toString();
 } else {
   console.log('Environment variables loaded from the .env file');
   dotenv.config();
