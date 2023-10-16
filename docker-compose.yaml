@@ -14,11 +14,12 @@ services:
       - "27017:27017"
 
   minio:
-    image: bitnami/minio
+    image: minio/minio
     restart: always
     environment:
       MINIO_ROOT_USER: rootroot
       MINIO_ROOT_PASSWORD: rootroot
+    command: 'server /data --console-address ":9001"'
     volumes:
       - ./private/minio/data:/data
     ports:
