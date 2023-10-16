@@ -88,12 +88,11 @@ app.use('/', adminRouter);
 
 // view routers
 app.use('/modules/menu', (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const options = {
     groups: req.user.groups,
     activeGroup: req.session.activeGroup
   };
-  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  // else if (req.user.role === ROLES.admin) options.isAdmin = true;
   res.render('modules/menu.html', options);
 });
 
@@ -107,7 +106,7 @@ app.use('/api/setActiveGroup', (req, res) => {
 });
 
 app.use(function(req, res) {
-  res.status(404).render('404.html');
+  res.status(404).sendFile('public/404.html', { root: '.' });
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise
