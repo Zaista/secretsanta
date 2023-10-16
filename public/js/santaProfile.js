@@ -7,26 +7,32 @@ $(async () => {
   
   let searchParams = new URLSearchParams(window.location.search);
 
-  $.get(`/api/friends/friend?_id=${searchParams.get('_id')}`, friend => {
-    $('#image').attr('src', `/api/friends/friend/image?_id=${friend._id}`);
-    $('#name').val(friend.name);
-    $('#description').val(friend.description);
-    if (friend.description) {
-      $('#description').height($('#description')[0].scrollHeight);
+  $.get(`/api/profile?_id=${searchParams.get('_id')}`, friend => {
+    if (friend.error) {
+      showAlert(friend)
+    } else {
+      if (friend.imageUploaded) {
+        $('#image').attr('src', `/api/profile/image?_id=${friend._id}`);
+      } else {
+        $('#image').attr('src', '/resources/images/placeholder.png');
+      }
+      $('#name').val(friend.name);
+      $('#description').val(friend.description);
+      if (friend.description) {
+        $('#description').height($('#description')[0].scrollHeight);
+      }
+      if (friend.address) {
+        $('#street').val(friend.address.street);
+        $('#postalCode').val(friend.address.postalCode);
+        $('#city').val(friend.address.city);
+        $('#state').val(friend.address.state);
+      }
+      $('#email').val(friend.email);
     }
-    if (friend.address) {
-      $('#street').val(friend.address.street);
-      $('#postalCode').val(friend.address.postalCode);
-      $('#city').val(friend.address.city);
-      $('#state').val(friend.address.state);
-    }
-    $('#email').val(friend.email);
-    $('#userId').val(friend._id);
   });
 
   $('form').on('submit', function() {
     const friend = {
-      _id: $('#userId').val(),
       name: $('#name').val(),
       description: $('#description').val(),
       address: {
@@ -37,7 +43,7 @@ $(async () => {
       },
       email: $('#email').val()
     };
-    $.post(`/api/friends/${friend._id}`, friend, result => {
+    $.post('/api/profile', friend, result => {
       showAlert(result);
     });
     return false;

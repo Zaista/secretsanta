@@ -38,8 +38,8 @@
 
         <!-- user image -->
         <div class="col-md-2 col-xs-12 text-center">
-            <img id="image" class="img-fluid" alt="Profile image" src="">
-            <button id="uploadButton" class="btn btn-primary">Edit</button>
+            <img id="image" class="img-fluid mb-3" alt="Profile image" src="">
+            <button id="uploadButton" class="btn btn-primary" {{isHidden}}><i class="bi bi-pencil-square"></i></button>
             <input accept="image/*" type='file' id="uploadImage" style="display: none"/>
         </div>
         <!-- end user image -->
@@ -78,7 +78,6 @@
                         <label for="email" class="form-label">Email</label>
                     </div>
                     <button type="submit" class="btn btn-primary" {{isHidden}}>Save changes</button>
-                    <input type="hidden" id="userId" name="userId">
                 </fieldset>
             </form>
         </div>

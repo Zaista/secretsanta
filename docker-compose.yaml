@@ -9,7 +9,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
-      - ./private/data:/var/lib/mongo
+      - ./private/mongodb/data:/var/lib/mongo
     ports:
       - "27017:27017"
 
@@ -19,6 +19,8 @@ services:
     environment:
       MINIO_ROOT_USER: rootroot
       MINIO_ROOT_PASSWORD: rootroot
+    volumes:
+      - ./private/minio/data:/data
     ports:
       - "9000:9000"
       - "9001:9001"
