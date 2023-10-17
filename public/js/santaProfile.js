@@ -4,12 +4,12 @@ $(async () => {
   'use strict';
 
   await $.getScript('/js/commons.js');
-  
-  let searchParams = new URLSearchParams(window.location.search);
+
+  const searchParams = new URLSearchParams(window.location.search);
 
   $.get(`/api/profile?_id=${searchParams.get('_id')}`, friend => {
     if (friend.error) {
-      showAlert(friend)
+      showAlert(friend);
     } else {
       if (friend.imageUploaded) {
         $('#image').attr('src', `/api/profile/image?_id=${friend._id}`);
@@ -48,31 +48,31 @@ $(async () => {
     });
     return false;
   });
-  
+
   // cropping images
-  const modalElement = $('#imageCropperModal').get(0)
+  const modalElement = $('#imageCropperModal').get(0);
   const modal = new bootstrap.Modal(modalElement);
-  
+
   $('#uploadButton').on('click', () => {
     $('#uploadImage').click();
   });
-  
-  $('#uploadImage').on('change', function () {
-    const file = this.files[0]
-    let image = URL.createObjectURL(file)
-    modalElement.addEventListener('shown.bs.modal', function (event) {
+
+  $('#uploadImage').on('change', function() {
+    const file = this.files[0];
+    const image = URL.createObjectURL(file);
+    modalElement.addEventListener('shown.bs.modal', function(event) {
       showCroppie(image);
-    })
+    });
     modal.show();
-  })
-  
+  });
+
   $('#submitImage').on('click', () => {
     $('#cropper').croppie('result').then(function(croppedImage) {
       $.post('/api/profile/image', { image: croppedImage }, result => {
         modal.hide();
         showAlert(result);
         $('#image').attr('src', croppedImage);
-      })
+      });
     });
   });
 
