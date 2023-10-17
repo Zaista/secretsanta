@@ -33,7 +33,6 @@ if (process.env.NODE_ENV === 'production') {
   process.env.sendgridApi = sendgridApi[0].payload.data.toString();
   process.env.sessionKey = sessionKey[0].payload.data.toString();
   process.env.minioEndPoint = minioEndPoint[0].payload.data.toString();
-  process.env.minioPort = 9000;
   process.env.minioUseSSL = true;
   process.env.minioAccessKey = minioAccessKey[0].payload.data.toString();
   process.env.minioSecretKey = minioSecretKey[0].payload.data.toString();
