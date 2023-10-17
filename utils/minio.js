@@ -17,10 +17,14 @@ export function getProfileImageFromMinio(userId) {
 }
 
 function initializeMinioClient() {
+  let port = null;
+  if (process.env.minioPort !== undefined) {
+    port = parseInt(process.env.minioPort);
+  }
   minioClient = new Minio.Client({
     endPoint: process.env.minioEndPoint,
-    port: parseInt(process.env.minioPort),
-    useSSL: process.env.minioUseSSL === true,
+    port: port,
+    useSSL: process.env.minioUseSSL === 'true',
     accessKey: process.env.minioAccessKey,
     secretKey: process.env.minioSecretKey
   });
