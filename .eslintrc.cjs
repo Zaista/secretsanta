@@ -9,6 +9,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
+  ignorePatterns: ['public/croppie/*'],
   rules: {
     'space-before-function-paren': ['error', {
       'anonymous': 'never',
