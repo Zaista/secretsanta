@@ -6,6 +6,7 @@ import { ROLES } from './utils/roles.js';
 
 // routers
 import { loginRouter, passport } from './routers/login-router.js';
+import { registerRouter } from './routers/register-router.js';
 import { santaRouter } from './routers/santa-router.js';
 import { historyRouter } from './routers/history-router.js';
 import { friendsRouter } from './routers/friends-router.js';
@@ -62,6 +63,7 @@ app.set('view engine', 'html');
 
 // page routers
 app.use('/', loginRouter);
+app.use('/', registerRouter);
 app.use('/', santaRouter);
 app.use('/', historyRouter);
 app.use('/', friendsRouter);
