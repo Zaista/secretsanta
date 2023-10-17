@@ -19,7 +19,6 @@ export async function getFriends(groupId) {
 }
 
 export async function getProfile(_id) {
-
   if (!ObjectId.isValid(_id)) {
     return null;
   }
