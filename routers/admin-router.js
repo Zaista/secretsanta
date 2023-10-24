@@ -5,6 +5,7 @@ import {
   updateUsersRoles,
   checkIfUserExists,
   addUserToGroup,
+  removeUserFromGroup,
   createNewUser,
   getGroup,
   updateGroup,
@@ -74,6 +75,15 @@ adminRouter.post('/api/user', async (req, res) => {
       }
     }
   }
+});
+
+adminRouter.post('/api/user/delete', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const result = await removeUserFromGroup(req.body._id, req.session.activeGroup._id);
+  if (result === null) {
+     return res.send({error: 'User could not be removed from the group'});
+  }
+  res.send({success: `User ${req.body.email} removed from the group`});
 });
 
 // Secret Santa groups
