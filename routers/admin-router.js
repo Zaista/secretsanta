@@ -133,11 +133,10 @@ adminRouter.post('/api/forbidden', async (req, res) => {
   res.send({ error: 'Something went wrong' });
 });
 
-adminRouter.post('/api/delete', async (req, res) => {
+adminRouter.post('/api/forbidden/delete', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await deleteForbiddenPair(req.body._id);
-  if (result.deletedCount === 1) return res.send({ success: 'The pair was successfully deleted' });
-  // TODO remove the row from the table
+  if (result.deletedCount === 1) return res.send({ success: 'The forbidden pair was successfully deleted' });
   res.send({ error: 'Something went wrong' });
 });
 
