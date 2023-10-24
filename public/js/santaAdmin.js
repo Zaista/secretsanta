@@ -70,16 +70,22 @@ $(async () => {
 
   // fill up the forbiddenPair table with forbidden pairs
   $.getJSON('api/forbidden', function(result) {
-    // TODO make this beautiful
-    result.forEach((pair, index) => {
-      $('#forbiddenPairsTable tbody').append(`<tr value="${pair._id}"><td><b>${++index}</b></td><td>${pair.user}</td><td>${pair.forbiddenPair}</td><td><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td></tr>`);
-    });
-    $('.buttonDelete').on('click', function() {
-      const _id = $(this).parents('tr').attr('value');
-      $.post('api/delete', { _id }, result => {
-        // TODO Handle the response once backend is finished
-        if (result.success) $(this).parents('tr').remove();
-        showAlert(result);
+    $.get('modules/pair.html', pairTemplate => {
+      result.forEach((pair, index) => {
+        const pairElement = $.parseHTML(pairTemplate);
+        $(pairElement).find('[data-name="pairIndex"]').text(++index);
+        $(pairElement).find('[data-name="pairUser"]').text(pair.user);
+        $(pairElement).find('[data-name="pairForbiddenPair"]').text(pair.forbiddenPair);
+
+        $(pairElement).find('[data-name="pairDelete"]').on('click', () => {
+          $.post('api/forbidden/delete', { _id: pair._id }, result => {
+            showAlert(result);
+            if (result.success) {
+              $(pairElement).remove();
+            }
+          });
+        });
+        $('#forbiddenPairsTable tbody').append(pairElement);
       });
     });
   });
