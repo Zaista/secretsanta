@@ -47,9 +47,12 @@ adminRouter.post('/api/user', async (req, res) => {
   const user = await checkIfUserExists(req.body.email);
   const group = await getGroup(req.session.activeGroup._id);
 
-  // TODO check if user is already in the group
-
   if (user) {
+    const alreadyPartOfGroup = user.groups.find(group => group.groupId.equals(group._id));
+    if (alreadyPartOfGroup === undefined) {
+      return res.send({ error: 'User already part of the group' });
+    }
+
     const result = await addUserToGroup(req.session.activeGroup._id, user.email, ROLES.user);
     if (result === true) {
       const emailStatus = await sendWelcomeEmail(user.email, group.name);
