@@ -23,7 +23,7 @@ function initializeMinioClient() {
   }
   minioClient = new Minio.Client({
     endPoint: process.env.minioEndPoint,
-    port: port,
+    port,
     useSSL: process.env.minioUseSSL === 'true',
     accessKey: process.env.minioAccessKey,
     secretKey: process.env.minioSecretKey

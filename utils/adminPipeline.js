@@ -93,6 +93,31 @@ export async function addUserToGroup(groupId, email, role) {
   }
 }
 
+export async function removeUserFromGroup(userId, groupId) {
+  const client = await getClient();
+  const filter = { _id: new ObjectId(userId) };
+  const update = {
+    $pull: {
+      groups: { groupId: new ObjectId(groupId) }
+    }
+  };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('users')
+      .updateOne(filter, update);
+    if (result.acknowledged !== true || result.modifiedCount !== 1) {
+      console.log('ERROR: failed to remove the user from the group');
+      return null;
+    }
+    return true;
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
 export async function createNewUser(groupId, email, password) {
   const client = await getClient();
   const user = {

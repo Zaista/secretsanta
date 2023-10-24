@@ -5,6 +5,7 @@ import {
   updateUsersRoles,
   checkIfUserExists,
   addUserToGroup,
+  removeUserFromGroup,
   createNewUser,
   getGroup,
   updateGroup,
@@ -47,9 +48,12 @@ adminRouter.post('/api/user', async (req, res) => {
   const user = await checkIfUserExists(req.body.email);
   const group = await getGroup(req.session.activeGroup._id);
 
-  // TODO check if user is already in the group
-
   if (user) {
+    const alreadyPartOfGroup = user.groups.find(group => group.groupId.equals(group._id));
+    if (alreadyPartOfGroup === undefined) {
+      return res.send({ error: 'User already part of the group' });
+    }
+
     const result = await addUserToGroup(req.session.activeGroup._id, user.email, ROLES.user);
     if (result === true) {
       const emailStatus = await sendWelcomeEmail(user.email, group.name);
@@ -71,6 +75,15 @@ adminRouter.post('/api/user', async (req, res) => {
       }
     }
   }
+});
+
+adminRouter.post('/api/user/delete', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const result = await removeUserFromGroup(req.body._id, req.session.activeGroup._id);
+  if (result === null) {
+    return res.send({ error: 'User could not be removed from the group' });
+  }
+  res.send({ success: `User ${req.body.email} removed from the group` });
 });
 
 // Secret Santa groups
