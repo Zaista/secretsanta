@@ -21,12 +21,12 @@ $(async () => {
         $(userElement).find('[name="userRole"]').on('input', onChangeDetector);
 
         $(userElement).find('[name="userDelete"]').on('click', () => {
-          $.post('api/user/delete', {_id: userData._id, email: userData.email}, response => {
+          $.post('api/user/delete', { _id: userData._id, email: userData.email }, response => {
             showAlert(response);
             if (response.success) {
               $(userElement).remove();
             }
-          })
+          });
         });
         $('#users tbody').append(userElement);
       });
