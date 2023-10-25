@@ -23,7 +23,7 @@ $('#menu').load('/modules/menu', () => {
   // create new group
   $('#create-group-form').on('submit', () => {
     const groupName = $('#group-name').val();
-    $.post('/api/group/create', { groupName }, result => {
+    $.post('admin/api/group/create', { groupName }, result => {
       if (result.success) {
         window.location.href = '/admin';
       } else {

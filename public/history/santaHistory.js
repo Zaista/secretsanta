@@ -3,12 +3,12 @@
 $(async () => {
   'use strict';
 
-  await $.getScript('/js/commons.js');
-  const baseYearTemplate = await $.get('modules/year.html');
-  const baseGiftTemplate = await $.get('modules/gift.html');
-  const baseMenuTemplate = await $.get('modules/side-menu.html');
+  await $.getScript('/commons.js');
+  const baseYearTemplate = await $.get('../modules/year.html');
+  const baseGiftTemplate = await $.get('../modules/gift.html');
+  const baseMenuTemplate = await $.get('../modules/side-menu.html');
 
-  $.getJSON('api/history', result => {
+  $.getJSON('history/api/list', result => {
     result.forEach(yearData => {
       addYear(yearData.year, yearData.location, yearData.location_image);
       yearData.gifts.forEach(gifts => {

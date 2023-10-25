@@ -3,17 +3,17 @@
 $(async function() {
   'use strict';
 
-  await $.getScript('/js/commons.js');
+  await $.getScript('/commons.js');
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-  $.getJSON('api/friends', function(result) {
+  $.getJSON('friends/api/list', function(result) {
     result.forEach(function(friend) {
       $('#user').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
   });
 
-  $.getJSON('api/chat', chat => {
+  $.getJSON('chat/api/list', chat => {
     for (const item of chat) {
       const date = new Date(item.timestamp);
 
@@ -23,12 +23,13 @@ $(async function() {
       let minutes = date.getMinutes();
       minutes = minutes < 10 ? '0' + minutes : minutes;
 
+      // TODO template
       const dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
       $('#chat').append(`<div id="deleteMsg" class="row position-relative"><div class="col-11" value="${item._id}" ><p>` + item.message + '<span>To: ' + item.name + ' (' + dateStr + ')' + '</span></p></div><div class="col-1 position-absolute top-50 start-100 translate-middle"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></div></div>');
     }
     $('.buttonDelete').on('click', function() {
       const _id = $(this).parent('div').siblings('div').attr('value');
-      $.post('api/delete/msg', { _id }, result => {
+      $.post('chat/api/delete', { _id }, result => {
       // TODO Handle the response once backend is finished
         if (result.success) $(this).closest('#deleteMsg').remove();
         showAlert(result);
@@ -44,9 +45,9 @@ $(async function() {
       email: $('#user option:selected').attr('data-email'),
       message: $('#message').val()
     };
-    $.post('api/chat', requestData, function(response) {
+    $.post('chat/api/send', requestData, function(response) {
       if (!response.error) {
-        $('#chat').append(`<div class="row position-relative"><div class="col-11"><p>${$('input').val()}<span>Just now...</span></p></div><div class="col-1 position-absolute top-50 start-100 translate-middle"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></div></div>`);
+        $('#chat').append(`<div class="row position-relative"><div class="col-11"><p>${requestData.message}<span>Just now...</span></p></div><div class="col-1 position-absolute top-50 start-100 translate-middle"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></div></div>`);
         $('#chat').scrollTop($('#chat').prop('scrollHeight'));
       }
       showAlert(response);
