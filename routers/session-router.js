@@ -5,32 +5,33 @@ import LocalStrategy from 'passport-local';
 import { getUserByEmailAndPassword, getUserById, checkEmail } from '../utils/loginPipeline.js';
 import { sendEmail } from '../utils/environment.js';
 
-const loginRouter = express.Router();
+const sessionRouter = express.Router();
 
 // define the home page route
-loginRouter.get('/login', (req, res) => {
+sessionRouter.get('/login', (req, res) => {
   if (req.user) return res.redirect('/');
-  res.sendFile('public/santaLogin.html', { root: '.' });
+  res.sendFile('public/login/santaLogin.html', { root: '.' });
 });
 
-loginRouter.post('/api/login', passport.authenticate('local'), async (req, res) => {
+sessionRouter.post('/api/login', passport.authenticate('local'), async (req, res) => {
   console.log(`User ${req.user.email} logged in`);
   req.session.activeGroup = req.user.groups[0];
   res.send({ success: 'Logged in' });
 });
 
-loginRouter.get('/logout', (req, res, next) => {
+sessionRouter.get('/logout', (req, res, next) => {
   if (req.user) {
     console.log(`User ${req.user.email} logged out`);
     req.logout(function(err) {
       if (err) { return next(err); }
-      res.redirect('/login');
+      return res.redirect('login');
     });
+  } else {
+    res.redirect('login');
   }
-  res.redirect('/login');
 });
 
-loginRouter.post('/api/email', async (req, res) => {
+sessionRouter.post('/api/email', async (req, res) => {
   let emailText;
   const user = await checkEmail(req.body.email);
 
@@ -80,4 +81,4 @@ passport.deserializeUser(async function(_id, done) {
   done(null, user[0]);
 });
 
-export { loginRouter, passport };
+export { sessionRouter, passport };

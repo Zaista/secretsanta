@@ -5,15 +5,16 @@ import fs from 'fs';
 import { ROLES } from './utils/roles.js';
 
 // routers
-import { loginRouter, passport } from './routers/login-router.js';
 import { santaRouter } from './routers/santa-router.js';
+import { sessionRouter, passport } from './routers/session-router.js';
 import { historyRouter } from './routers/history-router.js';
 import { friendsRouter } from './routers/friends-router.js';
+import { profileRouter } from './routers/profile-router.js';
 import { chatRouter } from './routers/chat-router.js';
 import { adminRouter } from './routers/admin-router.js';
 
 const app = express();
-app.use(express.static('./public'));
+app.use(express.static('./public', { redirect: false }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -77,12 +78,13 @@ app.set('views', './public');
 app.set('view engine', 'html');
 
 // page routers
-app.use('/', loginRouter);
 app.use('/', santaRouter);
-app.use('/', historyRouter);
-app.use('/', friendsRouter);
-app.use('/', chatRouter);
-app.use('/', adminRouter);
+app.use('/session', sessionRouter);
+app.use('/history', historyRouter);
+app.use('/friends', friendsRouter);
+app.use('/profile', profileRouter);
+app.use('/chat', chatRouter);
+app.use('/admin', adminRouter);
 
 // view routers
 app.use('/modules/menu', (req, res) => {
@@ -104,7 +106,7 @@ app.use('/api/setActiveGroup', (req, res) => {
 });
 
 app.use(function(req, res) {
-  res.status(404).sendFile('public/404.html', { root: '.' });
+  res.status(404).sendFile('public/not-found/santa404.html', { root: '.' });
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise

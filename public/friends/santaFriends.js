@@ -3,9 +3,9 @@
 $(async function() {
   'use strict';
 
-  await $.getScript('/js/commons.js');
+  await $.getScript('/commons.js');
 
-  $.getJSON('api/friends', result => {
+  $.getJSON('friends/api/list', result => {
     if (result.length !== 0) {
       $.get('modules/friend.html', friendTemplate => {
         $.each(result, (i, userData) => {
@@ -13,7 +13,7 @@ $(async function() {
           $(friendElement).find('#userId').val(userData._id);
           $(friendElement).find('#name').text(userData.name || userData.email);
           if (userData.imageUploaded) {
-            $(friendElement).find('img').attr('src', `/api/profile/image?_id=${userData._id}`);
+            $(friendElement).find('img').attr('src', `profile/api/image?_id=${userData._id}`);
           } else {
             $(friendElement).find('img').attr('src', '/resources/images/placeholder.png');
           }

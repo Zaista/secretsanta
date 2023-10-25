@@ -23,7 +23,7 @@ $('#menu').load('/modules/menu', () => {
   // create new group
   $('#create-group-form').on('submit', () => {
     const groupName = $('#group-name').val();
-    $.post('/api/group/create', { groupName }, result => {
+    $.post('admin/api/group/create', { groupName }, result => {
       if (result.success) {
         window.location.href = '/admin';
       } else {
@@ -52,7 +52,7 @@ function showAlert(alert, timeout = 3000) {
   const alertElement = $('#footerAlert');
   alertElement.removeClass('alert-success alert-danger');
   alertElement.addClass(alertClass);
-  $('.alert span').text(message);
+  $('#footerAlert span').text(message);
   alertElement.show();
   if (timeout !== 0) {
     setTimeout(function() {
