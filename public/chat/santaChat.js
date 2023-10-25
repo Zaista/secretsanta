@@ -1,5 +1,8 @@
 /* global $, showAlert */
 
+const apiUrl = 'chat/api';
+const friendsApiUrl = 'friends/api';
+
 $(async function() {
   'use strict';
 
@@ -7,36 +10,40 @@ $(async function() {
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-  $.getJSON('friends/api/list', function(result) {
+  $.getJSON(`${friendsApiUrl}/list`, function(result) {
     result.forEach(function(friend) {
       $('#user').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
   });
 
-  $.getJSON('chat/api/list', chat => {
-    for (const item of chat) {
-      const date = new Date(item.timestamp);
+  $.getJSON(`${apiUrl}/list`, chat => {
+    $.get('modules/chat.html', chatTemplate => {
+      for (const item of chat) {
+        const date = new Date(item.timestamp);
 
-      let hours = date.getHours();
-      hours = hours < 10 ? '0' + hours : hours;
+        let hours = date.getHours();
+        hours = hours < 10 ? '0' + hours : hours;
+        let minutes = date.getMinutes();
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        const dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
 
-      let minutes = date.getMinutes();
-      minutes = minutes < 10 ? '0' + minutes : minutes;
+        const chatElement = $.parseHTML(chatTemplate);
+        $(chatElement).find('[data-name="chatTo"]').text(`To: ${item.name}`);
+        $(chatElement).find('[data-name="chatMessage"]').text(item.message);
+        $(chatElement).find('[data-name="chatDate"]').text(dateStr);
+        $(chatElement).find('[data-name="chatFrom"]').text(`From: ${item.from || 'Anonymous'}`);
 
-      // TODO template
-      const dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
-      $('#chat').append(`<div id="deleteMsg" class="row position-relative"><div class="col-11" value="${item._id}" ><p>` + item.message + '<span>To: ' + item.name + ' (' + dateStr + ')' + '</span></p></div><div class="col-1 position-absolute top-50 start-100 translate-middle"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></div></div>');
-    }
-    $('.buttonDelete').on('click', function() {
-      const _id = $(this).parent('div').siblings('div').attr('value');
-      $.post('chat/api/delete', { _id }, result => {
-      // TODO Handle the response once backend is finished
-        if (result.success) $(this).closest('#deleteMsg').remove();
-        showAlert(result);
-      });
+        $(chatElement).find('button').on('click', function() {
+          $.post(`${apiUrl}/delete`, { _id: item._id }, result => {
+            if (result.success) $(chatElement).remove();
+            showAlert(result);
+          });
+        });
+        $('#chat').append(chatElement);
+      }
+
+      $('#chat').scrollTop($('#chat').prop('scrollHeight'));
     });
-
-    $('#chat').scrollTop($('#chat').prop('scrollHeight'));
   });
 
   $('#chat-form').on('submit', function() {
@@ -45,10 +52,17 @@ $(async function() {
       email: $('#user option:selected').attr('data-email'),
       message: $('#message').val()
     };
-    $.post('chat/api/send', requestData, function(response) {
+    $.post(`${apiUrl}/send`, requestData, function(response) {
       if (!response.error) {
-        $('#chat').append(`<div class="row position-relative"><div class="col-11"><p>${requestData.message}<span>Just now...</span></p></div><div class="col-1 position-absolute top-50 start-100 translate-middle"><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></div></div>`);
-        $('#chat').scrollTop($('#chat').prop('scrollHeight'));
+        $.get('modules/chat.html', chatTemplate => {
+          const chatElement = $.parseHTML(chatTemplate);
+          $(chatElement).find('[data-name="chatTo"]').text(`To: ${$('#user option:selected').text()}`);
+          $(chatElement).find('[data-name="chatMessage"]').text(requestData.message);
+          $(chatElement).find('[data-name="chatDate"]').text('Just now...');
+          $(chatElement).find('[data-name="chatFrom"]').text('From: you');
+          $('#chat').append(chatElement);
+          $('#chat').scrollTop($('#chat').prop('scrollHeight'));
+        });
       }
       showAlert(response);
     });

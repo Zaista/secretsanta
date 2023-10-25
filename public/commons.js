@@ -52,7 +52,7 @@ function showAlert(alert, timeout = 3000) {
   const alertElement = $('#footerAlert');
   alertElement.removeClass('alert-success alert-danger');
   alertElement.addClass(alertClass);
-  $('.alert span').text(message);
+  $('#footerAlert span').text(message);
   alertElement.show();
   if (timeout !== 0) {
     setTimeout(function() {
