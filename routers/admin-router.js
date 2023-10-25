@@ -23,10 +23,10 @@ import { sendEmail } from '../utils/environment.js';
 const adminRouter = express.Router();
 
 // define the home page route
-adminRouter.get('/admin', (req, res) => {
-  if (!req.user) return res.status(401).redirect('/login');
+adminRouter.get('/', (req, res) => {
+  if (!req.user) return res.status(401).redirect('session/login');
   else if (req.session.activeGroup.role !== ROLES.admin) return res.status(401).redirect('/');
-  res.sendFile('public/santaAdmin.html', { root: '.' });
+  res.sendFile('public/admin/santaAdmin.html', { root: '.' });
 });
 
 // Secret Santa users
@@ -49,8 +49,8 @@ adminRouter.post('/api/user', async (req, res) => {
   const group = await getGroup(req.session.activeGroup._id);
 
   if (user) {
-    const alreadyPartOfGroup = user.groups.find(group => group.groupId.equals(group._id));
-    if (alreadyPartOfGroup === undefined) {
+    const alreadyPartOfGroup = user.groups.find(userGroup => userGroup.groupId.equals(group._id));
+    if (alreadyPartOfGroup !== undefined) {
       return res.send({ error: 'User already part of the group' });
     }
 

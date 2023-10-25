@@ -3,12 +3,12 @@
 $(async () => {
   'use strict';
 
-  await $.getScript('/js/commons.js');
+  await $.getScript('/commons.js');
 
   $('#emailNotifications').on('change', onChangeDetector);
   $('#groupNameSettings').on('input', onChangeDetector);
 
-  $.getJSON('api/users', function(result) {
+  $.getJSON('admin/api/users', function(result) {
     $.get('modules/user.html', userTemplate => {
       $.each(result, function(index, userData) {
         const userElement = $.parseHTML(userTemplate);
@@ -21,7 +21,7 @@ $(async () => {
         $(userElement).find('[name="userRole"]').on('input', onChangeDetector);
 
         $(userElement).find('[name="userDelete"]').on('click', () => {
-          $.post('api/user/delete', { _id: userData._id, email: userData.email }, response => {
+          $.post('admin/api/user/delete', { _id: userData._id, email: userData.email }, response => {
             showAlert(response);
             if (response.success) {
               $(userElement).remove();
@@ -42,14 +42,14 @@ $(async () => {
       };
       usersRoles.push(userData);
     });
-    $.post('api/users', { usersRoles }, result => {
+    $.post('admin/api/users', { usersRoles }, result => {
       showAlert(result);
       $('#userButton').prop('disabled', true);
     });
     return false;
   });
 
-  $.getJSON('api/group', group => {
+  $.getJSON('admin/api/group', group => {
     $('#groupNameSettings').val(group.name);
     $('#emailNotifications').val(`${group.emailNotifications}`);
   });
@@ -59,7 +59,7 @@ $(async () => {
       name: $('#groupNameSettings').val(),
       emailNotifications: $('#emailNotifications').val()
     };
-    $.post('api/group', groupData, result => {
+    $.post('admin/api/group', groupData, result => {
       showAlert(result);
       if (result.success) {
         $('#groupName').html($('#groupNameSettings').val());
@@ -69,7 +69,7 @@ $(async () => {
   });
 
   // fill up the forbiddenPair table with forbidden pairs
-  $.getJSON('api/forbidden', function(result) {
+  $.getJSON('admin/api/forbidden', function(result) {
     $.get('modules/pair.html', pairTemplate => {
       result.forEach((pair, index) => {
         const pairElement = $.parseHTML(pairTemplate);
@@ -91,7 +91,7 @@ $(async () => {
   });
 
   // fill up the forbiddenPair modal select elements with usernames
-  $.getJSON('api/friends', function(result) {
+  $.getJSON('/friends/api/list', function(result) {
     result.forEach(function(friend) {
       $('#forbiddenUser1, #forbiddenUser2').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
     });
@@ -101,7 +101,7 @@ $(async () => {
       forbiddenUser1Id: $('#forbiddenUser1').val(),
       forbiddenUser2Id: $('#forbiddenUser2').val()
     };
-    $.post('api/forbidden', pair, result => {
+    $.post('admin/api/forbidden', pair, result => {
       showAlert(result);
       const rowIndex = $('#forbiddenPairsTable tr').length;
       // TODO after adding try delete last pair
@@ -117,7 +117,7 @@ $(async () => {
     const newUser = {
       email: $('#newUserEmail').val()
     };
-    $.post('api/user', newUser, result => {
+    $.post('admin/api/user', newUser, result => {
       showAlert(result);
       // TODO reload page or add item to the table manually, close modal
     });
@@ -126,7 +126,7 @@ $(async () => {
     return false;
   });
 
-  $.getJSON('api/draft', response => {
+  $.getJSON('admin/api/draft', response => {
     if (response.success) {
       $('#yearAlert').text(`Santa pairs for year ${new Date().getFullYear() + 1} were not drafted yet`);
       $('#draft').removeAttr('disabled');
@@ -135,7 +135,7 @@ $(async () => {
     }
   });
 
-  $.getJSON('api/reveal', response => {
+  $.getJSON('admin/api/reveal', response => {
     if (response.success) {
       $('#reveal').removeAttr('disabled');
       $('#yearAlert').append(' but the pairs were not yet revealed');
@@ -144,7 +144,7 @@ $(async () => {
 
   $('#draft').on('click', function() {
     $.ajax({
-      url: 'api/draft',
+      url: 'admin/api/draft',
       method: 'PUT',
       success: result => {
         if (result.success) {
@@ -158,7 +158,7 @@ $(async () => {
 
   $('#reveal').on('click', function() {
     $.ajax({
-      url: 'api/reveal',
+      url: 'admin/api/reveal',
       method: 'PUT',
       success: result => {
         if (result.success) {

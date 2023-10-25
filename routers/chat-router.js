@@ -7,12 +7,12 @@ import { ROLES } from '../utils/roles.js';
 const chatRouter = express.Router();
 
 // define the home page route
-chatRouter.get('/chat', (req, res) => {
-  if (!req.user) return res.status(401).redirect('/login');
-  res.sendFile('public/santaChat.html', { root: '.' });
+chatRouter.get('/', (req, res) => {
+  if (!req.user) return res.status(401).redirect('session/login');
+  res.sendFile('public/chat/santaChat.html', { root: '.' });
 });
 
-chatRouter.get('/api/chat', async (req, res) => {
+chatRouter.get('/api/list', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   if (req.session.activeGroup !== undefined) {
     const result = await getChat(req.session.activeGroup._id);
@@ -22,7 +22,7 @@ chatRouter.get('/api/chat', async (req, res) => {
 
 // DELETE CHAT MESSAGE
 
-chatRouter.post('/api/delete/msg', async (req, res) => {
+chatRouter.post('/api/delete', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   if (req.session.activeGroup.role !== ROLES.admin) return res.send({ error: 'User not allowed to delete messages!' });
   const result = await deleteChatMessage(req.body._id);
@@ -30,7 +30,7 @@ chatRouter.post('/api/delete/msg', async (req, res) => {
   res.send({ error: 'Something went wrong' });
 });
 
-chatRouter.post('/api/chat', async (req, res) => {
+chatRouter.post('/api/send', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let emailText;
   const queryInfo = await sendMessage(req.body.message, req.body.userId, req.session.activeGroup._id);

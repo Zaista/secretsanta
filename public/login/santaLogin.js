@@ -3,7 +3,7 @@
 $(async function() {
   'use strict';
 
-  await $.getScript('/js/commons.js');
+  await $.getScript('/commons.js');
 
   $('#santa-login-form').on('submit', function() {
     const userData = {
