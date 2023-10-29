@@ -3,7 +3,7 @@
 $(async function() {
   'use strict';
 
-  await $.getScript('/commons.js');
+  await $.getScript('/santa.js');
 
   $.getJSON('friends/api/list', result => {
     if (result.length !== 0) {

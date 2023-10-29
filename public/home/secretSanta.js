@@ -3,7 +3,7 @@
 $(async function() {
   'use strict';
 
-  await $.getScript('/commons.js');
+  await $.getScript('/santa.js');
 
   $.get('api/santa', result => {
     if (result.length === 0 || result[0].year !== new Date().getFullYear() + 1) {

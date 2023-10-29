@@ -6,7 +6,7 @@ const friendsApiUrl = 'friends/api';
 $(async function() {
   'use strict';
 
-  await $.getScript('/commons.js');
+  await $.getScript('/santa.js');
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 

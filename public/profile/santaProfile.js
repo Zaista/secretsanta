@@ -3,7 +3,7 @@
 $(async () => {
   'use strict';
 
-  await $.getScript('/commons.js');
+  await $.getScript('/santa.js');
 
   const searchParams = new URLSearchParams(window.location.search);
 

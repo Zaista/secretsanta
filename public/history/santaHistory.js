@@ -3,7 +3,7 @@
 $(async () => {
   'use strict';
 
-  await $.getScript('/commons.js');
+  await $.getScript('/santa.js');
   const baseYearTemplate = await $.get('../modules/year.html');
   const baseGiftTemplate = await $.get('../modules/gift.html');
   const baseMenuTemplate = await $.get('../modules/side-menu.html');

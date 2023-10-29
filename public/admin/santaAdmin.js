@@ -5,7 +5,7 @@ const apiUrl = 'admin/api';
 $(async () => {
   'use strict';
 
-  await $.getScript('/commons.js');
+  await $.getScript('/santa.js');
 
   $('#emailNotifications').on('change', onChangeDetector);
   $('#groupNameSettings').on('input', onChangeDetector);
