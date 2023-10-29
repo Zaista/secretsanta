@@ -78,7 +78,11 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(async function(_id, done) {
   const user = await getUserById(_id);
-  done(null, user[0]);
+  if (user.length === 0) {
+    done(null, null, { error: 'User not found'});
+  } else {
+    done(null, user[0]);
+  }
 });
 
 export { sessionRouter, passport };

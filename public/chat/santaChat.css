@@ -8,6 +8,7 @@ span[data-name="chatTo"] {
 p[data-name="chatMessage"] {
   font-size: 1rem;
   text-align: right;
+  margin-top: 1rem;
 }
 
 span[data-name="chatDate"] {

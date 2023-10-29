@@ -17,7 +17,7 @@ $(async function() {
   });
 
   $.getJSON(`${apiUrl}/list`, chat => {
-    $.get('modules/chat.html', chatTemplate => {
+    $.get('chat/message.html', chatTemplate => {
       for (const item of chat) {
         const date = new Date(item.timestamp);
 
@@ -54,7 +54,7 @@ $(async function() {
     };
     $.post(`${apiUrl}/send`, requestData, function(response) {
       if (!response.error) {
-        $.get('modules/chat.html', chatTemplate => {
+        $.get('chat/message.html', chatTemplate => {
           const chatElement = $.parseHTML(chatTemplate);
           $(chatElement).find('[data-name="chatTo"]').text(`To: ${$('#user option:selected').text()}`);
           $(chatElement).find('[data-name="chatMessage"]').text(requestData.message);
