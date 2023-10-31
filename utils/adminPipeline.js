@@ -118,13 +118,26 @@ export async function removeUserFromGroup(userId, groupId) {
   }
 }
 
-export async function createNewUser(groupId, email, password) {
+export async function addNewUser(groupId, email, password) {
   const client = await getClient();
   const user = {
     password,
     email,
     groups: [{ groupId: new ObjectId(groupId), role: ROLES.user }]
   };
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .insertOne(user);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function createNewUser(user) {
+  const client = await getClient();
   try {
     return await client
       .db(process.env.database)

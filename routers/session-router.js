@@ -4,19 +4,38 @@ import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import { getUserByEmailAndPassword, getUserById, checkEmail } from '../utils/loginPipeline.js';
 import { sendEmail } from '../utils/environment.js';
+import { checkIfUserExists, createNewUser } from '../utils/adminPipeline.js';
 
 const sessionRouter = express.Router();
 
-// define the home page route
 sessionRouter.get('/login', (req, res) => {
   if (req.user) return res.redirect('/');
   res.sendFile('public/login/santaLogin.html', { root: '.' });
+});
+
+sessionRouter.get('/register', (req, res) => {
+  if (req.user) return res.redirect('/');
+  res.sendFile('public/register/santaRegister.html', { root: '.' });
 });
 
 sessionRouter.post('/api/login', passport.authenticate('local'), async (req, res) => {
   console.log(`User ${req.user.email} logged in`);
   req.session.activeGroup = req.user.groups[0];
   res.send({ success: 'Logged in' });
+});
+
+sessionRouter.post('/api/register', async (req, res) => {
+  const user = await checkIfUserExists(req.body.email);
+  if (user) {
+    return res.send({ error: 'Email already used' });
+  }
+  const result = await createNewUser(req.body);
+  if (result.insertedId) {
+    console.log(`User ${req.body.email} registered`);
+    res.send({ success: 'User registered' });
+  } else {
+    res.send({ error: 'Error during registration' });
+  }
 });
 
 sessionRouter.get('/logout', (req, res, next) => {
