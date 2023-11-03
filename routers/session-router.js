@@ -79,7 +79,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(async function(_id, done) {
   const user = await getUserById(_id);
   if (user.length === 0) {
-    done(null, null, { error: 'User not found'});
+    done(null, null, { error: 'User not found' });
   } else {
     done(null, user[0]);
   }

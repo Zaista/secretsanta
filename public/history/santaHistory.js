@@ -2,7 +2,7 @@
 
 $(async () => {
   'use strict';
-  
+
   const apiUrl = 'history/api';
 
   await $.getScript('/santa.js');

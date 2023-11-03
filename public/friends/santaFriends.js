@@ -1,7 +1,7 @@
 /* global $, showAlert */
 
-const apiUrl = 'friends/api'
-const profileApiUrl = 'profile/api'
+const apiUrl = 'friends/api';
+const profileApiUrl = 'profile/api';
 
 $(async function() {
   'use strict';
@@ -18,7 +18,7 @@ $(async function() {
           if (userData.imageUploaded) {
             lazyLoadImage(userData._id, $(friendElement).find('img')).then(image => {
               $(friendElement).find('img').attr('src', image.src);
-            })
+            });
           }
           $(friendElement).find('#street').text(userData.address?.street || 'N/A');
           $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(N/A)');
@@ -46,7 +46,7 @@ function lazyLoadImage(userId, image) {
 
     lazyImage.onload = () => {
       image.src = imageUrl;
-      resolve(image)
+      resolve(image);
     };
   });
 }
