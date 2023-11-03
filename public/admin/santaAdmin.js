@@ -5,13 +5,13 @@ const apiUrl = 'admin/api';
 $(async () => {
   'use strict';
 
-  await $.getScript('/commons.js');
+  await $.getScript('/santa.js');
 
   $('#emailNotifications').on('change', onChangeDetector);
   $('#groupNameSettings').on('input', onChangeDetector);
 
   $.getJSON(`${apiUrl}/users`, function(result) {
-    $.get('modules/user.html', userTemplate => {
+    $.get('admin/user.html', userTemplate => {
       $.each(result, function(index, userData) {
         const userElement = $.parseHTML(userTemplate);
         $(userElement).find('[name="userIndex"]').text(++index);
@@ -72,7 +72,7 @@ $(async () => {
 
   // fill up the forbiddenPair table with forbidden pairs
   $.getJSON(`${apiUrl}/forbidden`, function(result) {
-    $.get('modules/pair.html', pairTemplate => {
+    $.get('admin/pair.html', pairTemplate => {
       result.forEach((pair, index) => {
         const pairElement = $.parseHTML(pairTemplate);
         $(pairElement).find('[data-name="pairIndex"]').text(++index);
@@ -106,7 +106,7 @@ $(async () => {
     $.post(`${apiUrl}/forbidden`, pair, result => {
       showAlert(result);
       const rowIndex = $('#forbiddenPairsTable tr').length;
-      // TODO after adding try delete last pair
+      // TODO after adding try delete last pair, add template
       if (result.success) $('#forbiddenPairsTable > tbody:last-child').append(`<tr value="${result.id}"><td><b>${rowIndex}</b></td><td>${$('#forbiddenUser1 option:selected').text()}</td></td><td>${$('#forbiddenUser2 option:selected').text()}</td><td><i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i></td></td></tr>`);
       const modal = $('#forbiddenPairsModal');
       bootstrap.Modal.getInstance(modal).hide();

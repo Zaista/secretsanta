@@ -8,8 +8,8 @@
     <meta name="author" content="Zaista">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Secret Santa Archive</title>
-    <link rel="stylesheet" type="text/css" href="/history/santaHistory.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/santa.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/history/santaHistory.js"></script>
     <link rel="icon" type="img/ico" href="/favicon.ico">
 
@@ -29,18 +29,19 @@
 
 <body>
 <div id="menu"></div>
-<div class="container">
+<div id="container" class="container-fluid">
     <div class="row mt-3 mb-3">
-        <div class="col-sm-2">
-            <nav id="scrollspy-nav" class="flex-column align-items-stretch pe-4">
-                <nav id="scrollspy-menu" class="nav nav-pills flex-column">
+        <div class="col">
+            <div class="float-start sticky-md-top">
+                <nav id="scrollspy-nav" class="flex-column align-items-stretch pe-4">
+                    <nav id="scrollspy-menu" class="nav nav-pills flex-column">
+                    </nav>
                 </nav>
-            </nav>
-        </div>
-
-        <div class="col-sm-8">
-            <div data-bs-spy="scroll" id="scrollspy-div" data-bs-smooth-scroll="true"
-                 style="height: calc(100vh - 96px); overflow: auto;" tabindex="0">
+            </div>
+    
+            <div class="col-sm-8 offset-sm-2">
+                <div data-bs-spy="scroll" id="scrollspy-div" data-bs-smooth-scroll="true" tabindex="0">
+                </div>
             </div>
         </div>
     </div>
