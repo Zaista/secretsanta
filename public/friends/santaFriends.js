@@ -1,21 +1,24 @@
 /* global $, showAlert */
 
+const apiUrl = 'friends/api'
+const profileApiUrl = 'profile/api'
+
 $(async function() {
   'use strict';
 
   await $.getScript('/santa.js');
 
-  $.getJSON('friends/api/list', result => {
+  $.getJSON(`${apiUrl}/list`, result => {
     if (result.length !== 0) {
-      $.get('modules/friend.html', friendTemplate => {
+      $.get('friends/friend.html', friendTemplate => {
         $.each(result, (i, userData) => {
           const friendElement = $.parseHTML(friendTemplate);
           $(friendElement).find('#userId').val(userData._id);
           $(friendElement).find('#name').text(userData.name || userData.email);
           if (userData.imageUploaded) {
-            $(friendElement).find('img').attr('src', `profile/api/image?_id=${userData._id}`);
-          } else {
-            $(friendElement).find('img').attr('src', '/resources/images/placeholder.png');
+            lazyLoadImage(userData._id, $(friendElement).find('img')).then(image => {
+              $(friendElement).find('img').attr('src', image.src);
+            })
           }
           $(friendElement).find('#street').text(userData.address?.street || 'N/A');
           $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(N/A)');
@@ -25,7 +28,7 @@ $(async function() {
         });
       }).then(() => {
         // add card click event
-        $('.card.pointer').on('click', function(event) {
+        $('.card.pointer').on('click', function() {
           window.location.href = `/profile?_id=${$(this).find('#userId').val()}`;
         });
       });
@@ -34,3 +37,16 @@ $(async function() {
     }
   });
 });
+
+function lazyLoadImage(userId, image) {
+  return new Promise(function(resolve) {
+    const lazyImage = new Image();
+    const imageUrl = `${profileApiUrl}/image?_id=${userId}`;
+    lazyImage.src = imageUrl;
+
+    lazyImage.onload = () => {
+      image.src = imageUrl;
+      resolve(image)
+    };
+  });
+}

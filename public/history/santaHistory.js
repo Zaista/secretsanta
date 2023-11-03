@@ -2,13 +2,15 @@
 
 $(async () => {
   'use strict';
+  
+  const apiUrl = 'history/api';
 
   await $.getScript('/santa.js');
-  const baseYearTemplate = await $.get('../modules/year.html');
-  const baseGiftTemplate = await $.get('../modules/gift.html');
-  const baseMenuTemplate = await $.get('../modules/side-menu.html');
+  const baseYearTemplate = await $.get('/history/year.html');
+  const baseGiftTemplate = await $.get('/history/gift.html');
+  const baseMenuTemplate = await $.get('/history/side-menu.html');
 
-  $.getJSON('history/api/list', result => {
+  $.getJSON(`${apiUrl}/list`, result => {
     result.forEach(yearData => {
       addYear(yearData.year, yearData.location, yearData.location_image);
       yearData.gifts.forEach(gifts => {
