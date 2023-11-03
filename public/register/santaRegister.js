@@ -24,7 +24,7 @@ $(async function() {
 
     $.post('api/register', user, function(result) {
       if (result.success) {
-        window.location.href = '/?registration-successful';
+        window.location.href = '/';
       }
       showAlert(result);
     });
