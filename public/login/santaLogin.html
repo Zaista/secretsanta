@@ -8,7 +8,6 @@
     <meta name="author" content="Zaista">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Secret Santa</title>
-    <link rel="stylesheet" type="text/css" href="/login/santaLogin.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/login/santaLogin.js"></script>
     <link rel="icon" type="img/ico" href="/favicon.ico">
@@ -30,14 +29,14 @@
 
     <div class="row justify-content-center">
         <div class="col-md-8 col-xs-12">
-            <img id="img" class="margin-top" src="/resources/images/santa.jpg" alt="Santa login">
+            <img class="w-100 mt-3" src="/resources/images/santa.jpg" alt="Santa login">
         </div>
     </div>
     
     <!-- login form -->
     <div class="row justify-content-center">
         <div class="col-md-8 col-xs-12">
-            <form id="santa-login-form" class="margin-top">
+            <form id="santaLoginForm" class="mt-3">
                 <div class="form-group">
                     <label for="email">Santa email:</label>
                     <input type="text" class="form-control" id="email" required>
@@ -46,9 +45,10 @@
                     <label for="password">Santa password:</label>
                     <input type="password" class="form-control" id="password" required>
                 </div>
-                <div class="buttons margin-top">
+                <div class="mt-3">
                     <button type="submit" class="btn btn-primary">Login</button>
-                    <a href="/login" data-bs-toggle="modal" data-bs-target="#forgot-password-dialog">Forgot password</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#forgot-password-dialog">Forgot password</a>
+                    <a href="/session/register">Register</a>
                 </div>
             </form>
         </div>

@@ -6,7 +6,7 @@ import {
   checkIfUserExists,
   addUserToGroup,
   removeUserFromGroup,
-  createNewUser,
+  addNewUser,
   getGroup,
   updateGroup,
   createGroup,
@@ -65,7 +65,7 @@ adminRouter.post('/api/user', async (req, res) => {
     }
   } else {
     const temporaryPassword = Math.random().toString(36).slice(2, 10);
-    const result = await createNewUser(req.session.activeGroup._id, req.body.email, temporaryPassword);
+    const result = await addNewUser(req.session.activeGroup._id, req.body.email, temporaryPassword);
     if (result.acknowledged) {
       const emailStatus = await sendWelcomeEmail(req.body.email, group.name, temporaryPassword);
       if (emailStatus.success) {

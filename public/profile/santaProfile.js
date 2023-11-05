@@ -1,5 +1,7 @@
 /* global $, bootstrap, showAlert */
 
+const apiUrl = 'profile/api';
+
 $(async () => {
   'use strict';
 
@@ -7,12 +9,12 @@ $(async () => {
 
   const searchParams = new URLSearchParams(window.location.search);
 
-  $.get(`profile/api/list?_id=${searchParams.get('_id')}`, friend => {
+  $.get(`${apiUrl}/list?_id=${searchParams.get('_id')}`, friend => {
     if (friend.error) {
       showAlert(friend);
     } else {
       if (friend.imageUploaded) {
-        $('#image').attr('src', `profile/api/image?_id=${friend._id}`);
+        $('#image').attr('src', `${apiUrl}/image?_id=${friend._id}`);
       } else {
         $('#image').attr('src', '/resources/images/placeholder.png');
       }
@@ -43,7 +45,7 @@ $(async () => {
       },
       email: $('#email').val()
     };
-    $.post('profile/api/update', friend, result => {
+    $.post(`${apiUrl}/update`, friend, result => {
       showAlert(result);
     });
     return false;
@@ -68,7 +70,7 @@ $(async () => {
 
   $('#submitImage').on('click', () => {
     $('#cropper').croppie('result').then(function(croppedImage) {
-      $.post('profile/api/image', { image: croppedImage }, result => {
+      $.post(`${apiUrl}/image`, { image: croppedImage }, result => {
         modal.hide();
         showAlert(result);
         $('#image').attr('src', croppedImage);
@@ -80,8 +82,8 @@ $(async () => {
     $('#cropper').croppie({
       enableExif: true,
       viewport: {
-        width: 200,
-        height: 200,
+        width: 300,
+        height: 300,
         type: 'circle'
       },
       boundary: {
