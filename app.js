@@ -16,7 +16,7 @@ import { adminRouter } from './routers/admin-router.js';
 const app = express();
 app.use(express.static('./public', { redirect: false }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true, limit: '20mb' })); // for parsing application/x-www-form-urlencoded
 
 app.use(
   session({
