@@ -4,7 +4,7 @@ on: [pull_request]
 
 jobs:
   build:
-    runs-on: docker-latest
+    runs-on: docker
 
     steps:
       - name: Git checkout
@@ -24,8 +24,9 @@ jobs:
         run: npm run lint
         
   test:
+    needs: build
     timeout-minutes: 60
-    runs-on: docker-latest
+    runs-on: docker
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
