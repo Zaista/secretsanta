@@ -19,7 +19,7 @@ jobs:
         run: docker-compose -f "docker-compose.yaml" up -d
 
       - working-directory: .
-        run: npm install
+        run: npm ci
       - working-directory: .
         run: npm run lint
         
