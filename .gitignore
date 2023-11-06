@@ -1,6 +1,5 @@
 /private
 /node_modules
-.env
 /test-results/
 /playwright-report/
 /blob-report/
