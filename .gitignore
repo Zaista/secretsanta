@@ -1,9 +1,6 @@
 /private
 /node_modules
 .env
-/cypress/screenshots
-/cypress/videos
-/cypress/downloads
 /test-results/
 /playwright-report/
 /blob-report/

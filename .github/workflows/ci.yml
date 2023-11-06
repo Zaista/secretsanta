@@ -4,7 +4,7 @@ on: [pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: docker-latest
 
     steps:
       - name: Git checkout
@@ -16,7 +16,7 @@ jobs:
           node-version: 18
 
       - name: Start services
-        run: docker-compose -f "docker-compose.yml" up -d
+        run: docker-compose -f "docker-compose.yaml" up -d
 
       - working-directory: .
         run: npm install
@@ -25,7 +25,7 @@ jobs:
         
   test:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: docker-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -47,4 +47,4 @@ jobs:
           
       - name: Stop containers
         if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        run: docker-compose -f "docker-compose.yaml" down
