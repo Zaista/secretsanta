@@ -1,4 +1,4 @@
-name: Run linter
+name: Build and test
 
 on: [pull_request]
 
@@ -32,8 +32,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-#      - name: Install dependencies
-#        run: npm ci
+          
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         
