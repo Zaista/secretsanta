@@ -36,6 +36,7 @@ $(async function() {
         $(chatElement).find('button').on('click', function() {
           $.post(`${apiUrl}/delete`, { _id: item._id }, result => {
             if (result.success) $(chatElement).remove();
+            console.log("Poruka je uspesno obrisana!");
             showAlert(result);
           });
         });
@@ -65,6 +66,8 @@ $(async function() {
         });
       }
       showAlert(response);
+      console.log("Poruka je uspesno dodata!")
+      console.log(message._id);
     });
     return false;
   });
