@@ -36,7 +36,7 @@ $(async function() {
         $(chatElement).find('button').on('click', function() {
           $.post(`${apiUrl}/delete`, { _id: item._id }, result => {
             if (result.success) $(chatElement).remove();
-            console.log("Poruka je uspesno obrisana!");
+            console.log('Poruka je uspesno obrisana!');
             showAlert(result);
           });
         });
@@ -61,13 +61,20 @@ $(async function() {
           $(chatElement).find('[data-name="chatMessage"]').text(requestData.message);
           $(chatElement).find('[data-name="chatDate"]').text('Just now...');
           $(chatElement).find('[data-name="chatFrom"]').text('From: you');
+
+          $(chatElement).find('button').on('click', function() {
+            const insertedId = response.insertedId;
+            $.post(`${apiUrl}/delete`, { _id: insertedId }, result => {
+              if (result.success) $(chatElement).remove();
+              showAlert(result);
+            });
+          });
+
           $('#chat').append(chatElement);
           $('#chat').scrollTop($('#chat').prop('scrollHeight'));
         });
       }
       showAlert(response);
-      console.log("Poruka je uspesno dodata!")
-      console.log(message._id);
     });
     return false;
   });

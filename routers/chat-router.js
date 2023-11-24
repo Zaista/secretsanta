@@ -51,7 +51,7 @@ chatRouter.post('/api/send', async (req, res) => {
     const emailStatus = await sendEmail(emailTemplate);
 
     if (emailStatus.success) {
-      res.send({ success: `Message posted in chat and email sent to ${emailTemplate.to}` });
+      res.send({ success: `Message posted in chat and email sent to ${emailTemplate.to}`, insertedId: queryInfo.insertedId });
     } else {
       res.send({ error: `Error sending email: ${emailStatus.error}` });
     }
