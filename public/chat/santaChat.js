@@ -72,6 +72,11 @@ $(async function() {
 
           $('#chat').append(chatElement);
           $('#chat').scrollTop($('#chat').prop('scrollHeight'));
+
+          $('#message').val('');
+
+          // Reset the form
+          $('#chat-form')[0].reset();
         });
       }
       showAlert(response);
