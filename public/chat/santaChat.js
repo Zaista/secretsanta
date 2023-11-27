@@ -36,7 +36,6 @@ $(async function() {
         $(chatElement).find('button').on('click', function() {
           $.post(`${apiUrl}/delete`, { _id: item._id }, result => {
             if (result.success) $(chatElement).remove();
-            console.log('Poruka je uspesno obrisana!');
             showAlert(result);
           });
         });
@@ -63,8 +62,7 @@ $(async function() {
           $(chatElement).find('[data-name="chatFrom"]').text('From: you');
 
           $(chatElement).find('button').on('click', function() {
-            const insertedId = response.insertedId;
-            $.post(`${apiUrl}/delete`, { _id: insertedId }, result => {
+            $.post(`${apiUrl}/delete`, { _id: response.insertedId }, result => {
               if (result.success) $(chatElement).remove();
               showAlert(result);
             });
@@ -72,8 +70,6 @@ $(async function() {
 
           $('#chat').append(chatElement);
           $('#chat').scrollTop($('#chat').prop('scrollHeight'));
-
-          $('#message').val('');
 
           // Reset the form
           $('#chat-form')[0].reset();
