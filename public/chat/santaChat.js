@@ -60,8 +60,19 @@ $(async function() {
           $(chatElement).find('[data-name="chatMessage"]').text(requestData.message);
           $(chatElement).find('[data-name="chatDate"]').text('Just now...');
           $(chatElement).find('[data-name="chatFrom"]').text('From: you');
+
+          $(chatElement).find('button').on('click', function() {
+            $.post(`${apiUrl}/delete`, { _id: response.insertedId }, result => {
+              if (result.success) $(chatElement).remove();
+              showAlert(result);
+            });
+          });
+
           $('#chat').append(chatElement);
           $('#chat').scrollTop($('#chat').prop('scrollHeight'));
+
+          // Reset the form
+          $('#chat-form')[0].reset();
         });
       }
       showAlert(response);
