@@ -1,11 +1,9 @@
-/* global $, showAlert */
-
 $(async function() {
   'use strict';
 
   await $.getScript('/santa.js');
 
-  $('#santaRegisterForm').on('submit', function(e) {
+  $('#santaRegisterForm').on('submit', () => {
     // TODO validate email
 
     // TODO validate password and confirmed password
@@ -24,9 +22,8 @@ $(async function() {
 
     $.post('api/register', user, function(result) {
       if (result.success) {
-        window.location.href = '/';
+        window.location.replace('/?registered');
       }
-      showAlert(result);
     });
     return false;
   });

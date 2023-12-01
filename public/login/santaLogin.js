@@ -1,5 +1,3 @@
-/* global $, showAlert */
-
 $(async function() {
   'use strict';
 

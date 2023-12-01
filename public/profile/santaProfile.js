@@ -1,5 +1,3 @@
-/* global $, bootstrap, showAlert */
-
 const apiUrl = 'profile/api';
 
 $(async () => {

@@ -49,7 +49,7 @@ adminRouter.post('/api/user', async (req, res) => {
   const group = await getGroup(req.session.activeGroup._id);
 
   if (user) {
-    const alreadyPartOfGroup = user.groups.find(userGroup => userGroup.groupId.equals(group._id));
+    const alreadyPartOfGroup = user.groups?.find(userGroup => userGroup.groupId.equals(group._id));
     if (alreadyPartOfGroup !== undefined) {
       return res.send({ error: 'User already part of the group' });
     }
