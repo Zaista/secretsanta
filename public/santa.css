@@ -9,18 +9,17 @@
 	cursor: pointer;
 }
 
+.color-red {
+	color: #dc3545
+}
+
 /* santaHistory */
 
-.picture-disabled {
-	opacity: 0.4;
-}
-
-.modal-body img {
-	max-width: 100%;
-	max-height: 90vh;
-}
-
 /* end santaHistory */
+
+/* santaYear */
+
+/* end santaYear */
 
 /* santaFriends */
 

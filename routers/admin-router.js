@@ -15,7 +15,13 @@ import {
   deleteForbiddenPair
 } from '../utils/adminPipeline.js';
 import fs from 'fs';
-import { getHistory, addDraftsForNextYear, isNextYearDrafted, isLastYearRevealed, setLastYearRevealed } from '../utils/historyPipeline.js';
+import {
+  addDraftsForNextYear,
+  isNextYearDrafted,
+  isLastYearRevealed,
+  setLastYearRevealed,
+  getYearsByGroup
+} from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
 import { sendEmail } from '../utils/environment.js';
@@ -193,7 +199,7 @@ adminRouter.get('/api/reveal', async (req, res) => {
 adminRouter.put('/api/reveal', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
 
-  const history = await getHistory(req.session.activeGroup._id);
+  const history = await getYearsByGroup(req.session.activeGroup._id);
   if (history[0].revealed) {
     return res.send({ error: 'Year already revealed' });
   }

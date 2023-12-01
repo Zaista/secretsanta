@@ -1,16 +1,11 @@
-<h3>{{year}}</h3>
-<span id="location_image" class="picture-disabled pointer" aria-hidden="true" data-bs-toggle="modal" data-bs-target="#present" data-picture="{{yearImage}}">
-    <i class="bi bi-image"></i>
-</span>
-<table id="section-{{year}}" class="table table-borderless caption-top mt-3">
-    <caption>Location: {{location}}</caption>
-    <thead>
-        <tr>
-            <th scope="col">Santa</th>
-            <th scope="col">Child</th>
-            <th scope="col">Gift</th>
-            <th scope="col">Image</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+<div class="col">
+    <div class="card rounded-0 text-center pointer mt-4">
+        <div class="card-header">
+            <h5 id="yearTitle" class="card-title"></h5>
+        </div>
+        <div class="card-body p-0">
+            <h1 class="m-4"><i class="bi bi-image color-red"></i></h1>
+            <p id="yearLocation"></p>
+        </div>
+    </div>
+</div>
