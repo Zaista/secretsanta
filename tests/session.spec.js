@@ -14,10 +14,8 @@ test('user can register and login', async ({ page }) => {
   await page.locator('#confirmPassword').fill(password);
 
   await page.getByRole('button', { name: 'Register' }).click();
-
-  await page.locator('#email').fill(email);
-  await page.locator('#password').fill(password);
-  await page.getByRole('button', { name: 'Login' }).click();
+  
+  await expect(page.locator('#footerAlert')).toHaveText('Registration completed successfully');
 
   await expect(page).toHaveTitle(/Secret Santa/);
   await expect(page.locator('#unavailableImage')).toBeVisible();
