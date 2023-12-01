@@ -1,5 +1,3 @@
-/* global $, showAlert */
-
 const apiUrl = 'chat/api';
 const friendsApiUrl = 'friends/api';
 

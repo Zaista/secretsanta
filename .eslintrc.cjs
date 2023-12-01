@@ -18,5 +18,11 @@ module.exports = {
     }],
     'semi': ['error', 'always'],
     'quotes': ['error', 'single']
+  },
+  globals: {
+    pageLoaded: 'readonly',
+    showAlert: 'readonly',
+    bootstrap: 'readonly',
+    $: 'readonly'
   }
 }

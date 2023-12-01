@@ -1,40 +1,43 @@
-/* global $ */
-
-$('#menu').load('/modules/menu', () => {
-  // group selection and info
-  $('.groupOp').on('click', function() {
-    const newGroup = {
-      _id: $(this).attr('value'),
-      name: $(this).text()
-    };
-    $.get(`/api/setActiveGroup?groupId=${newGroup._id}`, response => {
-      if (response.success) location.reload();
-      else showAlert(response);
+// eslint-disable-next-line no-unused-vars
+const pageLoaded = new Promise(resolve => {
+  $('#menu').load('/modules/menu', () => {
+    // group selection and info
+    $('.groupOp').on('click', function() {
+      const newGroup = {
+        _id: $(this).attr('value'),
+        name: $(this).text()
+      };
+      $.get(`/api/setActiveGroup?groupId=${newGroup._id}`, response => {
+        if (response.success) location.reload();
+        else showAlert(response);
+      });
     });
-  });
 
-  // active page
-  const pageMatcher = window.location.pathname.match(/\w+/);
-  if (pageMatcher) {
-    const currentPage = pageMatcher[0];
-    $(`#menu-${currentPage}`).addClass('active').attr('aria-current', 'page');
-  }
+    // active page
+    const pageMatcher = window.location.pathname.match(/\w+/);
+    if (pageMatcher) {
+      const currentPage = pageMatcher[0];
+      $(`#menu-${currentPage}`).addClass('active').attr('aria-current', 'page');
+    }
 
-  // create new group
-  $('#create-group-form').on('submit', () => {
-    const groupName = $('#group-name').val();
-    $.post('admin/api/group/create', { groupName }, result => {
-      if (result.success) {
-        window.location.href = '/admin';
-      } else {
-        showAlert({ error: 'Something went wrong' });
-      }
+    // create new group
+    $('#create-group-form').on('submit', () => {
+      const groupName = $('#group-name').val();
+      $.post('admin/api/group/create', { groupName }, result => {
+        if (result.success) {
+          window.location.href = '/admin';
+        } else {
+          showAlert({ error: 'Something went wrong' });
+        }
+      });
+      return false;
     });
-    return false;
+
+    $('#footer').load('/modules/footer', () => {
+      resolve();
+    });
   });
 });
-
-$('#footer').load('/modules/footer');
 
 function showAlert(alert, timeout = 3000) {
   let alertClass;

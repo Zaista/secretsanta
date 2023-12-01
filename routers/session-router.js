@@ -32,13 +32,27 @@ sessionRouter.post('/api/register', async (req, res) => {
   const result = await createNewUser(req.body);
   if (result.insertedId) {
     console.log(`User ${req.body.email} registered`);
-    res.send({ success: 'User registered' });
+    const temp = {
+      _id: req.body._id,
+      email: req.body.email,
+      name: req.body.name
+    };
+    req.login(temp, function(err) {
+      if (!err) {
+        return res.send({ success: 'User registered' });
+      } else {
+        return res.send({ error: 'Error during registration 2' });
+      }
+    });
   } else {
     res.send({ error: 'Error during registration' });
   }
 });
 
 sessionRouter.get('/logout', (req, res, next) => {
+  if (req.session.activeGroup !== undefined) {
+    delete req.session.activeGroup;
+  }
   if (req.user) {
     console.log(`User ${req.user.email} logged out`);
     req.logout(function(err) {

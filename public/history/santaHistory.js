@@ -1,5 +1,3 @@
-/* global $, bootstrap, showAlert */
-
 $(async () => {
   'use strict';
 
@@ -11,6 +9,10 @@ $(async () => {
   const baseMenuTemplate = await $.get('/history/side-menu.html');
 
   $.getJSON(`${apiUrl}/list`, result => {
+    if (result.length === 0) {
+      showAlert({ warning: 'No recorded history' });
+      return;
+    }
     result.forEach(yearData => {
       addYear(yearData.year, yearData.location, yearData.location_image);
       yearData.gifts.forEach(gifts => {
@@ -22,10 +24,6 @@ $(async () => {
     new bootstrap.ScrollSpy(document.getElementById('scrollspy-div'), {
       target: '#scrollspy-nav'
     });
-
-    if (result.length === 0) {
-      showAlert({ warning: 'No recorded history' });
-    }
   });
 
   function addYear(year, location, image) {
