@@ -2,6 +2,7 @@ $(async () => {
   'use strict';
 
   const apiUrl = 'history/api';
+  const yearApiUrl = 'history/year/api';
 
   await $.getScript('/santa.js');
   const yearTemplate = await $.get('/history/year.html');
@@ -22,7 +23,8 @@ $(async () => {
     $(yearElement).find('#yearLocation').text(year.location);
     if (year.imageUploaded) {
       lazyLoadImage(year._id, $(yearElement).find('img')).then(image => {
-        $(yearElement).find('img').attr('src', image.src);
+        $(yearElement).find('#locationImage').attr('src', image.src).attr('hidden', false);
+        $(yearElement).find('#locationIcon').attr('hidden', true);
       });
     }
     $(yearElement).on('click', function() {
@@ -34,7 +36,7 @@ $(async () => {
   function lazyLoadImage(yearId, image) {
     return new Promise(function(resolve) {
       const lazyImage = new Image();
-      const imageUrl = `${apiUrl}/image?_id=${yearId}`;
+      const imageUrl = `${yearApiUrl}/location-image?_id=${yearId}`;
       lazyImage.src = imageUrl;
 
       lazyImage.onload = () => {

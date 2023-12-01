@@ -1,5 +1,6 @@
 import express from 'express';
-import { getGiftsByYear, getYearsByGroup } from '../utils/historyPipeline.js';
+import {getGiftsByYear, getYearsByGroup, updateLocationImage} from '../utils/historyPipeline.js';
+import {getLocationImageFromMinio, uploadLocationImageToMinio} from "../utils/minio.js";
 
 const historyRouter = express.Router();
 
@@ -26,9 +27,34 @@ historyRouter.get('/year', (req, res) => {
 historyRouter.get('/year/api/gifts', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   if (req.session.activeGroup !== undefined) {
-    const gifts = await getGiftsByYear(req.session.activeGroup._id, req.query._id);
-    res.send({ year: req.query.year, gifts });
+    const yearGifts = await getGiftsByYear(req.session.activeGroup._id, req.query._id);
+    res.send(yearGifts[0]);
   } else { return res.send({ year: req.query.year, gifts: [] }); } // TODO show that user is not part of any group
+});
+
+historyRouter.get('/year/api/location-image', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  try {
+    const objectStream = await getLocationImageFromMinio(req.query._id);
+    res.setHeader('Content-Type', 'image/jpeg');
+    objectStream.pipe(res);
+  } catch (e) {
+    console.log('ERROR: ' + e.message);
+    res.sendFile('public/resources/images/placeholder.png', { root: '.' });
+  }
+});
+
+historyRouter.post('/year/api/location-image', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+  try {
+    await uploadLocationImageToMinio(req.query._id, bitmap);
+    await updateLocationImage(req.query._id);
+    res.send({ success: 'Year location image uploaded successfully' });
+  } catch (e) {
+    console.log('ERROR: ' + e.message);
+    res.send({ error: 'Failed to upload the year location image' });
+  }
 });
 
 export { historyRouter };

@@ -1,5 +1,5 @@
-import { getClient } from './database.js';
-import mongodb from 'mongodb';
+import {getClient} from './database.js';
+import mongodb, {ObjectId} from 'mongodb';
 
 export async function getYearsByGroup(groupId) {
   const pipeline = [
@@ -76,12 +76,22 @@ export async function getGiftsByYear(groupId, yearId) {
       }
     },
     {
-      // filter only necessary fields
-      $project: {
-        gift: '$gifts.gift',
-        gift_image: '$gifts.gift_image',
-        santa: '$santaUser.name',
-        child: '$childUser.name'
+      $group: {
+          _id : '$_id',
+          year: {
+            $first: '$$ROOT.year'
+          },
+          imageUploaded: {
+            $first: '$$ROOT.imageUploaded'
+          },
+          gifts: {
+            $push: {
+              santa: '$$ROOT.santaUser.name',
+              child: '$$ROOT.childUser.name',
+              gift: '$$ROOT.gifts.gift',
+              gift_image: '$$ROOT.gifts.gift_image'
+            }
+          },
       }
     }
   ];
@@ -146,11 +156,7 @@ export async function isNextYearDrafted(groupId) {
       .collection('history')
       .findOne(query);
 
-    if (result) {
-      return false;
-    } else {
-      return true;
-    }
+    return !result;
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
@@ -186,12 +192,30 @@ export async function setLastYearRevealed(groupId, year) {
   const update = { $set: { revealed: true } };
 
   try {
-    const result = await client
-      .db(process.env.database)
-      .collection('history')
-      .updateOne(filter, update);
+    return await client
+        .db(process.env.database)
+        .collection('history')
+        .updateOne(filter, update);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
 
-    return result;
+export async function updateLocationImage(_id) {
+  const client = await getClient();
+  const filter = { _id: new ObjectId(_id) };
+  const update = {
+    $set: {
+      imageUploaded: true
+    }
+  };
+
+  try {
+    return await client
+        .db(process.env.database)
+        .collection('history')
+        .updateOne(filter, update);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
