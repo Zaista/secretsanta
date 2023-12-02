@@ -63,9 +63,9 @@ $(async () => {
   const modal = new bootstrap.Modal(modalElement);
   $('#locationImageUpload').on('change', function() {
     const file = this.files[0];
-    const image = URL.createObjectURL(file);
-    modalElement.addEventListener('shown.bs.modal', function(event) {
-      showCroppie(image);
+    const imageUrl = URL.createObjectURL(file);
+    modalElement.addEventListener('shown.bs.modal', () => {
+      showCroppie(imageUrl);
     });
     modal.show();
   });
@@ -83,19 +83,20 @@ $(async () => {
     });
   });
 
-  function showCroppie(image) {
-    $('#cropper').croppie({
+  function showCroppie(imageUrl) {
+    const croppie = $('#cropper');
+    croppie.croppie({
       enableExif: true,
       enableResize: true,
       viewport: {
-        width: 300,
-        height: 300
+        width: croppie.width() - 50,
+        height: croppie.width() - 50
       },
       boundary: {
-        width: 300,
-        height: 300
+        width: croppie.width(),
+        height: croppie.width()
       },
-      url: image
+      url: imageUrl
     });
   }
 
