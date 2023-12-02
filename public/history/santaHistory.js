@@ -28,7 +28,7 @@ $(async () => {
       });
     }
     $(yearElement).on('click', function() {
-      window.location.href = `/history/year?year=${year.year}&_id=${year._id}`;
+      window.location.href = `/history/year?id=${year._id}`;
     });
     $('#yearList').append(yearElement);
   }
@@ -36,7 +36,7 @@ $(async () => {
   function lazyLoadImage(yearId, image) {
     return new Promise(function(resolve) {
       const lazyImage = new Image();
-      const imageUrl = `${yearApiUrl}/location-image?_id=${yearId}`;
+      const imageUrl = `${yearApiUrl}/location-image?id=${yearId}`;
       lazyImage.src = imageUrl;
 
       lazyImage.onload = () => {

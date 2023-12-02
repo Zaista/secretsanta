@@ -26,7 +26,7 @@ $(async () => {
         $(friendElement).find('#city').text(userData.address?.city || 'N/A');
         $(friendElement).find('#state').text(userData.address?.state || 'N/A');
         $(friendElement).on('click', function() {
-          window.location.href = `/profile?_id=${userData._id}`;
+          window.location.href = `/profile?id=${userData._id}`;
         });
         $('#friendsList').append(friendElement);
       });
@@ -35,7 +35,7 @@ $(async () => {
     function lazyLoadImage(userId, image) {
       return new Promise(function(resolve) {
         const lazyImage = new Image();
-        const imageUrl = `${profileApiUrl}/image?_id=${userId}`;
+        const imageUrl = `${profileApiUrl}/image?id=${userId}`;
         lazyImage.src = imageUrl;
 
         lazyImage.onload = () => {

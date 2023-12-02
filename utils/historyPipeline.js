@@ -202,9 +202,9 @@ export async function setLastYearRevealed(groupId, year) {
   }
 }
 
-export async function updateLocationImage(_id) {
+export async function updateLocationImage(yearId) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(_id) };
+  const filter = { _id: new ObjectId(yearId) };
   const update = {
     $set: {
       imageUploaded: true

@@ -8,7 +8,7 @@ $(async () => {
 
   const searchParams = new URLSearchParams(window.location.search);
 
-  $.getJSON(`${apiUrl}/gifts?_id=${searchParams.get('_id')}`, year => {
+  $.getJSON(`${apiUrl}/gifts?id=${searchParams.get('id')}`, year => {
     $('#yearTitle').text(year.year);
     if (year.imageUploaded) {
       lazyLoadImage(year._id, $('#locationImage')).then(image => {
@@ -44,7 +44,7 @@ $(async () => {
   function lazyLoadImage(yearId, image) {
     return new Promise(function(resolve) {
       const lazyImage = new Image();
-      const imageUrl = `${apiUrl}/location-image?_id=${yearId}`;
+      const imageUrl = `${apiUrl}/location-image?id=${yearId}`;
       lazyImage.src = imageUrl;
 
       lazyImage.onload = () => {
@@ -54,7 +54,7 @@ $(async () => {
     });
   }
   
-  $('#locationIcon').on('click', () => {
+  $('#locationIcon, #locationImage').on('click', () => {
     $('#locationImageUpload').click();
   });
   
@@ -72,11 +72,13 @@ $(async () => {
 
   $('#locationImageSubmit').on('click', () => {
     $('#cropper').croppie('result').then(croppedImage => {
-      $.post(`${apiUrl}/location-image?_id=${searchParams.get('_id')}`, { image: croppedImage }, result => {
+      $.post(`${apiUrl}/location-image?id=${searchParams.get('id')}`, { image: croppedImage }, result => {
         modal.hide();
         showAlert(result);
-        $('#locationImage').attr('src', croppedImage).attr('hidden', false);
-        $('#locationIcon').attr('hidden', true);
+        if (result.success) {
+          $('#locationImage').attr('src', croppedImage).attr('hidden', false);
+          $('#locationIcon').attr('hidden', true);
+        }
       });
     });
   });
@@ -84,6 +86,7 @@ $(async () => {
   function showCroppie(image) {
     $('#cropper').croppie({
       enableExif: true,
+      enableResize: true,
       viewport: {
         width: 300,
         height: 300

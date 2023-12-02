@@ -8,14 +8,14 @@ const profileRouter = express.Router();
 profileRouter.get('/', async (req, res) => {
   if (!req.user) return res.status(401).redirect('session/login');
   let isCurrentUser = false;
-  if (req.query._id === undefined || req.user._id.toString() === req.query._id) { isCurrentUser = true; }
+  if (req.query.id === undefined || req.user._id.toString() === req.query._id) { isCurrentUser = true; }
   res.render('profile/santaProfile.html', { isCurrentUser });
 });
 
 profileRouter.get('/api/list', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let userId = req.user._id;
-  if (req.query._id !== 'null') { userId = req.query._id; }
+  if (req.query.id !== 'null') { userId = req.query._id; }
   const friend = await getProfile(userId);
   if (friend === null) { res.send({ error: 'Profile not found' }); } else { res.send(friend); }
 });
@@ -33,7 +33,7 @@ profileRouter.post('/api/update', async (req, res) => {
 profileRouter.get('/api/image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   try {
-    const objectStream = await getProfileImageFromMinio(req.query._id);
+    const objectStream = await getProfileImageFromMinio(req.query.id);
     res.setHeader('Content-Type', 'image/jpeg');
     objectStream.pipe(res);
   } catch (e) {
