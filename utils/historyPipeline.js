@@ -1,5 +1,5 @@
-import {getClient} from './database.js';
-import mongodb, {ObjectId} from 'mongodb';
+import { getClient } from './database.js';
+import mongodb, { ObjectId } from 'mongodb';
 
 export async function getYearsByGroup(groupId) {
   const pipeline = [
@@ -77,21 +77,22 @@ export async function getGiftsByYear(groupId, yearId) {
     },
     {
       $group: {
-          _id : '$_id',
-          year: {
-            $first: '$$ROOT.year'
-          },
-          imageUploaded: {
-            $first: '$$ROOT.imageUploaded'
-          },
-          gifts: {
-            $push: {
-              santa: '$$ROOT.santaUser.name',
-              child: '$$ROOT.childUser.name',
-              gift: '$$ROOT.gifts.gift',
-              gift_image: '$$ROOT.gifts.gift_image'
-            }
-          },
+        _id: '$_id',
+        year: {
+          $first: '$$ROOT.year'
+        },
+        imageUploaded: {
+          $first: '$$ROOT.imageUploaded'
+        },
+        gifts: {
+          $push: {
+            santa: '$$ROOT.santaUser.name',
+            child: '$$ROOT.childUser.name',
+            gift: '$$ROOT.gifts.gift',
+            imageUploaded: '$$ROOT.gifts.imageUploaded',
+            giftId: '$$ROOT.gifts.giftId'
+          }
+        }
       }
     }
   ];
@@ -193,9 +194,9 @@ export async function setLastYearRevealed(groupId, year) {
 
   try {
     return await client
-        .db(process.env.database)
-        .collection('history')
-        .updateOne(filter, update);
+      .db(process.env.database)
+      .collection('history')
+      .updateOne(filter, update);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
@@ -213,9 +214,29 @@ export async function updateLocationImage(yearId) {
 
   try {
     return await client
-        .db(process.env.database)
-        .collection('history')
-        .updateOne(filter, update);
+      .db(process.env.database)
+      .collection('history')
+      .updateOne(filter, update);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function updateGiftImage(yearId, giftId) {
+  const client = await getClient();
+  const filter = { _id: new ObjectId(yearId), 'gifts.giftId': new ObjectId(giftId) };
+  const update = {
+    $set: {
+      'gifts.$.imageUploaded': true
+    }
+  };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('history')
+      .updateOne(filter, update);
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;

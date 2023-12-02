@@ -1,6 +1,6 @@
 import express from 'express';
-import {getGiftsByYear, getYearsByGroup, updateLocationImage} from '../utils/historyPipeline.js';
-import {getLocationImageFromMinio, uploadLocationImageToMinio} from "../utils/minio.js";
+import { getGiftsByYear, getYearsByGroup, updateGiftImage, updateLocationImage } from '../utils/historyPipeline.js';
+import { getLocationImageFromMinio, uploadLocationImageToMinio } from '../utils/minio.js';
 
 const historyRouter = express.Router();
 
@@ -50,10 +50,23 @@ historyRouter.post('/year/api/location-image', async (req, res) => {
   try {
     await uploadLocationImageToMinio(req.query.id, bitmap);
     await updateLocationImage(req.query.id);
-    res.send({ success: 'Year location image uploaded successfully' });
+    res.send({ success: 'Location image was uploaded successfully' });
   } catch (e) {
     console.log('ERROR: ' + e.message);
     res.send({ error: 'Failed to upload the year location image' });
+  }
+});
+
+historyRouter.post('/year/api/gift-image', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+  try {
+    await uploadLocationImageToMinio(req.query.giftId, bitmap);
+    await updateGiftImage(req.query.yearId, req.query.giftId);
+    res.send({ success: 'Gift image was uploaded successfully' });
+  } catch (e) {
+    console.log('ERROR: ' + e.message);
+    res.send({ error: 'Failed to upload the gift image' });
   }
 });
 

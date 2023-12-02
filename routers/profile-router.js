@@ -8,14 +8,14 @@ const profileRouter = express.Router();
 profileRouter.get('/', async (req, res) => {
   if (!req.user) return res.status(401).redirect('session/login');
   let isCurrentUser = false;
-  if (req.query.id === undefined || req.user._id.toString() === req.query._id) { isCurrentUser = true; }
+  if (req.query.id === undefined || req.user._id.toString() === req.query.id) { isCurrentUser = true; }
   res.render('profile/santaProfile.html', { isCurrentUser });
 });
 
 profileRouter.get('/api/list', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let userId = req.user._id;
-  if (req.query.id !== 'null') { userId = req.query._id; }
+  if (req.query.id !== 'null') { userId = req.query.id; }
   const friend = await getProfile(userId);
   if (friend === null) { res.send({ error: 'Profile not found' }); } else { res.send(friend); }
 });
