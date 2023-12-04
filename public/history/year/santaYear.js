@@ -54,7 +54,7 @@ $(async () => {
       if (gift.gift !== null) {
         $('label[for="giftEditInput"]').text(`Update '${gift.gift}' to:`);
       } else {
-        $('label[for="giftEditInput"]').text(`Update empty description to:`);
+        $('label[for="giftEditInput"]').text('Update empty description to:');
       }
       giftEditElement = $(giftElement).find('#giftText');
       giftTextModal.show();
