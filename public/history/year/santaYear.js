@@ -51,7 +51,11 @@ $(async () => {
 
     $(giftElement).find('#giftTextEdit').on('click', () => {
       $('#giftEditInput').attr('data-id', gift.giftId);
-      $('label[for="giftEditInput"]').text(`Update '${gift.gift}' to:`);
+      if (gift.gift !== null) {
+        $('label[for="giftEditInput"]').text(`Update '${gift.gift}' to:`);
+      } else {
+        $('label[for="giftEditInput"]').text(`Update empty description to:`);
+      }
       giftEditElement = $(giftElement).find('#giftText');
       giftTextModal.show();
     });

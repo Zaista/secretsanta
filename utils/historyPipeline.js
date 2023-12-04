@@ -126,7 +126,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
       santaId: new mongodb.ObjectId(santa),
       childId: new mongodb.ObjectId(child),
       gift: null,
-      gift_image: null
+      giftId: new ObjectId()
     };
     document.gifts.push(gift);
   });
