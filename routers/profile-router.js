@@ -1,6 +1,6 @@
 import express from 'express';
 import { getProfile, updateProfile, updateProfileImage } from '../utils/friendsPipeline.js';
-import { uploadProfileImageToMinio, getProfileImageFromMinio } from '../utils/minio.js';
+import { uploadImageToMinio, getImageFromMinio } from '../utils/minio.js';
 
 const profileRouter = express.Router();
 
@@ -33,7 +33,7 @@ profileRouter.post('/api/update', async (req, res) => {
 profileRouter.get('/api/image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   try {
-    const objectStream = await getProfileImageFromMinio(req.query.id);
+    const objectStream = await getImageFromMinio(req.query.id);
     res.setHeader('Content-Type', 'image/jpeg');
     objectStream.pipe(res);
   } catch (e) {
@@ -46,7 +46,7 @@ profileRouter.post('/api/image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
   try {
-    await uploadProfileImageToMinio(req.user._id, bitmap);
+    await uploadImageToMinio(req.user._id, bitmap);
     await updateProfileImage(req.user._id);
     res.send({ success: 'Profile image updated successfully' });
   } catch (e) {

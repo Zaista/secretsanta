@@ -6,7 +6,7 @@ import {
   updateGiftImage,
   updateLocationImage
 } from '../utils/historyPipeline.js';
-import { getLocationImageFromMinio, uploadLocationImageToMinio } from '../utils/minio.js';
+import { getImageFromMinio, uploadImageToMinio } from '../utils/minio.js';
 
 const historyRouter = express.Router();
 
@@ -41,7 +41,7 @@ historyRouter.get('/year/api/gifts', async (req, res) => {
 historyRouter.get('/year/api/location-image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   try {
-    const objectStream = await getLocationImageFromMinio(req.query.id);
+    const objectStream = await getImageFromMinio(req.query.id);
     res.setHeader('Content-Type', 'image/jpeg');
     objectStream.pipe(res);
   } catch (e) {
@@ -54,7 +54,7 @@ historyRouter.post('/year/api/location-image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
   try {
-    await uploadLocationImageToMinio(req.query.id, bitmap);
+    await uploadImageToMinio(req.query.id, bitmap);
     await updateLocationImage(req.query.id);
     res.send({ success: 'Location image was uploaded successfully' });
   } catch (e) {
@@ -67,7 +67,7 @@ historyRouter.post('/year/api/gift-image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
   try {
-    await uploadLocationImageToMinio(req.query.giftId, bitmap);
+    await uploadImageToMinio(req.query.giftId, bitmap);
     await updateGiftImage(req.query.yearId, req.query.giftId);
     res.send({ success: 'Gift image was uploaded successfully' });
   } catch (e) {
