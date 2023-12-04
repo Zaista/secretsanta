@@ -15,7 +15,6 @@ $(async () => {
       }
       $.each(result, (i, userData) => {
         const friendElement = $.parseHTML(friendTemplate);
-        $(friendElement).find('#userId').val(userData._id);
         $(friendElement).find('#name').text(userData.name || userData.email);
         if (userData.imageUploaded) {
           lazyLoadImage(userData._id, $(friendElement).find('img')).then(image => {
@@ -26,18 +25,17 @@ $(async () => {
         $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(N/A)');
         $(friendElement).find('#city').text(userData.address?.city || 'N/A');
         $(friendElement).find('#state').text(userData.address?.state || 'N/A');
-        $('.friends').append(friendElement);
-      });
-      // add card click event
-      $('.card.pointer').on('click', function() {
-        window.location.href = `/profile?_id=${$(this).find('#userId').val()}`;
+        $(friendElement).on('click', function() {
+          window.location.href = `/profile?id=${userData._id}`;
+        });
+        $('#friendsList').append(friendElement);
       });
     });
 
     function lazyLoadImage(userId, image) {
       return new Promise(function(resolve) {
         const lazyImage = new Image();
-        const imageUrl = `${profileApiUrl}/image?_id=${userId}`;
+        const imageUrl = `${profileApiUrl}/image?id=${userId}`;
         lazyImage.src = imageUrl;
 
         lazyImage.onload = () => {

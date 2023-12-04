@@ -1,6 +1,6 @@
 import express from 'express';
 import { getProfile, updateProfile, updateProfileImage } from '../utils/friendsPipeline.js';
-import { uploadProfileImageToMinio, getProfileImageFromMinio } from '../utils/minio.js';
+import { uploadImageToMinio, getImageFromMinio } from '../utils/minio.js';
 
 const profileRouter = express.Router();
 
@@ -8,14 +8,14 @@ const profileRouter = express.Router();
 profileRouter.get('/', async (req, res) => {
   if (!req.user) return res.status(401).redirect('session/login');
   let isCurrentUser = false;
-  if (req.query._id === undefined || req.user._id.toString() === req.query._id) { isCurrentUser = true; }
+  if (req.query.id === undefined || req.user._id.toString() === req.query.id) { isCurrentUser = true; }
   res.render('profile/santaProfile.html', { isCurrentUser });
 });
 
 profileRouter.get('/api/list', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let userId = req.user._id;
-  if (req.query._id !== 'null') { userId = req.query._id; }
+  if (req.query.id !== 'null') { userId = req.query.id; }
   const friend = await getProfile(userId);
   if (friend === null) { res.send({ error: 'Profile not found' }); } else { res.send(friend); }
 });
@@ -33,7 +33,7 @@ profileRouter.post('/api/update', async (req, res) => {
 profileRouter.get('/api/image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   try {
-    const objectStream = await getProfileImageFromMinio(req.query._id);
+    const objectStream = await getImageFromMinio(req.query.id);
     res.setHeader('Content-Type', 'image/jpeg');
     objectStream.pipe(res);
   } catch (e) {
@@ -46,7 +46,7 @@ profileRouter.post('/api/image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
   try {
-    await uploadProfileImageToMinio(req.user._id, bitmap);
+    await uploadImageToMinio(req.user._id, bitmap);
     await updateProfileImage(req.user._id);
     res.send({ success: 'Profile image updated successfully' });
   } catch (e) {

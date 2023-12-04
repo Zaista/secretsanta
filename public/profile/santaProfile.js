@@ -7,12 +7,12 @@ $(async () => {
 
   const searchParams = new URLSearchParams(window.location.search);
 
-  $.get(`${apiUrl}/list?_id=${searchParams.get('_id')}`, friend => {
+  $.get(`${apiUrl}/list?id=${searchParams.get('id')}`, friend => {
     if (friend.error) {
       showAlert(friend);
     } else {
       if (friend.imageUploaded) {
-        $('#image').attr('src', `${apiUrl}/image?_id=${friend._id}`);
+        $('#image').attr('src', `${apiUrl}/image?id=${friend._id}`);
       } else {
         $('#image').attr('src', '/resources/images/placeholder.png');
       }

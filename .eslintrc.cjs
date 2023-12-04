@@ -23,6 +23,7 @@ module.exports = {
     pageLoaded: 'readonly',
     showAlert: 'readonly',
     bootstrap: 'readonly',
+    Croppie: 'readonly',
     $: 'readonly'
   }
 }

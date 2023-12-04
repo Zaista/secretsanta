@@ -2,72 +2,47 @@ $(async () => {
   'use strict';
 
   const apiUrl = 'history/api';
+  const yearApiUrl = 'history/year/api';
 
   await $.getScript('/santa.js');
-  const baseYearTemplate = await $.get('/history/year.html');
-  const baseGiftTemplate = await $.get('/history/gift.html');
-  const baseMenuTemplate = await $.get('/history/side-menu.html');
+  const yearTemplate = await $.get('/history/year.html');
 
-  $.getJSON(`${apiUrl}/list`, result => {
-    if (result.length === 0) {
+  $.getJSON(`${apiUrl}/list`, years => {
+    if (years.length === 0) {
       showAlert({ warning: 'No recorded history' });
       return;
     }
-    result.forEach(yearData => {
-      addYear(yearData.year, yearData.location, yearData.location_image);
-      yearData.gifts.forEach(gifts => {
-        addGifts(yearData.year, gifts);
+    years.forEach(year => {
+      listYears(year);
+    });
+  });
+
+  function listYears(year) {
+    const yearElement = $.parseHTML(yearTemplate);
+    $(yearElement).find('#yearTitle').text(year.year);
+    $(yearElement).find('#yearLocation').text(year.location);
+    if (year.imageUploaded) {
+      lazyLoadImage(year._id, $(yearElement).find('img')).then(image => {
+        $(yearElement).find('#locationImage').attr('src', image.src).attr('hidden', false);
+        $(yearElement).find('#locationIcon').attr('hidden', true);
       });
-    });
-
-    // eslint-disable-next-line no-new
-    new bootstrap.ScrollSpy(document.getElementById('scrollspy-div'), {
-      target: '#scrollspy-nav'
-    });
-  });
-
-  function addYear(year, location, image) {
-    let yearTemplate = baseYearTemplate;
-    yearTemplate = yearTemplate
-      .replace(/{{year}}/g, year)
-      .replace(/{{location}}/, location);
-    if (image != null) {
-      yearTemplate = yearTemplate.replace(/{{yearImage}}/, year + '/' + image);
-      yearTemplate = yearTemplate.replace(/picture-disabled/, '');
-    } else {
-      yearTemplate = yearTemplate.replace(/data-bs-toggle='modal'/, '');
-      yearTemplate = yearTemplate.replace(/pointer/, '');
     }
-
-    const menuTemplate = baseMenuTemplate.replace(/{{year}}/g, year);
-    $('#scrollspy-menu').append(menuTemplate);
-    $('#scrollspy-div').append(yearTemplate);
+    $(yearElement).on('click', function() {
+      window.location.href = `/history/year?id=${year._id}`;
+    });
+    $('#yearList').append(yearElement);
   }
 
-  function addGifts(year, gifts) {
-    let giftTemplate = baseGiftTemplate;
-    if (gifts.gift_image != null) {
-      giftTemplate = giftTemplate.replace(/{{year}}/ig, year);
-      giftTemplate = giftTemplate.replace(/{{giftImage}}/ig, gifts.gift_image);
-      giftTemplate = giftTemplate.replace('picture-disabled', 'pointer');
-    } else {
-      giftTemplate = giftTemplate.replace('data-bs-toggle="modal"', '');
-    }
-    giftTemplate = giftTemplate.replace(/{{santa}}/ig, gifts.santa);
-    giftTemplate = giftTemplate.replace(/{{child}}/ig, gifts.child);
-    giftTemplate = giftTemplate.replace(/{{gift}}/ig, gifts.gift || '');
+  function lazyLoadImage(yearId, image) {
+    return new Promise(function(resolve) {
+      const lazyImage = new Image();
+      const imageUrl = `${yearApiUrl}/location-image?id=${yearId}`;
+      lazyImage.src = imageUrl;
 
-    $(`#section-${year}`).append(giftTemplate);
+      lazyImage.onload = () => {
+        image.src = imageUrl;
+        resolve(image);
+      };
+    });
   }
-
-  // if present picture is open
-  $('#present').on('show.bs.modal', function(event) {
-    const picture = $(event.relatedTarget).data('picture');
-    $('#image').attr('src', 'resources/images/' + picture);
-  });
-
-  // if present picture is closed
-  $('#present').on('hidden.bs.modal', function() {
-    $('#image').attr('src', '');
-  });
 });
