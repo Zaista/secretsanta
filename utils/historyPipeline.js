@@ -242,3 +242,23 @@ export async function updateGiftImage(yearId, giftId) {
     return null;
   }
 }
+
+export async function updateGiftDescription(giftId, description) {
+  const client = await getClient();
+  const filter = { 'gifts.giftId': new ObjectId(giftId) };
+  const update = {
+    $set: {
+      'gifts.$.gift': description
+    }
+  };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('history')
+      .updateOne(filter, update);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}

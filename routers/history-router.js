@@ -1,5 +1,11 @@
 import express from 'express';
-import { getGiftsByYear, getYearsByGroup, updateGiftImage, updateLocationImage } from '../utils/historyPipeline.js';
+import {
+  getGiftsByYear,
+  getYearsByGroup,
+  updateGiftDescription,
+  updateGiftImage,
+  updateLocationImage
+} from '../utils/historyPipeline.js';
 import { getLocationImageFromMinio, uploadLocationImageToMinio } from '../utils/minio.js';
 
 const historyRouter = express.Router();
@@ -67,6 +73,16 @@ historyRouter.post('/year/api/gift-image', async (req, res) => {
   } catch (e) {
     console.log('ERROR: ' + e.message);
     res.send({ error: 'Failed to upload the gift image' });
+  }
+});
+
+historyRouter.post('/year/api/gift-description', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const result = await updateGiftDescription(req.body._id, req.body.description);
+  if (result.acknowledged) {
+    res.send({ success: 'Gift description was updated successfully' });
+  } else {
+    res.send({ error: 'Failed to update the gift description' });
   }
 });
 

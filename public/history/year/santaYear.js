@@ -7,7 +7,9 @@ $(async () => {
   let iconElement;
   let croppie;
   const modalElement = $('#imageCropperModal').get(0);
-  const modal = new bootstrap.Modal(modalElement);
+  const modal = new bootstrap.Modal('#imageCropperModal');
+  const giftTextModal = new bootstrap.Modal('#giftTextModal');
+  let giftEditElement;
 
   const showCroppie = (e) => {
     const file = e.currentTarget.files[0];
@@ -16,7 +18,7 @@ $(async () => {
       initializeCroppie(imageUrl);
     });
     modal.show();
-  }
+  };
 
   await $.getScript('/santa.js');
   const giftTemplate = await $.get('year/gift.html');
@@ -43,9 +45,17 @@ $(async () => {
 
   function listGifts(gift) {
     const giftElement = $.parseHTML(giftTemplate);
-    $(giftElement).find('#gift').text(gift.gift);
     $(giftElement).find('#santa').text(gift.santa);
     $(giftElement).find('#child').text(gift.child);
+    $(giftElement).find('#giftText').text(gift.gift);
+
+    $(giftElement).find('#giftTextEdit').on('click', () => {
+      $('#giftEditInput').attr('data-id', gift.giftId);
+      $('label[for="giftEditInput"]').text(`Update '${gift.gift}' to:`);
+      giftEditElement = $(giftElement).find('#giftText');
+      giftTextModal.show();
+    });
+
     $(giftElement).find('#giftIcon, #giftImage').on('click', (e) => {
       uploadEndpoint = `gift-image?yearId=${searchParams.get('id')}&giftId=${gift.giftId}`;
       imageElement = $(giftElement).find('#giftImage');
@@ -90,7 +100,7 @@ $(async () => {
 
   $('#imageSubmit').on('click', () => {
     croppie.result().then(croppedImage => {
-      $.post(`${apiUrl}/${uploadEndpoint}`, {image: croppedImage}, result => {
+      $.post(`${apiUrl}/${uploadEndpoint}`, { image: croppedImage }, result => {
         modal.hide();
         showAlert(result);
         if (result.success) {
@@ -116,13 +126,24 @@ $(async () => {
           height: croppieElement.width()
         },
         url: imageUrl
-      }
+      };
       croppie = new Croppie(croppieElement.get(0), croppieOptions);
     } else {
-      croppie.bind({ url: imageUrl })
+      croppie.bind({ url: imageUrl });
       // TODO bug: croppie boundaries get screwed up
     }
   }
+
+  $('#giftEditSubmit').on('click', () => {
+    $.post(`${apiUrl}/gift-description`, { _id: $('#giftEditInput').attr('data-id'), description: $('#giftEditInput').val() }, result => {
+      giftTextModal.hide();
+      showAlert(result);
+      if (result.success) {
+        giftEditElement.text($('#giftEditInput').val());
+      }
+      $('#giftEditInput').val('');
+    });
+  });
 
   // TODO no used: if present picture is open
   $('#present').on('show.bs.modal', function(event) {
