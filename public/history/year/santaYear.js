@@ -6,18 +6,17 @@ $(async () => {
   let imageElement;
   let iconElement;
   let croppie;
-  const modalElement = $('#imageCropperModal').get(0);
-  const modal = new bootstrap.Modal('#imageCropperModal');
+  const modal = new bootstrap.Modal('#imageModal');
   const giftTextModal = new bootstrap.Modal('#giftTextModal');
   let giftEditElement;
 
   const showCroppie = (e) => {
+    $('#imagePopup').parent().prop('hidden', true);
     const file = e.currentTarget.files[0];
     const imageUrl = URL.createObjectURL(file);
-    modalElement.addEventListener('shown.bs.modal', () => {
-      initializeCroppie(imageUrl);
-    });
-    modal.show();
+    initializeCroppie(imageUrl);
+    $('#imageEdit').prop('hidden', true);
+    $('#imageSubmit').prop('hidden', false);
   };
 
   await $.getScript('/santa.js');
@@ -64,7 +63,12 @@ $(async () => {
       uploadEndpoint = `gift-image?yearId=${searchParams.get('id')}&giftId=${gift.giftId}`;
       imageElement = $(giftElement).find('#giftImage');
       iconElement = $(giftElement).find('#giftIcon');
-      $('#imageUpload').click();
+
+      if (e.currentTarget.src === undefined) {
+        $('#imagePopup').attr('src', '');
+      } else {
+        $('#imagePopup').attr('src', e.currentTarget.src);
+      }
     });
 
     $(giftElement).find('#giftImageUpload').on('change', showCroppie);
@@ -79,6 +83,10 @@ $(async () => {
     $('tbody').append(giftElement);
   }
 
+  $('#imageEdit').on('click', () => {
+    $('#imageUpload').click();
+  });
+
   function lazyLoadImage(yearId, image) {
     return new Promise(function(resolve) {
       const lazyImage = new Image();
@@ -92,24 +100,33 @@ $(async () => {
     });
   }
 
-  $('#locationIcon, #locationImage').on('click', () => {
+  $('#locationIcon, #locationImage').on('click', (e) => {
     uploadEndpoint = 'location-image?id=' + searchParams.get('id');
     imageElement = $('#locationImage');
     iconElement = $('#locationIcon');
-    $('#imageUpload').click();
+
+    if (e.currentTarget.src === undefined) {
+      $('#imagePopup').attr('src', '');
+    } else {
+      $('#imagePopup').attr('src', e.currentTarget.src);
+    }
   });
 
   // cropping images
   $('#imageUpload').on('change', showCroppie);
 
   $('#imageSubmit').on('click', () => {
-    croppie.result().then(croppedImage => {
+    croppie.result({ size: 'original' }).then(croppedImage => {
       $.post(`${apiUrl}/${uploadEndpoint}`, { image: croppedImage }, result => {
         modal.hide();
         showAlert(result);
         if (result.success) {
           imageElement.attr('src', croppedImage).attr('hidden', false);
           iconElement.attr('hidden', true);
+          $('#imagePopup').parent().prop('hidden', false);
+          $('#imageEdit').prop('hidden', false);
+          $('#imageSubmit').prop('hidden', true);
+          $('#cropper').prop('hidden', true);
         }
       });
     });
@@ -133,25 +150,21 @@ $(async () => {
       };
       croppie = new Croppie(croppieElement.get(0), croppieOptions);
     } else {
+      console.log('ojsa');
+      $('#cropper').prop('hidden', false);
       croppie.bind({ url: imageUrl });
-      // TODO bug: croppie boundaries get screwed up
     }
   }
 
   $('#giftEditSubmit').on('click', () => {
-    $.post(`${apiUrl}/gift-description`, { _id: $('#giftEditInput').attr('data-id'), description: $('#giftEditInput').val() }, result => {
+    const input = $('#giftEditInput');
+    $.post(`${apiUrl}/gift-description`, { _id: input.attr('data-id'), description: input.val() }, result => {
       giftTextModal.hide();
       showAlert(result);
       if (result.success) {
         giftEditElement.text($('#giftEditInput').val());
       }
-      $('#giftEditInput').val('');
+      input.val('');
     });
-  });
-
-  // TODO no used: if present picture is open
-  $('#present').on('show.bs.modal', function(event) {
-    const picture = $(event.relatedTarget).data('picture');
-    $('#image').attr('src', 'resources/images/' + picture);
   });
 });

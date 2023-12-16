@@ -38,9 +38,9 @@
             <h3>YEAR</h3>
             <h1 id="yearTitle"></h1>
         </div>
-        <div class="col-md-2 col-xs-12 text-center">
+        <div class="col-md-2 col-xs-12 text-center" data-bs-toggle="modal" data-bs-target="#imageModal">
             <h1 id="locationIcon"><i class="bi bi-image pointer color-red"></i></h1>
-            <img id="locationImage" class="pointer img-thumbnail w-50" alt="Location image" hidden>
+            <img id="locationImage" class="pointer img-thumbnail w-50" src="" alt="Location image" hidden>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -60,25 +60,25 @@
         </div>
     </div>
 
-    <!-- image cropper -->
-    <div class="modal fade" id="imageCropperModal" tabindex="-1" aria-labelledby="cropLabel" aria-hidden="true">
+    <!-- image popup dialog -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="cropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cropLabel">Crop your image</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div>
+                    <img id="imagePopup" src="" class="img-fluid mx-auto d-block" alt="Gift image">
                 </div>
                 <div id="cropper" class="modal-body">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="imageSubmit" type="button" class="btn btn-primary">Upload image</button>
+                    <button id="imageEdit" type="button" class="btn btn-primary">Change image</button>
+                    <button id="imageSubmit" type="button" class="btn btn-primary" hidden>Upload</button>
                     <input accept="image/*" type='file' id="imageUpload" hidden/>
                 </div>
             </div>
         </div>
     </div>
-    <!-- end image cropper -->
+    <!-- end image popup dialog -->
 
     <!-- gift text dialog -->
     <div class="modal fade" id="giftTextModal" tabindex="-1" aria-labelledby="giftEditLabel" aria-hidden="true">
