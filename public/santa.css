@@ -10,7 +10,12 @@
 }
 
 .color-red {
-	color: #dc3545
+	color: #dc3545;
+}
+
+.bi-trash {
+	color: #dc3545;
+	cursor: pointer;
 }
 
 /* santaHistory */
