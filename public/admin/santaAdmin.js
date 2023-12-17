@@ -3,6 +3,12 @@ const apiUrl = 'admin/api';
 $(async () => {
   'use strict';
 
+  let userId;
+  let userEmail;
+  let userEl;
+  let pairId;
+  let pairEl;
+
   await $.getScript('/santa.js');
   pageLoaded.then(async () => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -19,32 +25,31 @@ $(async () => {
       $.get('admin/user.html', userTemplate => {
         $.each(result, function(index, userData) {
           const userElement = $.parseHTML(userTemplate);
-          $(userElement).find('[name="userIndex"]').text(++index);
-          $(userElement).find('[name="userName"]').text(userData.name);
+          $(userElement).find('[data-name="userIndex"]').text(++index);
+          $(userElement).find('[data-name="userName"]').text(userData.name);
           $(userElement).find('a').attr('href', `/friends/${userData._id}`);
-          $(userElement).find('[name="userId"]').val(userData._id);
-          $(userElement).find('[name="userEmail"]').text(userData.email);
-          $(userElement).find('[name="userRole"]').val(userData.groups.role);
-          $(userElement).find('[name="userRole"]').on('input', onChangeDetector);
+          $(userElement).find('[data-name="userId"]').val(userData._id);
+          $(userElement).find('[data-name="userEmail"]').text(userData.email);
+          $(userElement).find('[data-name="userRole"]').val(userData.groups.role);
+          $(userElement).find('[data-name="userRole"]').on('input', onChangeDetector);
 
-          $(userElement).find('[name="userDelete"]').on('click', () => {
-            $.post(`${apiUrl}/user/delete`, { _id: userData._id, email: userData.email }, response => {
-              showAlert(response);
-              if (response.success) {
-                $(userElement).remove();
-              }
-            });
+          $(userElement).find('[data-name="userRemove"]').on('click', () => {
+            $('#removeUserDialog').prop('hidden', false);
+            $('#deletePairDialog').prop('hidden', true);
+            userId = userData._id;
+            userEmail = userData.email;
+            userEl = userElement;
           });
           $('#users tbody').append(userElement);
         });
       });
     });
 
-    $('#userButton').on('click', () => {
+    $('#userButton').on('click', (e) => {
       const usersRoles = [];
-      $('tr[name="userRow"]').each(function() {
+      $('tr[data-name="userRow"]').each(function() {
         const userData = {
-          _id: $(this).find('[name="userId"]').val(),
+          _id: $(this).find('[data-name="userId"]').val(),
           role: $(this).find(':selected').val()
         };
         usersRoles.push(userData);
@@ -85,12 +90,10 @@ $(async () => {
           $(pairElement).find('[data-name="pairForbiddenPair"]').text(pair.forbiddenPair);
 
           $(pairElement).find('[data-name="pairDelete"]').on('click', () => {
-            $.post(`${apiUrl}/forbidden/delete`, { _id: pair._id }, result => {
-              showAlert(result);
-              if (result.success) {
-                $(pairElement).remove();
-              }
-            });
+            $('#removeUserDialog').prop('hidden', true);
+            $('#deletePairDialog').prop('hidden', false);
+            pairId = pair._id;
+            pairEl = pairElement;
           });
           $('#forbiddenPairsTable tbody').append(pairElement);
         });
@@ -184,5 +187,23 @@ $(async () => {
         $('#userButton').removeAttr('disabled');
       }
     }
+
+    $('#removeUserDialog').on('click', () => {
+      $.post(`${apiUrl}/user/delete`, { _id: userId, email: userEmail }, response => {
+        showAlert(response);
+        if (response.success) {
+          $(userEl).remove();
+        }
+      });
+    });
+
+    $('#deletePairDialog').on('click', () => {
+      $.post(`${apiUrl}/forbidden/delete`, { _id: pairId }, result => {
+        showAlert(result);
+        if (result.success) {
+          $(pairEl).remove();
+        }
+      });
+    });
   });
 });

@@ -156,15 +156,25 @@ $(async () => {
     }
   }
 
+  const giftEditInput = $('#giftEditInput');
+  giftEditInput.on('keypress', (e) => {
+    if (e.which === 13) {
+      updateGiftDescription();
+    }
+  });
+
   $('#giftEditSubmit').on('click', () => {
-    const input = $('#giftEditInput');
-    $.post(`${apiUrl}/gift-description`, { _id: input.attr('data-id'), description: input.val() }, result => {
+    updateGiftDescription();
+  });
+
+  function updateGiftDescription() {
+    $.post(`${apiUrl}/gift-description`, { _id: giftEditInput.attr('data-id'), description: giftEditInput.val() }, result => {
       giftTextModal.hide();
       showAlert(result);
       if (result.success) {
         giftEditElement.text($('#giftEditInput').val());
       }
-      input.val('');
+      giftEditInput.val('');
     });
-  });
+  }
 });
