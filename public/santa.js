@@ -32,10 +32,9 @@ const pageLoaded = new Promise(resolve => {
       });
       return false;
     });
-
-    $('#footer').load('/modules/footer', () => {
-      resolve();
-    });
+  });
+  $('#footer').load('/modules/footer', () => {
+    resolve();
   });
 });
 

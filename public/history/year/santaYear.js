@@ -150,7 +150,6 @@ $(async () => {
       };
       croppie = new Croppie(croppieElement.get(0), croppieOptions);
     } else {
-      console.log('ojsa');
       $('#cropper').prop('hidden', false);
       croppie.bind({ url: imageUrl });
     }

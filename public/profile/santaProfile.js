@@ -5,6 +5,7 @@ $(async () => {
 
   await $.getScript('/santa.js');
 
+  let croppie;
   const searchParams = new URLSearchParams(window.location.search);
 
   $.get(`${apiUrl}/list?id=${searchParams.get('id')}`, friend => {
@@ -17,9 +18,10 @@ $(async () => {
         $('#image').attr('src', '/resources/images/placeholder.png');
       }
       $('#name').val(friend.name);
-      $('#description').val(friend.description);
+      const description = $('#description');
+      description.val(friend.description);
       if (friend.description) {
-        $('#description').height($('#description')[0].scrollHeight);
+        description.height(description[0].scrollHeight);
       }
       if (friend.address) {
         $('#street').val(friend.address.street);
@@ -50,24 +52,23 @@ $(async () => {
   });
 
   // cropping images
-  const modalElement = $('#imageCropperModal').get(0);
-  const modal = new bootstrap.Modal(modalElement);
+  const modal = new bootstrap.Modal('#imageModal');
+  $('#imageModal').on('shown.bs.modal', (e) => {
+    showCroppie(e.relatedTarget);
+  });
 
-  $('#uploadButton').on('click', () => {
+  $('#image').on('click', () => {
     $('#uploadImage').click();
   });
 
   $('#uploadImage').on('change', function() {
     const file = this.files[0];
     const image = URL.createObjectURL(file);
-    modalElement.addEventListener('shown.bs.modal', function(event) {
-      showCroppie(image);
-    });
-    modal.show();
+    modal.show(image);
   });
 
   $('#submitImage').on('click', () => {
-    $('#cropper').croppie('result').then(function(croppedImage) {
+    croppie.result({ size: 'original' }).then(function(croppedImage) {
       $.post(`${apiUrl}/image`, { image: croppedImage }, result => {
         modal.hide();
         showAlert(result);
@@ -76,19 +77,25 @@ $(async () => {
     });
   });
 
-  function showCroppie(image) {
-    $('#cropper').croppie({
-      enableExif: true,
-      viewport: {
-        width: 300,
-        height: 300,
-        type: 'circle'
-      },
-      boundary: {
-        width: 300,
-        height: 300
-      },
-      url: image
-    });
+  function showCroppie(imageUrl) {
+    if (croppie === undefined) {
+      const croppieElement = $('#cropper');
+      const croppieOptions = {
+        enableExif: true,
+        viewport: {
+          width: croppieElement.width() - 50,
+          height: croppieElement.width() - 50,
+          type: 'circle'
+        },
+        boundary: {
+          width: croppieElement.width(),
+          height: croppieElement.width()
+        },
+        url: imageUrl
+      };
+      croppie = new Croppie(croppieElement.get(0), croppieOptions);
+    } else {
+      croppie.bind({ url: imageUrl });
+    }
   }
 });
