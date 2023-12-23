@@ -57,7 +57,7 @@ $(async () => {
     showCroppie(e.relatedTarget);
   });
 
-  $('#image').on('click', () => {
+  $('#image.pointer').on('click', () => {
     $('#uploadImage').click();
   });
 
