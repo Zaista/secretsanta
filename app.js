@@ -14,10 +14,15 @@ import { adminRouter } from './routers/admin-router.js';
 
 // server configuration
 process.env.adminElevatedPrivileges = true; // determines if admin can edit all profile details in the same group
-console.log(process.env._MONGOURI);
+console.log(process.env.profile);
+console.log(process.env.mongodbUri);
+console.log(process.env.sendgridApi);
+console.log(process.env.sessionKey);
+console.log(process.env.minioEndPoint);
+console.log(process.env.minioUseSSL);
+console.log(process.env.minioAccessKey);
+console.log(process.env.minioSecretKey);
 console.log('testing gcp setup');
-console.log(process.env.MONGOURI);
-console.log('testing gcp setup2');
 
 await loadEnvironment();
 

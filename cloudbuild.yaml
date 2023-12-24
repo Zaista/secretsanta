@@ -7,8 +7,22 @@ steps:
   args:
     - '-c'
     - |
+      sed -i "s|##_PROFILE##|${_PROFILE}|g" app.yaml
       sed -i "s|##_MONGOURI##|${_MONGOURI}|g" app.yaml
+      sed -i "s|##_SENDGRIDAPI##|${_SENDGRIDAPI}|g" app.yaml
+      sed -i "s|##_SESSIONKEY##|${_SESSIONKEY}|g" app.yaml
+      sed -i "s|##_MINIOENDPOINT##|${_MINIOENDPOINT}|g" app.yaml
+      sed -i "s|##_MINIOSSL##|${_MINIOSSL}|g" app.yaml
+      sed -i "s|##_MINIOACCESSKEY##|${_MINIOACCESSKEY}|g" app.yaml
+      sed -i "s|##_MINIOSECRETKEY##|${_MINIOSECRETKEY}|g" app.yaml
       gcloud app deploy
 timeout: 1800s
 substitutions:
+  _PROFILE: ${_PROFILE}
   _MONGOURI: ${_MONGOURI}
+  _SENDGRIDAPI: ${_SENDGRIDAPI}
+  _SESSIONKEY: ${_SESSIONKEY}
+  _MINIOENDPOINT: ${_MINIOENDPOINT}
+  _MINIOSSL: ${_MINIOSSL}
+  _MINIOACCESSKEY: ${_MINIOACCESSKEY}
+  _MINIOSECRETKEY: ${_MINIOSECRETKEY}
