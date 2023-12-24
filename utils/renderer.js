@@ -28,9 +28,10 @@ export const renderer = (filePath, options, callback) => {
     }
 
     if (filePath.includes('santaProfile.html')) {
-      rendered = rendered.replaceAll('{{isHidden}}', (process.env.adminElevatedPrivileges || options.isCurrentUser) ? '' : 'hidden');
-      rendered = rendered.replace('{{isDisabled}}', (process.env.adminElevatedPrivileges || options.isCurrentUser) ? '' : 'disabled');
-      rendered = rendered.replace('{{isPointer}}', (process.env.adminElevatedPrivileges || options.isCurrentUser) ? 'pointer' : '');
+      const elevatedPrivileges = process.env.adminElevatedPrivileges.toLowerCase() === 'true';
+      rendered = rendered.replaceAll('{{isHidden}}', elevatedPrivileges || options.isCurrentUser ? '' : 'hidden');
+      rendered = rendered.replace('{{isDisabled}}', elevatedPrivileges || options.isCurrentUser ? '' : 'disabled');
+      rendered = rendered.replace('{{isPointer}}', elevatedPrivileges || options.isCurrentUser ? 'pointer' : '');
     }
     return callback(null, rendered);
   });

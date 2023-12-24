@@ -8,6 +8,7 @@ steps:
     - '-c'
     - |
       sed -i "s|##_PROFILE##|${_PROFILE}|" app.yaml
+      sed -i "s|##_ADMINELEVATEDPRIVILEGES##|${_ADMINELEVATEDPRIVILEGES}|" app.yaml
       sed -i "s|##_MONGOURI##|${_MONGOURI}|" app.yaml
       sed -i "s|##_SENDGRIDAPI##|${_SENDGRIDAPI}|" app.yaml
       sed -i "s|##_SESSIONKEY##|${_SESSIONKEY}|" app.yaml
@@ -19,6 +20,7 @@ steps:
 timeout: 1800s
 substitutions:
   _PROFILE: ${_PROFILE}
+  _ADMINELEVATEDPRIVILEGES: ${_ADMINELEVATEDPRIVILEGES}
   _MONGOURI: ${_MONGOURI}
   _SENDGRIDAPI: ${_SENDGRIDAPI}
   _SESSIONKEY: ${_SESSIONKEY}
