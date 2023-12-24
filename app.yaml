@@ -6,6 +6,7 @@ handlers:
     secure: always
 env_variables:
   profile: ##_PROFILE##
+  adminElevatedPrivileges: ##_ADMINELEVATEDPRIVILEGES##
   mongodbUri: ##_MONGOURI##
   sendgridApi: ##_SENDGRIDAPI##
   sessionKey: ##_SESSIONKEY##
