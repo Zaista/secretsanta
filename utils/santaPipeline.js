@@ -33,10 +33,11 @@ export async function getSanta(_id, groupId) {
     }
   }, {
     $project: {
+      _id: '$user._id',
       name: '$user.name',
       address: '$user.address',
       year: '$year',
-      image: '$user.image'
+      imageUploaded: '$user.imageUploaded'
     }
   }];
 
