@@ -26,6 +26,8 @@ $(async () => {
         $(yearElement).find('#locationImage').attr('src', image.src).attr('hidden', false);
         $(yearElement).find('#locationIcon').attr('hidden', true);
       });
+    } else {
+      $(yearElement).find('#locationIcon').removeClass('loading-image');
     }
     $(yearElement).on('click', function() {
       window.location.href = `/history/year?id=${year._id}`;
