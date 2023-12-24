@@ -5,4 +5,11 @@ handlers:
     script: auto
     secure: always
 env_variables:
-  _MONGOURI: ##_MONGOURI##
+  profile: ##_PROFILE##
+  mongodbUri: ##_MONGOURI##
+  sendgridApi: ##_SENDGRIDAPI##
+  sessionKey: ##_SESSIONKEY##
+  minioEndPoint: ##_MINIOENDPOINT##
+  minioUseSSL: ##_MINIOSSL##
+  minioAccessKey: ##_MINIOACCESSKEY##
+  minioSecretKey: ##_MINIOSECRETKEY##
