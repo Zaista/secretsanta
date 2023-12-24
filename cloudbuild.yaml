@@ -7,7 +7,7 @@ steps:
   args:
     - '-c'
     - |
-      sed -i "s/##_MONGOURI##/${_MONGOURI}/g" app.yaml
+      sed -i "s|##_MONGOURI##|${_MONGOURI}|g" app.yaml
       gcloud app deploy
 timeout: 1800s
 substitutions:
