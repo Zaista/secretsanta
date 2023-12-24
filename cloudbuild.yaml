@@ -2,17 +2,13 @@ steps:
 - name: node:18.13.0
   entrypoint: npm
   args: ["install"]
-- name: "gcr.io/cloud-builders/gcloud"
-  args: ["app", "deploy"]
-  env:
-    - '_MONGOURI=$_MONGOURI'
-options:
-  env:
-    - '_MONGOURI1=$_MONGOURI'
-    - '_MONGOURI2=${_MONGOURI}'
-substitutions: 
-  _MONGOURI3: $_MONGOURI
-  _MONGOURI4: '$_MONGOURI'
-  _MONGOURI5: ${_MONGOURI}
-  _MONGOURI6: '${_MONGOURI}'
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      sed -i "s/##_MONGOURI##/${_MONGOURI}/g" app.yaml
+      gcloud app deploy
 timeout: 1800s
+substitutions:
+  _MONGOURI: ${_MONGOURI}
