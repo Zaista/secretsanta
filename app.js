@@ -16,8 +16,20 @@ import { adminRouter } from './routers/admin-router.js';
 process.env.adminElevatedPrivileges = true; // determines if admin can edit all profile details in the same group
 console.log(process.env._MONGOURI);
 console.log(process.env._MONGOURI1);
-console.log(process.env.mongodbUri);
+console.log(process.env._MONGOURI2);
+console.log(process.env._MONGOURI3);
+console.log(process.env._MONGOURI4);
+console.log(process.env._MONGOURI5);
+console.log(process.env.mongodbUr6);
 console.log('testing gcp setup');
+console.log(process.env.MONGOURI);
+console.log(process.env.MONGOURI1);
+console.log(process.env.MONGOURI2);
+console.log(process.env.MONGOURI3);
+console.log(process.env.MONGOURI4);
+console.log(process.env.MONGOURI5);
+console.log(process.env.MONGOURI6);
+console.log('testing gcp setup2');
 
 await loadEnvironment();
 

@@ -4,7 +4,15 @@ steps:
   args: ["install"]
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
+  env:
+    - '_MONGOURI=$_MONGOURI'
 options:
   env:
-    - '_MONGOURI=${_MONGOURI}'
+    - '_MONGOURI1=$_MONGOURI'
+    - '_MONGOURI2=${_MONGOURI}'
+substitutions: 
+  _MONGOURI3: $_MONGOURI
+  _MONGOURI4: '$_MONGOURI'
+  _MONGOURI5: ${_MONGOURI}
+  _MONGOURI6: '${_MONGOURI}'
 timeout: 1800s

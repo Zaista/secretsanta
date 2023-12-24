@@ -5,5 +5,10 @@ handlers:
     script: auto
     secure: always
 env_variables:
-  _MONGOURI: ${_MONGOURI}
-  _MONGOURI1: process.env._MONGOURI
+  _MONGOURI: '${_MONGOURI}'
+  _MONGOURI1: '$_MONGOURI'
+  _MONGOURI2: "$_MONGOURI"
+  _MONGOURI3: "$_MONGOURI"
+  _MONGOURI4: "$_MONGOURI"
+  _MONGOURI5: "$_MONGOURI"
+  _MONGOURI6: "$_MONGOURI"
