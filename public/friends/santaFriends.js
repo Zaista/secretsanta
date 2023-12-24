@@ -18,8 +18,10 @@ $(async () => {
         $(friendElement).find('#name').text(userData.name || userData.email);
         if (userData.imageUploaded) {
           lazyLoadImage(userData._id, $(friendElement).find('img')).then(image => {
-            $(friendElement).find('img').attr('src', image.src);
+            $(friendElement).find('img').attr('src', image.src).removeClass('loading-image');
           });
+        } else {
+          $(friendElement).find('img').removeClass('loading-image');
         }
         $(friendElement).find('#street').text(userData.address?.street || 'N/A');
         $(friendElement).find('#postalCode').text(userData.address?.postalCode || '(N/A)');

@@ -14,7 +14,9 @@ import { adminRouter } from './routers/admin-router.js';
 
 // server configuration
 process.env.adminElevatedPrivileges = true; // determines if admin can edit all profile details in the same group
-process.env.profile = 'production'; // 'local' or 'production'
+console.log(process.env._MONGOURI);
+console.log(process.env.mongodbUri);
+console.log('testing gcp setup');
 
 await loadEnvironment();
 
