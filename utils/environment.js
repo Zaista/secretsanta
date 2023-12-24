@@ -30,7 +30,7 @@ export async function loadEnvironment() {
       })
     ]);
 
-    process.env.mongodbUri = mongodbUri[0].payload.data.toString();
+    // process.env.mongodbUri = mongodbUri[0].payload.data.toString();
     process.env.sendgridApi = sendgridApi[0].payload.data.toString();
     process.env.sessionKey = sessionKey[0].payload.data.toString();
     process.env.minioEndPoint = minioEndPoint[0].payload.data.toString();

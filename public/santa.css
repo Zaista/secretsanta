@@ -18,6 +18,36 @@
 	cursor: pointer;
 }
 
+@keyframes loadingAnimation {
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-o-keyframes loadingAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-moz-keyframes loadingAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-webkit-keyframes loadingAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+
+.loading-image {
+	-webkit-animation: loadingAnimation 1s infinite;
+	-moz-animation: loadingAnimation 1s infinite;
+	-o-animation: loadingAnimation 1s infinite;
+	animation: loadingAnimation 1s infinite;
+}
+
+/* end common */
+
 /* santaHistory */
 
 /* end santaHistory */

@@ -13,9 +13,11 @@ $(async () => {
       showAlert(friend);
     } else {
       if (friend.imageUploaded) {
-        $('#image').attr('src', `${apiUrl}/image?id=${friend._id}`);
+        lazyLoadImage(friend._id, $('#image')).then(image => {
+          $('#image').attr('src', image.src).removeClass('loading-image');
+        });
       } else {
-        $('#image').attr('src', '/resources/images/placeholder.png');
+        $('#image').removeClass('loading-image');
       }
       $('#name').val(friend.name);
       const description = $('#description');
@@ -105,5 +107,18 @@ $(async () => {
     } else {
       croppie.bind({ url: imageUrl });
     }
+  }
+
+  function lazyLoadImage(userId, image) {
+    return new Promise(function(resolve) {
+      const lazyImage = new Image();
+      const imageUrl = `profile/api/image?id=${userId}`;
+      lazyImage.src = imageUrl;
+
+      lazyImage.onload = () => {
+        image.src = imageUrl;
+        resolve(image);
+      };
+    });
   }
 });
