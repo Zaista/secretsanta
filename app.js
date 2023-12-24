@@ -1,5 +1,5 @@
 import express from 'express';
-import './utils/environment.js';
+import { loadEnvironment } from './utils/environment.js';
 import session from 'cookie-session';
 import { renderer } from './utils/renderer.js';
 
@@ -14,7 +14,9 @@ import { adminRouter } from './routers/admin-router.js';
 
 // server configuration
 process.env.adminElevatedPrivileges = true; // determines if admin can edit all profile details in the same group
-process.env.profile = 'production'; // 'local' or 'production'
+process.env.profile = 'local'; // 'local' or 'production'
+
+await loadEnvironment();
 
 const app = express();
 app.use(express.static('./public', { redirect: false }));
