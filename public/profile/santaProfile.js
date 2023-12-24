@@ -45,7 +45,11 @@ $(async () => {
       },
       email: $('#email').val()
     };
-    $.post(`${apiUrl}/update`, friend, result => {
+    let updateUrl = `${apiUrl}/update`;
+    if (searchParams.has('id')) {
+      updateUrl += `?id=${searchParams.get('id')}`;
+    }
+    $.post(updateUrl, friend, result => {
       showAlert(result);
     });
     return false;
@@ -69,7 +73,11 @@ $(async () => {
 
   $('#submitImage').on('click', () => {
     croppie.result({ size: 'original' }).then(function(croppedImage) {
-      $.post(`${apiUrl}/image`, { image: croppedImage }, result => {
+      let updateImageUrl = `${apiUrl}/image`;
+      if (searchParams.has('id')) {
+        updateImageUrl += `?id=${searchParams.get('id')}`;
+      }
+      $.post(updateImageUrl, { image: croppedImage }, result => {
         modal.hide();
         showAlert(result);
         $('#image').attr('src', croppedImage);

@@ -22,7 +22,11 @@ profileRouter.get('/api/list', async (req, res) => {
 
 profileRouter.post('/api/update', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await updateProfile(req.user._id, req.body);
+  let userId = req.user._id;
+  if (req.query.id) {
+    userId = req.query.id;
+  }
+  const result = await updateProfile(userId, req.body);
   if (result.modifiedCount) {
     res.send({ success: 'Profile updated successfully' });
   } else {
@@ -46,8 +50,12 @@ profileRouter.post('/api/image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
   try {
-    await uploadImageToMinio(req.user._id, bitmap);
-    await updateProfileImage(req.user._id);
+    let userId = req.user._id;
+    if (req.query.id) {
+      userId = req.query.id;
+    }
+    await uploadImageToMinio(userId, bitmap);
+    await updateProfileImage(userId);
     res.send({ success: 'Profile image updated successfully' });
   } catch (e) {
     console.log('ERROR: ' + e.message);

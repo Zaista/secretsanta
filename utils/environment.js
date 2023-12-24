@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { sendRealMail } from './mail.js';
 import { sendSandboxMail } from './mail-local.js';
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.profile === 'production') {
   console.log('Environment variables loaded from the secret manager');
   const projectId = 'deductive-span-313911';
   const secretManager = new SecretManagerServiceClient();
@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 export function sendEmail(emailTemplate) {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.profile === 'production') {
     return sendRealMail(emailTemplate);
   } else {
     return sendSandboxMail(emailTemplate);

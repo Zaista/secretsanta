@@ -1,8 +1,7 @@
 import express from 'express';
 import './utils/environment.js';
 import session from 'cookie-session';
-import fs from 'fs';
-import { ROLES } from './utils/roles.js';
+import { renderer } from './utils/renderer.js';
 
 // routers
 import { santaRouter } from './routers/santa-router.js';
@@ -12,6 +11,10 @@ import { friendsRouter } from './routers/friends-router.js';
 import { profileRouter } from './routers/profile-router.js';
 import { chatRouter } from './routers/chat-router.js';
 import { adminRouter } from './routers/admin-router.js';
+
+// server configuration
+process.env.adminElevatedPrivileges = true; // determines if admin can edit all profile details in the same group
+process.env.profile = 'production';         // 'local' or 'production'
 
 const app = express();
 app.use(express.static('./public', { redirect: false }));
@@ -45,36 +48,7 @@ app.use(function(request, response, next) {
 });
 
 // template engine
-app.engine('html', (filePath, options, callback) => {
-  fs.readFile(filePath, (err, content) => {
-    if (err) return callback(err);
-    let rendered = content.toString();
-
-    if (options.activeGroup === undefined || options.activeGroup.role !== ROLES.admin) {
-      rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
-    }
-
-    if (filePath.includes('menu.html')) {
-      options.groups.sort(
-        (o1, o2) => (o1.name > o2.name) ? 1 : (o1.name < o2.name) ? -1 : 0
-      );
-      let groupOptions = '';
-      options.groups.forEach(group => {
-        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
-      });
-      rendered = rendered.replace('<!--groupOptions-->', groupOptions);
-
-      if (options.activeGroup === undefined) { rendered = rendered.replace('<!--groupName-->', 'N/A'); } else { rendered = rendered.replace('<!--groupName-->', options.activeGroup.name); }
-    }
-
-    if (filePath.includes('santaProfile.html')) {
-      rendered = rendered.replaceAll('{{isHidden}}', options.isCurrentUser ? '' : 'hidden');
-      rendered = rendered.replace('{{isDisabled}}', options.isCurrentUser ? '' : 'disabled');
-      rendered = rendered.replace('{{isPointer}}', options.isCurrentUser ? 'pointer' : '');
-    }
-    return callback(null, rendered);
-  });
-});
+app.engine('html', renderer);
 app.set('views', './public');
 app.set('view engine', 'html');
 
