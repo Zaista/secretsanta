@@ -35,7 +35,6 @@ $(async () => {
         } else {
           topSecretImage.attr('src', '/resources/images/placeholder.png');
         }
-        console.log('jebemti');
         topSecretImage.off('click');
       });
     });
