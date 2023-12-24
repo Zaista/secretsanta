@@ -11,7 +11,15 @@ santaRouter.get('/', (req, res) => {
 
 santaRouter.get('/api/santa', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  if (req.session.activeGroup !== undefined) { return res.send(await getSanta(req.user._id, req.session.activeGroup._id)); } else { return res.send([]); } // TODO show that user is not part of any group
+  if (req.session.activeGroup !== undefined) {
+    const santa = await getSanta(req.user._id, req.session.activeGroup._id);
+    if (santa.length === 0) {
+      return res.send({ warning: 'Santa pairs not drafted yet for the next year' });
+    }
+    return res.send(santa[0]);
+  } else {
+    return res.send({ warning: 'No active group' });
+  }
 });
 
 export { santaRouter };
