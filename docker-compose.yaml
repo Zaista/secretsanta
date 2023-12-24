@@ -9,7 +9,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
-      - ./private/mongodb/data:/var/lib/mongo
+      - ./private/mongodb/data:/data/db
     ports:
       - '27017:27017'
 

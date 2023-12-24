@@ -70,6 +70,7 @@ app.engine('html', (filePath, options, callback) => {
     if (filePath.includes('santaProfile.html')) {
       rendered = rendered.replaceAll('{{isHidden}}', options.isCurrentUser ? '' : 'hidden');
       rendered = rendered.replace('{{isDisabled}}', options.isCurrentUser ? '' : 'disabled');
+      rendered = rendered.replace('{{isPointer}}', options.isCurrentUser ? 'pointer' : '');
     }
     return callback(null, rendered);
   });
