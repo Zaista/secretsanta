@@ -27,7 +27,7 @@ test.describe('session tests', () => {
       email: faker.internet.email(),
       password: faker.internet.password()
     };
-    await registerUser(request, user);
+    await registerUser(request, user.email, user.password);
 
     await page.goto('/');
     await page.getByLabel('Santa email').fill(user.email);
