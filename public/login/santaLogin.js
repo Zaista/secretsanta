@@ -5,7 +5,7 @@ $(async function() {
 
   $('#santaLoginForm').on('submit', function() {
     const userData = {
-      username: $('#email').val().toLowerCase(),
+      username: $('#email').val(),
       password: $('#password').val()
     };
 
@@ -14,7 +14,7 @@ $(async function() {
         window.location.href = '/';
       }
     }, 'json').fail(() => {
-      showAlert({ error: 'Username or password wrong' });
+      showAlert({ error: 'Email or password wrong' });
     });
     return false;
   });
