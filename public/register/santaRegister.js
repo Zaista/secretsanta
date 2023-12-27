@@ -9,7 +9,7 @@ $(async function() {
     // TODO validate password and confirmed password
 
     const user = {
-      email: $('#email').val().toLowerCase(),
+      email: $('#email').val(),
       password: $('#password').val(),
       name: $('#name').val(),
       address: {
