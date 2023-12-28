@@ -1,10 +1,5 @@
 /* common */
 
-#container {
-	overflow: auto;
-	height: calc(100vh - 56px);
-}
-
 .pointer {
 	cursor: pointer;
 }
