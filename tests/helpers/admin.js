@@ -9,3 +9,7 @@ export async function addUserToGroup(request, email) {
     form: { email }
   });
 }
+
+export async function draftSantaPairs(request) {
+  await request.put('admin/api/draft');
+}

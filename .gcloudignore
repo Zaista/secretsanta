@@ -18,10 +18,11 @@
 /node_modules/
 
 # local development files:
-/private/data
+/private
 docker-compose.yaml
 
 # test files
-/cypress/screenshots
-/cypress/videos
-/cypress/downloads
+/tests
+/test-results
+/playwright-report
+playwright.config.js
