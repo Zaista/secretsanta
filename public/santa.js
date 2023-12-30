@@ -25,7 +25,7 @@ const pageLoaded = new Promise(resolve => {
       const groupName = $('#group-name').val();
       $.post('admin/api/group/create', { groupName }, result => {
         if (result.success) {
-          window.location.href = '/admin';
+          window.location.href = '/admin?group-created';
         } else {
           showAlert({ error: 'Something went wrong' });
         }
