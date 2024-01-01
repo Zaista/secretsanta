@@ -1,11 +1,11 @@
-export async function registerUser(request, email, password) {
-  await request.post('session/api/register', {
-    form: { email, password }
+export function registerUser(request, user) {
+  return request.post('session/api/register', {
+    data: user
   });
 }
 
-export async function login(request, email, password) {
-  await request.post('session/api/login', {
-    form: { username: email, password }
+export function login(request, email, password) {
+  return request.post('session/api/login', {
+    data: { username: email, password }
   });
 }

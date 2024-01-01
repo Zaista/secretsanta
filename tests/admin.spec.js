@@ -10,8 +10,8 @@ test.describe('admin tests', () => {
       email: faker.internet.email(),
       password: faker.internet.password()
     };
-    await registerUser(page.request, adminUser.email, adminUser.password);
-    await login(page.request, adminUser.email, adminUser.password);
+    await registerUser(page.request, adminUser);
+    await login(page.request, adminUser);
     const user1 = {
       email: faker.internet.email(),
       password: faker.internet.password()

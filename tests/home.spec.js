@@ -10,7 +10,7 @@ test.describe('home tests', () => {
       email: faker.internet.email(),
       password: 'test'
     };
-    await registerUser(page.request, adminUser.email, adminUser.password);
+    await registerUser(page.request, adminUser);
     await login(page.request, adminUser.email, adminUser.password);
     const user1 = {
       email: faker.internet.email(),
@@ -43,7 +43,7 @@ test.describe('home tests', () => {
       email: faker.internet.email(),
       password: 'test'
     };
-    await registerUser(page.request, adminUser.email, adminUser.password);
+    await registerUser(page.request, adminUser);
     await login(page.request, adminUser.email, adminUser.password);
     await page.goto('/');
 

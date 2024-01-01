@@ -3,11 +3,7 @@ const pageLoaded = new Promise(resolve => {
   $('#menu').load('/modules/menu', () => {
     // group selection and info
     $('.groupOp').on('click', function() {
-      const newGroup = {
-        _id: $(this).attr('value'),
-        name: $(this).text()
-      };
-      $.get(`/api/setActiveGroup?groupId=${newGroup._id}`, response => {
+      $.get(`/api/setActiveGroup?groupId=${$(this).attr('value')}`, response => {
         if (response.success) location.reload();
         else showAlert(response);
       });
