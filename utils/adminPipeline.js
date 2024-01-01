@@ -68,33 +68,76 @@ export async function checkIfUserExists(email) {
   }
 }
 
-export async function addUserToGroup(groupId, email) {
+export async function addUserToGroup(groupId, email, role) {
   const client = await getClient();
   const filter = { email };
   const update = {
     $push: {
-      groups: { groupId: new ObjectId(groupId), role: ROLES.user }
+      groups: { groupId: new ObjectId(groupId), role }
     }
   };
 
   try {
-    return await client
+    const result = await client
       .db(process.env.database)
       .collection('users')
       .updateOne(filter, update);
+    if (result.acknowledged !== true || result.modifiedCount !== 1) {
+      console.log('ERROR: failed to add user to the group');
+      return null;
+    }
+    return true;
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;
   }
 }
 
-export async function createNewUser(groupId, email, password) {
+export async function removeUserFromGroup(userId, groupId) {
+  const client = await getClient();
+  const filter = { _id: new ObjectId(userId) };
+  const update = {
+    $pull: {
+      groups: { groupId: new ObjectId(groupId) }
+    }
+  };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('users')
+      .updateOne(filter, update);
+    if (result.acknowledged !== true || result.modifiedCount !== 1) {
+      console.log('ERROR: failed to remove the user from the group');
+      return null;
+    }
+    return true;
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function addNewUser(groupId, email, password) {
   const client = await getClient();
   const user = {
     password,
     email,
     groups: [{ groupId: new ObjectId(groupId), role: ROLES.user }]
   };
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .insertOne(user);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function createNewUser(user) {
+  const client = await getClient();
   try {
     return await client
       .db(process.env.database)
@@ -141,6 +184,31 @@ export async function getGroup(groupId) {
       .db(process.env.database)
       .collection('groups')
       .findOne(query);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function createGroup(groupName) {
+  const client = await getClient();
+  const group = {
+    name: groupName,
+    emailNotifications: false
+  };
+
+  try {
+    const result = await client
+      .db(process.env.database)
+      .collection('groups')
+      .insertOne(group);
+
+    if (result.acknowledged !== true) {
+      console.log('ERROR: failed to create new group');
+      return null;
+    }
+    group._id = result.insertedId;
+    return group;
   } catch (err) {
     console.log('ERROR: ' + err.stack);
     return null;

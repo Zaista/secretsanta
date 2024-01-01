@@ -4,3 +4,13 @@ handlers:
   - url: /.*
     script: auto
     secure: always
+env_variables:
+  profile: ##_PROFILE##
+  adminElevatedPrivileges: ##_ADMINELEVATEDPRIVILEGES##
+  mongodbUri: ##_MONGOURI##
+  sendgridApi: ##_SENDGRIDAPI##
+  sessionKey: ##_SESSIONKEY##
+  minioEndPoint: ##_MINIOENDPOINT##
+  minioUseSSL: ##_MINIOSSL##
+  minioAccessKey: ##_MINIOACCESSKEY##
+  minioSecretKey: ##_MINIOSECRETKEY##

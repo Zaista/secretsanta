@@ -1,0 +1,16 @@
+<tr data-name="userRow">
+    <th data-name="userIndex" scope="row"></th>
+    <td data-name="userName"></td>
+    <td>
+        <a href="#"><i class="bi bi-box-arrow-up-right"></i></a>
+        <input data-name="userId" type="hidden">
+    </td>
+    <td data-name="userEmail"></td>
+    <td>
+        <select class="form-select" data-name="userRole" data-onchange="users" aria-label="Role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+        </select>
+    </td>
+    <td><i data-name="userRemove" class="bi bi-trash" data-bs-toggle="modal" data-bs-target="#confirmationDialog"></i></td>
+</tr>

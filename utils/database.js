@@ -6,10 +6,7 @@ const database = (function() {
   function createClient() {
     const { MongoClient } = mongodb;
 
-    const client = new MongoClient(process.env.mongodbUri, {
-      useUnifiedTopology: true
-    });
-    return client;
+    return new MongoClient(process.env.mongodbUri);
   }
 
   return {

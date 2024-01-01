@@ -1,0 +1,14 @@
+{
+  "admin": {
+    "email": "admin@secretsanta.com",
+    "password": "test"
+  },
+  "user1": {
+    "email": "user1@secretsanta.com",
+    "password": "test"
+  },
+  "user2": {
+    "email": "user1@secretsanta.com",
+    "password": "test"
+  }
+}

@@ -1,0 +1,68 @@
+/* common */
+
+.pointer {
+	cursor: pointer;
+}
+
+.color-red {
+	color: #dc3545;
+}
+
+.bi-trash {
+	color: #dc3545;
+	cursor: pointer;
+}
+
+@keyframes loadingAnimation {
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-o-keyframes loadingAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-moz-keyframes loadingAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+@-webkit-keyframes loadingAnimation{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+}
+
+.loading-image {
+	-webkit-animation: loadingAnimation 1s infinite;
+	-moz-animation: loadingAnimation 1s infinite;
+	-o-animation: loadingAnimation 1s infinite;
+	animation: loadingAnimation 1s infinite;
+}
+
+/* end common */
+
+/* santaHistory */
+
+/* end santaHistory */
+
+/* santaYear */
+
+#giftImage {
+	width: 8em;
+}
+
+/* end santaYear */
+
+/* santaFriends */
+
+#friendImage {
+	background: linear-gradient(to bottom, rgba(255,0,0, 0.5) 50%, white 0%);
+}
+
+#friendList {
+	font-size: 0.8rem;
+}
+
+/* end santaFriends */

@@ -9,6 +9,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
+  ignorePatterns: ['public/utils/*'],
   rules: {
     'space-before-function-paren': ['error', {
       'anonymous': 'never',
@@ -17,5 +18,12 @@ module.exports = {
     }],
     'semi': ['error', 'always'],
     'quotes': ['error', 'single']
+  },
+  globals: {
+    pageLoaded: 'readonly',
+    showAlert: 'readonly',
+    bootstrap: 'readonly',
+    Croppie: 'readonly',
+    $: 'readonly'
   }
 }

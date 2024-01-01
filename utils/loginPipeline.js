@@ -3,7 +3,7 @@ import { getClient } from './database.js';
 
 export function getUserByEmailAndPassword(email, password) {
   const $match = {
-    email,
+    email: { $regex: new RegExp(email, 'i') },
     password
   };
 

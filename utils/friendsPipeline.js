@@ -18,7 +18,11 @@ export async function getFriends(groupId) {
   }
 }
 
-export async function getFriend(_id) {
+export async function getProfile(_id) {
+  if (!ObjectId.isValid(_id)) {
+    return null;
+  }
+
   const client = await getClient();
   const query = { _id: new ObjectId(_id) };
   const options = { projection: { password: 0, chat: 0 } };
@@ -34,14 +38,34 @@ export async function getFriend(_id) {
   }
 }
 
-export async function updateFriend(friend) {
+export async function updateProfile(_id, friend) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(friend._id) };
+  const filter = { _id: new ObjectId(_id) };
   const update = {
     $set: {
       name: friend.name,
       description: friend.description,
       address: friend.address
+    }
+  };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('users')
+      .updateOne(filter, update);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function updateProfileImage(_id) {
+  const client = await getClient();
+  const filter = { _id: new ObjectId(_id) };
+  const update = {
+    $set: {
+      imageUploaded: true
     }
   };
 
