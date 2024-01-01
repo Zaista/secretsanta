@@ -3,7 +3,7 @@ $(async function() {
 
   await $.getScript('/santa.js');
 
-  $('#santaRegisterForm').on('submit', () => {
+  $('#register-button').on('click', () => {
     // TODO validate email
 
     // TODO validate password and confirmed password
@@ -24,6 +24,7 @@ $(async function() {
       if (result.success) {
         window.location.replace('/?registered');
       }
+      showAlert(result);
     });
     return false;
   });

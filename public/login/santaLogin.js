@@ -3,7 +3,7 @@ $(async function() {
 
   await $.getScript('/santa.js');
 
-  $('#santaLoginForm').on('submit', function() {
+  $('#login-button').on('click', function() {
     const userData = {
       username: $('#email').val(),
       password: $('#password').val()
