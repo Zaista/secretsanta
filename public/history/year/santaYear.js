@@ -31,6 +31,8 @@ $(async () => {
         $('#locationImage').attr('src', image.src).attr('hidden', false);
         $('#locationIcon').attr('hidden', true);
       });
+    } else {
+      $('#locationIcon').removeClass('loading-image');
     }
 
     if (year.gifts.length === 0) {
@@ -79,6 +81,8 @@ $(async () => {
         $(giftElement).find('#giftIcon').attr('hidden', true);
         $(giftElement).find('#giftImage').attr('hidden', false);
       });
+    } else {
+      $(giftElement).find('#giftIcon').removeClass('loading-image');
     }
     $('tbody').append(giftElement);
   }
@@ -115,10 +119,13 @@ $(async () => {
   // cropping images
   $('#imageUpload').on('change', showCroppie);
 
-  $('#imageSubmit').on('click', () => {
+  $('#imageSubmit').on('click', (e) => {
+    $(e.currentTarget).addClass('loading-image');
+    showAlert({ 'warning': 'Uploading image, please wait...' }, 0);
     croppie.result({ size: 'original' }).then(croppedImage => {
       $.post(`${apiUrl}/${uploadEndpoint}`, { image: croppedImage }, result => {
         modal.hide();
+        $(e.currentTarget).removeClass('loading-image');
         showAlert(result);
         if (result.success) {
           imageElement.attr('src', croppedImage).attr('hidden', false);
