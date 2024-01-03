@@ -7,8 +7,8 @@ $(async () => {
   let iconElement;
   let croppie;
   const modal = new bootstrap.Modal('#imageModal');
-  const giftTextModal = new bootstrap.Modal('#giftTextModal');
-  let giftEditElement;
+  const editDescriptionModal = new bootstrap.Modal('#editDescriptionModal');
+  let descriptionEditElement;
 
   const showCroppie = (e) => {
     $('#imagePopup').parent().prop('hidden', true);
@@ -26,11 +26,26 @@ $(async () => {
 
   $.getJSON(`${apiUrl}/gifts?id=${searchParams.get('id')}`, year => {
     $('#yearTitle').text(year.year);
+    if (year.location === null) {
+      year.location = 'N/A';
+    }
+    $('#locationTitle').text(year.location);
+    $('#locationCaptionEdit').on('click', () => {
+      $('#editDescriptionInput')
+        .attr('data-id', year._id)
+        .attr('data-type', 'year')
+        .val(year.location);
+      descriptionEditElement = $('#locationTitle');
+      editDescriptionModal.show();
+    });
+
     if (year.imageUploaded) {
       lazyLoadImage(year._id, $('#locationImage')).then(image => {
         $('#locationImage').attr('src', image.src).attr('hidden', false);
         $('#locationIcon').attr('hidden', true);
       });
+    } else {
+      $('#locationIcon').removeClass('loading-image');
     }
 
     if (year.gifts.length === 0) {
@@ -46,17 +61,18 @@ $(async () => {
     const giftElement = $.parseHTML(giftTemplate);
     $(giftElement).find('#santa').text(gift.santa);
     $(giftElement).find('#child').text(gift.child);
+    if (gift.gift === null) {
+      gift.gift = 'N/A';
+    }
     $(giftElement).find('#giftText').text(gift.gift);
 
-    $(giftElement).find('#giftTextEdit').on('click', () => {
-      $('#giftEditInput').attr('data-id', gift.giftId);
-      if (gift.gift !== null) {
-        $('label[for="giftEditInput"]').text(`Update '${gift.gift}' to:`);
-      } else {
-        $('label[for="giftEditInput"]').text('Update empty description to:');
-      }
-      giftEditElement = $(giftElement).find('#giftText');
-      giftTextModal.show();
+    $(giftElement).find('#descriptionEdit').on('click', () => {
+      $('#editDescriptionInput')
+        .attr('data-id', gift.giftId)
+        .attr('data-type', 'gift')
+        .val(gift.gift);
+      descriptionEditElement = $(giftElement).find('#giftText');
+      editDescriptionModal.show();
     });
 
     $(giftElement).find('#giftIcon, #giftImage').on('click', (e) => {
@@ -79,6 +95,8 @@ $(async () => {
         $(giftElement).find('#giftIcon').attr('hidden', true);
         $(giftElement).find('#giftImage').attr('hidden', false);
       });
+    } else {
+      $(giftElement).find('#giftIcon').removeClass('loading-image');
     }
     $('tbody').append(giftElement);
   }
@@ -115,10 +133,13 @@ $(async () => {
   // cropping images
   $('#imageUpload').on('change', showCroppie);
 
-  $('#imageSubmit').on('click', () => {
+  $('#imageSubmit').on('click', (e) => {
+    $(e.currentTarget).addClass('loading-image');
+    showAlert({ warning: 'Uploading image, please wait...' }, 0);
     croppie.result({ size: 'original' }).then(croppedImage => {
       $.post(`${apiUrl}/${uploadEndpoint}`, { image: croppedImage }, result => {
         modal.hide();
+        $(e.currentTarget).removeClass('loading-image');
         showAlert(result);
         if (result.success) {
           imageElement.attr('src', croppedImage).attr('hidden', false);
@@ -155,25 +176,29 @@ $(async () => {
     }
   }
 
-  const giftEditInput = $('#giftEditInput');
-  giftEditInput.on('keypress', (e) => {
+  const editDescriptionInput = $('#editDescriptionInput');
+  editDescriptionInput.on('keypress', (e) => {
     if (e.which === 13) {
-      updateGiftDescription();
+      updateDescription();
     }
   });
 
-  $('#giftEditSubmit').on('click', () => {
-    updateGiftDescription();
+  $('#descriptionSubmit').on('click', () => {
+    updateDescription();
   });
 
-  function updateGiftDescription() {
-    $.post(`${apiUrl}/gift-description`, { _id: giftEditInput.attr('data-id'), description: giftEditInput.val() }, result => {
-      giftTextModal.hide();
+  function updateDescription() {
+    const type = editDescriptionInput.attr('data-type');
+    const data = {
+      _id: editDescriptionInput.attr('data-id'),
+      description: editDescriptionInput.val()
+    };
+    $.post(`${apiUrl}/${type}-description`, data, result => {
+      editDescriptionModal.hide();
       showAlert(result);
       if (result.success) {
-        giftEditElement.text($('#giftEditInput').val());
+        descriptionEditElement.text($('#editDescriptionInput').val());
       }
-      giftEditInput.val('');
     });
   }
 });
