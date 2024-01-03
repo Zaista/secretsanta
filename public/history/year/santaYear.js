@@ -27,18 +27,18 @@ $(async () => {
   $.getJSON(`${apiUrl}/gifts?id=${searchParams.get('id')}`, year => {
     $('#yearTitle').text(year.year);
     if (year.location === null) {
-      year.location = 'N/A'
+      year.location = 'N/A';
     }
     $('#locationTitle').text(year.location);
     $('#locationCaptionEdit').on('click', () => {
       $('#editDescriptionInput')
-          .attr('data-id', year._id)
-          .attr('data-type', 'year')
-          .val(year.location);
+        .attr('data-id', year._id)
+        .attr('data-type', 'year')
+        .val(year.location);
       descriptionEditElement = $('#locationTitle');
       editDescriptionModal.show();
     });
-    
+
     if (year.imageUploaded) {
       lazyLoadImage(year._id, $('#locationImage')).then(image => {
         $('#locationImage').attr('src', image.src).attr('hidden', false);
@@ -62,15 +62,15 @@ $(async () => {
     $(giftElement).find('#santa').text(gift.santa);
     $(giftElement).find('#child').text(gift.child);
     if (gift.gift === null) {
-      gift.gift = 'N/A'
+      gift.gift = 'N/A';
     }
     $(giftElement).find('#giftText').text(gift.gift);
 
     $(giftElement).find('#descriptionEdit').on('click', () => {
       $('#editDescriptionInput')
-          .attr('data-id', gift.giftId)
-          .attr('data-type', 'gift')
-          .val(gift.gift);
+        .attr('data-id', gift.giftId)
+        .attr('data-type', 'gift')
+        .val(gift.gift);
       descriptionEditElement = $(giftElement).find('#giftText');
       editDescriptionModal.show();
     });
@@ -135,7 +135,7 @@ $(async () => {
 
   $('#imageSubmit').on('click', (e) => {
     $(e.currentTarget).addClass('loading-image');
-    showAlert({ 'warning': 'Uploading image, please wait...' }, 0);
+    showAlert({ warning: 'Uploading image, please wait...' }, 0);
     croppie.result({ size: 'original' }).then(croppedImage => {
       $.post(`${apiUrl}/${uploadEndpoint}`, { image: croppedImage }, result => {
         modal.hide();

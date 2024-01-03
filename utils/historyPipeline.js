@@ -271,7 +271,7 @@ export async function updateYearDescription(yearId, description) {
   const filter = { _id: new ObjectId(yearId) };
   const update = {
     $set: {
-      'location': description
+      location: description
     }
   };
 

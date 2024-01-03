@@ -21,7 +21,7 @@ $(async () => {
     const yearElement = $.parseHTML(yearTemplate);
     $(yearElement).find('#yearTitle').text(year.year);
     if (year.location === null) {
-      year.location = 'N/A'
+      year.location = 'N/A';
     }
     $(yearElement).find('#yearLocation').text(year.location);
     if (year.imageUploaded) {
