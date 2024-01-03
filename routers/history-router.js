@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getGiftsByYear,
   getYearsByGroup,
+  updateYearDescription,
   updateGiftDescription,
   updateGiftImage,
   updateLocationImage
@@ -83,6 +84,16 @@ historyRouter.post('/year/api/gift-description', async (req, res) => {
     res.send({ success: 'Gift description was updated successfully' });
   } else {
     res.send({ error: 'Failed to update the gift description' });
+  }
+});
+
+historyRouter.post('/year/api/year-description', async (req, res) => {
+  if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  const result = await updateYearDescription(req.body._id, req.body.description);
+  if (result.acknowledged) {
+    res.send({ success: 'Year location was updated successfully' });
+  } else {
+    res.send({ error: 'Failed to update the year location' });
   }
 });
 

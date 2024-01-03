@@ -48,7 +48,7 @@ function showAlert(alert, timeout = 3000) {
     message = alert.error;
   }
   const alertElement = $('#footerAlert');
-  alertElement.removeClass('alert-success alert-danger');
+  alertElement.removeClass('alert-success alert-warning alert-danger');
   alertElement.addClass(alertClass);
   $('#footerAlert span').text(message);
   alertElement.show();

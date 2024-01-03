@@ -81,6 +81,9 @@ export async function getGiftsByYear(groupId, yearId) {
         year: {
           $first: '$$ROOT.year'
         },
+        location: {
+          $first: '$$ROOT.location'
+        },
         imageUploaded: {
           $first: '$$ROOT.imageUploaded'
         },
@@ -249,6 +252,26 @@ export async function updateGiftDescription(giftId, description) {
   const update = {
     $set: {
       'gifts.$.gift': description
+    }
+  };
+
+  try {
+    return await client
+      .db(process.env.database)
+      .collection('history')
+      .updateOne(filter, update);
+  } catch (err) {
+    console.log('ERROR: ' + err.stack);
+    return null;
+  }
+}
+
+export async function updateYearDescription(yearId, description) {
+  const client = await getClient();
+  const filter = { _id: new ObjectId(yearId) };
+  const update = {
+    $set: {
+      location: description
     }
   };
 
