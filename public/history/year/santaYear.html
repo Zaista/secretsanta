@@ -38,7 +38,7 @@
             <h1 id="locationIcon" class="loading-image"><i class="bi bi-image pointer color-red"></i></h1>
             <img id="locationImage" class="pointer img-thumbnail w-50" src="" alt="Location image" hidden>
         </div>
-        <div class="col-md-2 col-xs-12 text-center">
+        <div class="col-md-2 col-xs-12 text-center mt-3">
             <h3>YEAR</h3>
             <h1 id="yearTitle"></h1>
         </div>
@@ -46,7 +46,7 @@
     <div class="row justify-content-center">
         <div id="yearDiv" class="col-md-8 col-xs-12">
             <table class="table caption-top align-middle mt-3">
-                <caption></caption>
+                <caption><b>Location:</b> <span id="locationTitle"></span> <i id="locationCaptionEdit" class="bi bi-pencil-square pointer color-red"></i></caption>
                 <thead>
                 <tr>
                     <th scope="col">Santa</th>
@@ -80,27 +80,24 @@
     </div>
     <!-- end image popup dialog -->
 
-    <!-- gift text dialog -->
-    <div class="modal fade" id="giftTextModal" tabindex="-1" aria-labelledby="giftEditLabel" aria-hidden="true">
+    <!-- edit description dialog -->
+    <div class="modal fade" id="editDescriptionModal" tabindex="-1" aria-labelledby="giftEditLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="giftEditLabel">Edit gift description</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="giftEditInput" class="form-label"></label>
-                        <input type="text" class="form-control" id="giftEditInput">
+                        <label for="editDescriptionInput" class="form-label">Update description:</label>
+                        <input type="text" class="form-control" id="editDescriptionInput">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="giftEditSubmit" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="descriptionSubmit" type="button" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- end gift text dialog -->
+    <!-- end edit description dialog -->
 </div>
 <div id="footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
