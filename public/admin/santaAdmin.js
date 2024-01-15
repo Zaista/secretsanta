@@ -197,7 +197,7 @@ $(async () => {
       });
     });
 
-    $('#deletePairDialog').on('click', () => {
+    $('#deletePairButton').on('click', () => {
       $.post(`${apiUrl}/forbidden/delete`, { _id: pairId }, result => {
         showAlert(result);
         if (result.success) {

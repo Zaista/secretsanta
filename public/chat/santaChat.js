@@ -35,7 +35,6 @@ $(async function() {
         $(chatElement).find('[data-name="chatFrom"]').text(`From: ${item.from || 'Anonymous'}`);
 
         $(chatElement).find('[data-name="msgDelete"]').on('click', function() {
-          $('#deletePairDialog').prop('hidden', false);
           chatId = item._id;
           chatEl = chatElement;
         });
@@ -62,7 +61,6 @@ $(async function() {
           $(chatElement).find('[data-name="chatFrom"]').text('From: you');
 
           $(chatElement).find('[data-name="msgDelete"]').on('click', function() {
-            $('#deletePairDialog').prop('hidden', false);
             chatId = response.insertedId;
             chatEl = chatElement;
           });
@@ -82,7 +80,7 @@ $(async function() {
     $('.alert').hide();
   });
 
-  $('#deleteMessageDialog').on('click', () => {
+  $('#deleteMessageButton').on('click', () => {
     $.post(`${apiUrl}/delete`, { _id: chatId }, result => {
       showAlert(result);
       if (result.success) {
