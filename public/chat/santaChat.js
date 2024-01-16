@@ -4,6 +4,9 @@ const friendsApiUrl = 'friends/api';
 $(async function() {
   'use strict';
 
+  let chatId;
+  let chatEl;
+
   await $.getScript('/santa.js');
 
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -31,11 +34,9 @@ $(async function() {
         $(chatElement).find('[data-name="chatDate"]').text(dateStr);
         $(chatElement).find('[data-name="chatFrom"]').text(`From: ${item.from || 'Anonymous'}`);
 
-        $(chatElement).find('button').on('click', function() {
-          $.post(`${apiUrl}/delete`, { _id: item._id }, result => {
-            if (result.success) $(chatElement).remove();
-            showAlert(result);
-          });
+        $(chatElement).find('[data-name="msgDelete"]').on('click', function() {
+          chatId = item._id;
+          chatEl = chatElement;
         });
         $('#chat').append(chatElement);
       }
@@ -59,13 +60,10 @@ $(async function() {
           $(chatElement).find('[data-name="chatDate"]').text('Just now...');
           $(chatElement).find('[data-name="chatFrom"]').text('From: you');
 
-          $(chatElement).find('button').on('click', function() {
-            $.post(`${apiUrl}/delete`, { _id: response.insertedId }, result => {
-              if (result.success) $(chatElement).remove();
-              showAlert(result);
-            });
+          $(chatElement).find('[data-name="msgDelete"]').on('click', function() {
+            chatId = response.insertedId;
+            chatEl = chatElement;
           });
-
           $('#chat').append(chatElement);
           $('#chat').scrollTop($('#chat').prop('scrollHeight'));
 
@@ -80,5 +78,14 @@ $(async function() {
 
   $('.alert .btn-close').on('click', function() {
     $('.alert').hide();
+  });
+
+  $('#deleteMessageButton').on('click', () => {
+    $.post(`${apiUrl}/delete`, { _id: chatId }, result => {
+      showAlert(result);
+      if (result.success) {
+        $(chatEl).remove();
+      }
+    });
   });
 });

@@ -44,7 +44,7 @@
             <div class="col-8 offset-2">
                 <div data-bs-spy="scroll" id="scrollspy-div" data-bs-target="#scrollspy-nav"
                      data-bs-smooth-scroll="true" data-bs-offset="0" tabindex="0">
-                    
+
                     <!-- group setting -->
                     <div id="group-settings">
                         <h4>Group settings</h4>
@@ -68,18 +68,20 @@
                                 </div>
                             </div>
                             <div class="mt-3 mb-3">
-                                <button id="groupButton" type="submit" class="btn btn-primary" disabled>Save changes</button>
+                                <button id="groupButton" type="submit" class="btn btn-primary" disabled>Save changes
+                                </button>
                             </div>
                         </form>
                     </div>
                     <!-- end group setting -->
-    
+
                     <!-- drafting -->
                     <div id="group-drafting" class="mt-5">
                         <h4>Drafting pairs</h4>
                         <p>Draft the new SecretSanta pairs for the next year. This will email (if enabled above) all the
                             users in the group that their secret santa pair has been drafted. Warning: removing users
-                            from the group <b>after</b> the pairs were draft will not affect or change the drafted pairs.</p>
+                            from the group <b>after</b> the pairs were draft will not affect or change the drafted
+                            pairs.</p>
                         <div id="yearAlert" class="alert alert-primary" role="alert"></div>
                         <div class="mb-3">
                             <button type="button" id="draft" disabled class="btn btn-primary">Draft</button>
@@ -87,19 +89,20 @@
                         </div>
                     </div>
                     <!-- end drafting -->
-    
+
                     <!-- user list -->
                     <div class="mt-5" id="user-settings">
                         <h4>User settings</h4>
-                        <p>Settings related to the SecretSanta users. Removed users will not be drafted anymore in any of 
+                        <p>Settings related to the SecretSanta users. Removed users will not be drafted anymore in any
+                            of
                             the future drafts, however they will still show up in the <a href="/history">history</a>.
                         </p>
-                        
+
                         <div>
                             <button id="newUsersButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#newUsersModal">Invite new users
                             </button>
-        
+
                             <table id="users" class="table table-borderless caption-top mt-3">
                                 <caption>List of users</caption>
                                 <thead>
@@ -121,7 +124,7 @@
                         </div>
                     </div>
                     <!-- end user list -->
-    
+
                     <!-- forbidden pairs list -->
                     <div class="mt-5" id="user-pairs">
                         <h4>Forbidden pairs</h4>
@@ -129,7 +132,7 @@
                         <button id="addNewPairButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#forbiddenPairsModal">Add new pair
                         </button>
-    
+
                         <table id="forbiddenPairsTable" class="table table-borderless caption-top mt-3">
                             <caption>List of forbidden pairs</caption>
                             <thead>
@@ -203,9 +206,10 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Confirmation Dialog -->
-    <div class="modal fade" id="confirmationDialog" tabindex="-1" aria-labelledby="confirmationDialogLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmationDialog" tabindex="-1" aria-labelledby="confirmationDialogLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -217,8 +221,12 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button id="removeUserDialog" type="button" data-bs-dismiss="modal" class="btn btn-primary">Remove user</button>
-                    <button id="deletePairDialog" type="button" data-bs-dismiss="modal" class="btn btn-primary">Delete pair</button>
+                    <button id="removeUserDialog" type="button" data-bs-dismiss="modal" class="btn btn-primary">Remove
+                        user
+                    </button>
+                    <button id="deletePairButton" type="button" data-bs-dismiss="modal" class="btn btn-primary">Delete
+                        pair
+                    </button>
                 </div>
             </div>
         </div>
