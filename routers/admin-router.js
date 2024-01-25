@@ -140,7 +140,6 @@ adminRouter.post('/api/forbidden', async (req, res) => {
   } else {
     return res.send({ error: 'Forbidden pair already exists in the group' });
   }
-  res.send({ error: 'Something went wrong' });
 });
 
 adminRouter.post('/api/forbidden/delete', async (req, res) => {
