@@ -298,11 +298,34 @@ export async function getForbiddenPairs(groupId) {
 export async function createForbiddenPair(groupId, forbiddenPair) {
   const client = await getClient();
   try {
+    const existingPair = await client
+      .db(process.env.database)
+      .collection('forbiddenPairs')
+      .findOne({
+        groupId: new ObjectId(groupId),
+        $or: [
+          {
+            userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
+            forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
+          },
+          {
+            userId: new ObjectId(forbiddenPair.forbiddenUser2Id),
+            forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser1Id)
+          }
+        ]
+      });
+
+    if (existingPair) {
+      // Forbidden pair already exists, handle accordingly
+      return { error: 'Forbidden pair already exists.' };
+    }
+
     const document = {
       groupId: new ObjectId(groupId),
       userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
       forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
     };
+
     return await client
       .db(process.env.database)
       .collection('forbiddenPairs')
