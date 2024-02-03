@@ -1,4 +1,4 @@
-import { addUserToGroup, createGroup, draftSantaPairs } from './admin.js';
+import { addUserToGroup, createGroup, draftSantaPairs, revealSantaPairs } from './admin.js';
 import { faker } from '@faker-js/faker';
 import { login, registerUser } from './login.js';
 
@@ -51,5 +51,11 @@ export async function createDraftedGroup(request) {
   await addUserToGroup(request, groupData.users.user1.email);
   await addUserToGroup(request, groupData.users.user2.email);
   await draftSantaPairs(request);
+  return groupData;
+}
+
+export async function createRevealedGroup(request) {
+  const groupData = await createDraftedGroup(request);
+  await revealSantaPairs(request);
   return groupData;
 }
