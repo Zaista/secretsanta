@@ -13,3 +13,7 @@ export function addUserToGroup(request, email) {
 export function draftSantaPairs(request) {
   return request.put('admin/api/draft');
 }
+
+export function revealSantaPairs(request) {
+  return request.put('admin/api/reveal');
+}
