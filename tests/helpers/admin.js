@@ -14,6 +14,12 @@ export function draftSantaPairs(request) {
   return request.put('admin/api/draft');
 }
 
+export function addForbiddenPair(request, forbiddenPair) {
+  return request.post('admin/api/forbidden', {
+    form: forbiddenPair
+  });
+}
+
 export function revealSantaPairs(request) {
   return request.put('admin/api/reveal');
 }

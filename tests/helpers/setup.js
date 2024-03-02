@@ -43,9 +43,12 @@ export async function createDraftedGroup(request) {
       name: faker.word.noun()
     }
   };
-  await registerUser(request, groupData.users.admin);
-  await registerUser(request, groupData.users.user1);
-  await registerUser(request, groupData.users.user2);
+  const adminData = await registerUser(request, groupData.users.admin);
+  groupData.users.admin.id = adminData.id;
+  const user1Data = await registerUser(request, groupData.users.user1);
+  groupData.users.user1.id = user1Data.id;
+  const user2Data = await registerUser(request, groupData.users.user2);
+  groupData.users.user2.id = user2Data.id;
   await login(request, groupData.users.admin.email, groupData.users.admin.password);
   await createGroup(request, groupData.group.name);
   await addUserToGroup(request, groupData.users.user1.email);

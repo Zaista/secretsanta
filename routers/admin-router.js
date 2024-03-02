@@ -137,8 +137,10 @@ adminRouter.post('/api/forbidden', async (req, res) => {
   const result = await createForbiddenPair(req.session.activeGroup._id, req.body);
   if (result.insertedId) {
     return res.send({ success: 'Forbidden pair added', id: result.insertedId });
+  } else if (result.error) {
+    return res.send(result);
   } else {
-    return res.send({ error: 'Forbidden pair already exists in the group' });
+    return res.send({ error: 'Something went wrong while creating a forbidden pair' });
   }
 });
 

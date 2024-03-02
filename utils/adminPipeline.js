@@ -298,23 +298,7 @@ export async function getForbiddenPairs(groupId) {
 export async function createForbiddenPair(groupId, forbiddenPair) {
   const client = await getClient();
   try {
-    const existingPair = await client
-      .db(process.env.database)
-      .collection('forbiddenPairs')
-      .findOne({
-        groupId: new ObjectId(groupId),
-        $or: [
-          {
-            userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
-            forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
-          },
-          {
-            userId: new ObjectId(forbiddenPair.forbiddenUser2Id),
-            forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser1Id)
-          }
-        ]
-      });
-
+    const existingPair = await findExistingPair(client, groupId, forbiddenPair);
     if (existingPair) {
       // Forbidden pair already exists, handle accordingly
       return { error: 'Forbidden pair already exists.' };
@@ -334,4 +318,23 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
     console.log('ERROR: ' + err.stack);
     return null;
   }
+}
+
+async function findExistingPair(client, groupId, forbiddenPair) {
+  return await client
+    .db(process.env.database)
+    .collection('forbiddenPairs')
+    .findOne({
+      groupId: new ObjectId(groupId),
+      $or: [
+        {
+          userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
+          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
+        },
+        {
+          userId: new ObjectId(forbiddenPair.forbiddenUser2Id),
+          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser1Id)
+        }
+      ]
+    });
 }
