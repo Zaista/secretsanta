@@ -38,7 +38,7 @@ chatRouter.post('/api/send', async (req, res) => {
     const response = {
       success: 'Message posted in chat',
       insertedId: queryInfo.insertedId
-    }
+    };
     if (req.session.activeGroup.messageSentNotification) {
       const data = fs.readFileSync('./templates/question.html');
       emailText = data.toString().replace(/{{question}}/, req.body.message);
@@ -49,7 +49,7 @@ chatRouter.post('/api/send', async (req, res) => {
         subject: 'Secret Santa Question',
         html: emailText
       };
-      
+
       const emailStatus = await sendEmail(emailTemplate);
       if (emailStatus.success) {
         response.success = `Message posted in chat and email sent to ${emailTemplate.to}`;
