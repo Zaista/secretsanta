@@ -49,29 +49,30 @@
                     <div id="group-settings">
                         <h4>Group settings</h4>
                         <p>Settings related to the SecretSanta group.</p>
-                        <form id="groupForm">
-                            <div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="groupNameSettings" data-onchange="group"
-                                           placeholder="Name" required>
-                                    <label for="groupNameSettings" class="form-label">Group name</label>
-                                </div>
+                        <div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="groupNameSettings" data-onchange="group"
+                                       placeholder="Name" required>
+                                <label for="groupNameSettings" class="form-label">Group name</label>
                             </div>
-                            <div>
-                                <div class="form-floating">
-                                    <select class="form-select" id="emailNotifications" data-onchange="group"
-                                            aria-label="Email notifications">
-                                        <option value="true">Enabled</option>
-                                        <option value="false">Disabled</option>
-                                    </select>
-                                    <label for="emailNotifications" class="form-label">Email notifications</label>
-                                </div>
+                        </div>
+                        <div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="userAddedNotification" data-onchange="group">
+                                <label class="form-check-label" for="userAddedNotification">Email a user when added to the group</label>
                             </div>
-                            <div class="mt-3 mb-3">
-                                <button id="groupButton" type="submit" class="btn btn-primary" disabled>Save changes
-                                </button>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="messageSentNotification" data-onchange="group">
+                                <label class="form-check-label" for="messageSentNotification">Email a user when chat message is received</label>
                             </div>
-                        </form>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="yearDraftedNotification" data-onchange="group">
+                                <label class="form-check-label" for="yearDraftedNotification">Email users when new year is drafted</label>
+                            </div>
+                        </div>
+                        <div class="mt-3 mb-3">
+                            <button id="groupButton" class="btn btn-primary" disabled>Save changes</button>
+                        </div>
                     </div>
                     <!-- end group setting -->
 

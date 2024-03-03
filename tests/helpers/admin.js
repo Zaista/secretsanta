@@ -4,6 +4,12 @@ export function createGroup(request, name) {
   });
 }
 
+export function updateGroup(request, groupData) {
+  return request.post('admin/api/group', {
+    data: groupData
+  });
+}
+
 export function addUserToGroup(request, email) {
   return request.post('admin/api/user', {
     form: { email }

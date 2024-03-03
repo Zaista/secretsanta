@@ -194,7 +194,9 @@ export async function createGroup(groupName) {
   const client = await getClient();
   const group = {
     name: groupName,
-    emailNotifications: false
+    userAddedNotification: false,
+    messageSentNotification: false,
+    yearDraftedNotification: false
   };
 
   try {
@@ -218,12 +220,8 @@ export async function createGroup(groupName) {
 export async function updateGroup(groupId, groupData) {
   const client = await getClient();
   const filter = { _id: new ObjectId(groupId) };
-  const flag = (groupData.emailNotifications === 'true');
   const update = {
-    $set: {
-      name: groupData.name,
-      emailNotifications: flag
-    }
+    $set: groupData
   };
 
   try {
