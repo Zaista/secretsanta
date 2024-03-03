@@ -15,10 +15,11 @@ $(async () => {
     if (searchParams.has('group-created')) {
       $('#unavailableDiv').show();
       showAlert({ success: 'New group created successfully' });
-      return;
     }
 
-    $('#emailNotifications').on('change', onChangeDetector);
+    $('#userAddedNotification').on('change', onChangeDetector);
+    $('#messageSentNotification').on('change', onChangeDetector);
+    $('#yearDraftedNotification').on('change', onChangeDetector);
     $('#groupNameSettings').on('input', onChangeDetector);
 
     $.getJSON(`${apiUrl}/users`, function(result) {
@@ -63,18 +64,28 @@ $(async () => {
 
     $.getJSON(`${apiUrl}/group`, group => {
       $('#groupNameSettings').val(group.name);
-      $('#emailNotifications').val(`${group.emailNotifications}`);
+      $('#userAddedNotification').prop('checked', group.userAddedNotification);
+      $('#messageSentNotification').prop('checked', group.messageSentNotification);
+      $('#yearDraftedNotification').prop('checked', group.yearDraftedNotification);
     });
 
-    $('#groupForm').on('submit', function() {
+    $('#groupButton').on('click', function() {
       const groupData = {
         name: $('#groupNameSettings').val(),
-        emailNotifications: $('#emailNotifications').val()
+        userAddedNotification: $('#userAddedNotification').prop('checked'),
+        messageSentNotification: $('#messageSentNotification').prop('checked'),
+        yearDraftedNotification: $('#yearDraftedNotification').prop('checked')
       };
-      $.post(`${apiUrl}/group`, groupData, result => {
-        showAlert(result);
-        if (result.success) {
-          $('#groupName').html($('#groupNameSettings').val());
+      $.ajax({
+        url: `${apiUrl}/group`,
+        type: 'POST',
+        data: JSON.stringify(groupData),
+        contentType: 'application/json',
+        success: result => {
+          showAlert(result);
+          if (result.success) {
+            $('#groupName').html($('#groupNameSettings').val());
+          }
         }
       });
       return false;

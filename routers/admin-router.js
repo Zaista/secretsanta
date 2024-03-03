@@ -105,7 +105,7 @@ adminRouter.post('/api/group', async (req, res) => {
   const result = await updateGroup(req.session.activeGroup._id, req.body);
   if (result.modifiedCount === 1) {
     req.session.activeGroup.name = req.body.name;
-    return res.send({ success: 'Group updated' });
+    return res.send({ success: 'Group settings updated' });
   }
   res.send({ error: 'Something went wrong when updating the group' });
 });

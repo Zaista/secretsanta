@@ -50,7 +50,7 @@ test.describe('home tests', () => {
     await page.getByRole('button', { name: 'N/A' }).click();
     await page.getByText('Create new group').click();
 
-    await page.getByLabel('Enter the Secret Santa group name').fill(faker.word.noun());
+    await page.getByLabel('Enter the name of the Secret Santa group').fill(faker.word.noun());
     await page.getByRole('button', { name: 'Create' }).click();
 
     await expect(page.locator('#footerAlert')).toHaveText('New group created successfully');

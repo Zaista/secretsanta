@@ -34,27 +34,31 @@ chatRouter.post('/api/send', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let emailText;
   const queryInfo = await sendMessage(req.body.message, req.body.userId, req.session.activeGroup._id);
-  if (queryInfo.acknowledged) { // TODO acknowledged does not mean updated
-    const data = fs.readFileSync('./templates/question.html');
-    emailText = data.toString().replace(/{{question}}/, req.body.message);
-
-    // TODO wrap body if lines are longer than 70 characters
-    // email_text = wordwrap($email_text, 70);
-
-    const emailTemplate = {
-      from: 'SecretSanta <secretsanta@jovanilic.com>',
-      to: req.body.email,
-      subject: 'Secret Santa Question',
-      html: emailText
+  if (queryInfo.insertedId) {
+    const response = {
+      success: 'Message posted in chat',
+      insertedId: queryInfo.insertedId
     };
+    if (req.session.activeGroup.messageSentNotification) {
+      const data = fs.readFileSync('./templates/question.html');
+      emailText = data.toString().replace(/{{question}}/, req.body.message);
 
-    const emailStatus = await sendEmail(emailTemplate);
+      const emailTemplate = {
+        from: 'SecretSanta <secretsanta@jovanilic.com>',
+        to: req.body.email,
+        subject: 'Secret Santa Question',
+        html: emailText
+      };
 
-    if (emailStatus.success) {
-      res.send({ success: `Message posted in chat and email sent to ${emailTemplate.to}`, insertedId: queryInfo.insertedId });
-    } else {
-      res.send({ error: `Error sending email: ${emailStatus.error}` });
+      const emailStatus = await sendEmail(emailTemplate);
+      if (emailStatus.success) {
+        response.success = `Message posted in chat and email sent to ${emailTemplate.to}`;
+        response.emailUrl = emailStatus.emailUrl;
+      } else {
+        res.send({ error: `Error sending email: ${emailStatus.error}` });
+      }
     }
+    res.send(response);
   } else {
     res.send({ error: 'Failed to ask the question. Contact the administrator' });
   }
