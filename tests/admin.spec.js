@@ -11,7 +11,7 @@ test.describe('admin tests', () => {
       const groupData = await createDraftedGroup(page.request);
       await login(page.request, groupData.users.admin.email, groupData.users.admin.password);
       await page.goto('/admin');
-      
+
       await expect(page.locator('#groupName')).toHaveText(groupData.group.name);
       const updatedName = faker.word.noun();
       await page.getByLabel('Group name').fill(updatedName);
