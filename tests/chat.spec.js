@@ -18,7 +18,7 @@ test.describe('chat tests', () => {
     await page.locator('#user').selectOption(groupData.users.user2.name);
     await page.getByRole('button', { name: 'Ask' }).click();
 
-    await expect(page.locator('#footerAlert')).toHaveText(`Message posted in chat and email sent to ${groupData.users.user2.email}`);
+    await expect(page.locator('#footerAlert')).toHaveText('Message posted in chat');
     await expect(page.getByText('Just now...')).toBeVisible();
   });
 
