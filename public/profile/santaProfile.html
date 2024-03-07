@@ -45,40 +45,38 @@
 
         <!-- user data -->
         <div class="col-md-8 col-xs-12">
-            <form>
-                <fieldset {{isDisabled}}>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
-                        <label for="name" class="form-label">Name</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" id="description" placeholder="Description"></textarea>
-                        <label for="description" class="form-label">Description</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="street" name="street" placeholder="Street" required>
-                        <label for="street" class="form-label">Street</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="postalCode" name="postalCode"
-                               placeholder="Postal code" required>
-                        <label for="postalCode" class="form-label">Postal code</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="city" name="city" placeholder="City" required>
-                        <label for="city" class="form-label">City</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="state" name="state" placeholder="State" required>
-                        <label for="state" class="form-label">State</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input disabled type="email" class="form-control" id="email" placeholder="Name">
-                        <label for="email" class="form-label">Email</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary" {{isHidden}}>Save changes</button>
-                </fieldset>
-            </form>
+            <fieldset {{isDisabled}}>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                    <label for="name" class="form-label">Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="description" placeholder="Description"></textarea>
+                    <label for="description" class="form-label">Description</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="street" name="street" placeholder="Street">
+                    <label for="street" class="form-label">Street</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="postalCode" name="postalCode"
+                           placeholder="Postal code">
+                    <label for="postalCode" class="form-label">Postal code</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="city" name="city" placeholder="City">
+                    <label for="city" class="form-label">City</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="state" name="state" placeholder="State">
+                    <label for="state" class="form-label">State</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input disabled type="email" class="form-control" id="email" placeholder="Name">
+                    <label for="email" class="form-label">Email</label>
+                </div>
+                <button id="profileSaveButton" class="btn btn-primary" {{isHidden}}>Save changes</button>
+            </fieldset>
         </div>
         <!-- end user data -->
 

@@ -22,7 +22,7 @@ historyRouter.get('/api/list', async (req, res) => {
   if (req.session.activeGroup !== undefined) {
     const history = await getYearsByGroup(req.session.activeGroup._id);
     res.send(history.filter(item => item.revealed));
-  } else { return res.send([]); } // TODO show that user is not part of any group
+  } else { return res.send([]); }
 });
 
 /* YEAR ROUTER */
@@ -36,7 +36,7 @@ historyRouter.get('/year/api/gifts', async (req, res) => {
   if (req.session.activeGroup !== undefined) {
     const yearGifts = await getGiftsByYear(req.session.activeGroup._id, req.query.id);
     res.send(yearGifts[0]);
-  } else { return res.send({ year: req.query.year, gifts: [] }); } // TODO show that user is not part of any group
+  } else { return res.send({ year: req.query.year, gifts: [] }); }
 });
 
 historyRouter.get('/year/api/location-image', async (req, res) => {
