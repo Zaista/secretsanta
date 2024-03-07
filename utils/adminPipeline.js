@@ -274,8 +274,10 @@ export async function getForbiddenPairs(groupId) {
     }, {
       $project: {
         user: { $first: '$user.name' },
+        userEmail: { $first: '$user.email' },
         userId: { $first: '$user._id' },
         forbiddenPair: { $first: '$forbiddenPair.name' },
+        forbiddenPairEmail: { $first: '$forbiddenPair.email' },
         forbiddenPairId: { $first: '$forbiddenPair._id' }
       }
     }

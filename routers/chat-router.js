@@ -17,7 +17,7 @@ chatRouter.get('/api/list', async (req, res) => {
   if (req.session.activeGroup !== undefined) {
     const result = await getChat(req.session.activeGroup._id);
     res.send(result);
-  } else { return res.send([]); } // TODO show that user is not part of any group
+  } else { return res.send([]); }
 });
 
 // DELETE CHAT MESSAGE

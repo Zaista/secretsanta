@@ -59,8 +59,12 @@ $(async () => {
 
   function listGifts(gift) {
     const giftElement = $.parseHTML(giftTemplate);
-    $(giftElement).find('#santa').text(gift.santa);
-    $(giftElement).find('#child').text(gift.child);
+    let santaName = gift.santa;
+    let childName = gift.child;
+    if (gift.santa === '') { santaName = gift.santaEmail; }
+    if (gift.child === '') { childName = gift.childEmail; }
+    $(giftElement).find('#santa').text(santaName);
+    $(giftElement).find('#child').text(childName);
     if (gift.gift === null) {
       gift.gift = 'N/A';
     }

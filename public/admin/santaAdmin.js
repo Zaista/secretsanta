@@ -28,7 +28,7 @@ $(async () => {
           const userElement = $.parseHTML(userTemplate);
           $(userElement).find('[data-name="userIndex"]').text(++index);
           $(userElement).find('[data-name="userName"]').text(userData.name);
-          $(userElement).find('a').attr('href', `/friends/${userData._id}`);
+          $(userElement).find('a').attr('href', `/profile?id=${userData._id}`);
           $(userElement).find('[data-name="userId"]').val(userData._id);
           $(userElement).find('[data-name="userEmail"]').text(userData.email);
           $(userElement).find('[data-name="userRole"]').val(userData.groups.role);
@@ -97,8 +97,12 @@ $(async () => {
         result.forEach((pair, index) => {
           const pairElement = $.parseHTML(pairTemplate);
           $(pairElement).find('[data-name="pairIndex"]').text(++index);
-          $(pairElement).find('[data-name="pairUser"]').text(pair.user);
-          $(pairElement).find('[data-name="pairForbiddenPair"]').text(pair.forbiddenPair);
+          let santaName = pair.user;
+          if (pair.user === undefined || pair.user === '') { santaName = pair.userEmail; }
+          $(pairElement).find('[data-name="pairUser"]').text(santaName);
+          let childName = pair.forbiddenPair;
+          if (pair.forbiddenPair === undefined || pair.forbiddenPair === '') { childName = pair.forbiddenPairEmail; }
+          $(pairElement).find('[data-name="pairForbiddenPair"]').text(childName);
 
           $(pairElement).find('[data-name="pairDelete"]').on('click', () => {
             $('#removeUserDialog').prop('hidden', true);
@@ -114,7 +118,9 @@ $(async () => {
     // fill up the forbiddenPair modal select elements with usernames
     $.getJSON('/friends/api/list', function(result) {
       result.forEach(function(friend) {
-        $('#forbiddenUser1, #forbiddenUser2').append(`<option value="${friend._id}" data-email="${friend.email}">${friend.name}</option>`);
+        let name = friend.email;
+        if (friend.name !== undefined && friend.name !== '') { name = friend.name; }
+        $('#forbiddenUser1, #forbiddenUser2').append(`<option value="${friend._id}" data-email="${friend.email}">${name}</option>`);
       });
     });
     $('#forbiddenPairsForm').on('submit', () => {
