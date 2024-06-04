@@ -1,6 +1,8 @@
 export function registerUser(request, user) {
   return request.post('session/api/register', {
     data: user
+  }).then(result => {
+    return result.json();
   });
 }
 

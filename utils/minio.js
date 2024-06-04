@@ -1,18 +1,17 @@
 import * as Minio from 'minio';
 
 let minioClient = null;
-const bucketName = 'secret-santa-images';
 
 export function uploadImageToMinio(userId, image) {
   if (minioClient === null) { initializeMinioClient(); }
   const fileName = userId + '.png';
-  return minioClient.putObject(bucketName, fileName, image);
+  return minioClient.putObject(process.env.minioBucket, fileName, image);
 }
 
 export function getImageFromMinio(userId) {
   if (minioClient === null) { initializeMinioClient(); }
   const fileName = userId + '.png';
-  return minioClient.getObject(bucketName, fileName);
+  return minioClient.getObject(process.env.minioBucket, fileName);
 }
 
 function initializeMinioClient() {

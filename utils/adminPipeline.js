@@ -194,7 +194,9 @@ export async function createGroup(groupName) {
   const client = await getClient();
   const group = {
     name: groupName,
-    emailNotifications: false
+    userAddedNotification: false,
+    messageSentNotification: false,
+    yearDraftedNotification: false
   };
 
   try {
@@ -218,12 +220,8 @@ export async function createGroup(groupName) {
 export async function updateGroup(groupId, groupData) {
   const client = await getClient();
   const filter = { _id: new ObjectId(groupId) };
-  const flag = (groupData.emailNotifications === 'true');
   const update = {
-    $set: {
-      name: groupData.name,
-      emailNotifications: flag
-    }
+    $set: groupData
   };
 
   try {
@@ -276,8 +274,10 @@ export async function getForbiddenPairs(groupId) {
     }, {
       $project: {
         user: { $first: '$user.name' },
+        userEmail: { $first: '$user.email' },
         userId: { $first: '$user._id' },
         forbiddenPair: { $first: '$forbiddenPair.name' },
+        forbiddenPairEmail: { $first: '$forbiddenPair.email' },
         forbiddenPairId: { $first: '$forbiddenPair._id' }
       }
     }
@@ -298,11 +298,18 @@ export async function getForbiddenPairs(groupId) {
 export async function createForbiddenPair(groupId, forbiddenPair) {
   const client = await getClient();
   try {
+    const existingPair = await findExistingPair(client, groupId, forbiddenPair);
+    if (existingPair) {
+      // Forbidden pair already exists, handle accordingly
+      return { error: 'Forbidden pair already exists.' };
+    }
+
     const document = {
       groupId: new ObjectId(groupId),
       userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
       forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
     };
+
     return await client
       .db(process.env.database)
       .collection('forbiddenPairs')
@@ -311,4 +318,23 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
     console.log('ERROR: ' + err.stack);
     return null;
   }
+}
+
+async function findExistingPair(client, groupId, forbiddenPair) {
+  return await client
+    .db(process.env.database)
+    .collection('forbiddenPairs')
+    .findOne({
+      groupId: new ObjectId(groupId),
+      $or: [
+        {
+          userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
+          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
+        },
+        {
+          userId: new ObjectId(forbiddenPair.forbiddenUser2Id),
+          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser1Id)
+        }
+      ]
+    });
 }

@@ -4,6 +4,12 @@ export function createGroup(request, name) {
   });
 }
 
+export function updateGroup(request, groupData) {
+  return request.post('admin/api/group', {
+    data: groupData
+  });
+}
+
 export function addUserToGroup(request, email) {
   return request.post('admin/api/user', {
     form: { email }
@@ -12,4 +18,14 @@ export function addUserToGroup(request, email) {
 
 export function draftSantaPairs(request) {
   return request.put('admin/api/draft');
+}
+
+export function addForbiddenPair(request, forbiddenPair) {
+  return request.post('admin/api/forbidden', {
+    form: forbiddenPair
+  });
+}
+
+export function revealSantaPairs(request) {
+  return request.put('admin/api/reveal');
 }

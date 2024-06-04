@@ -22,7 +22,7 @@ historyRouter.get('/api/list', async (req, res) => {
   if (req.session.activeGroup !== undefined) {
     const history = await getYearsByGroup(req.session.activeGroup._id);
     res.send(history.filter(item => item.revealed));
-  } else { return res.send([]); } // TODO show that user is not part of any group
+  } else { return res.send([]); }
 });
 
 /* YEAR ROUTER */
@@ -36,7 +36,7 @@ historyRouter.get('/year/api/gifts', async (req, res) => {
   if (req.session.activeGroup !== undefined) {
     const yearGifts = await getGiftsByYear(req.session.activeGroup._id, req.query.id);
     res.send(yearGifts[0]);
-  } else { return res.send({ year: req.query.year, gifts: [] }); } // TODO show that user is not part of any group
+  } else { return res.send({ year: req.query.year, gifts: [] }); }
 });
 
 historyRouter.get('/year/api/location-image', async (req, res) => {
@@ -44,6 +44,7 @@ historyRouter.get('/year/api/location-image', async (req, res) => {
   try {
     const objectStream = await getImageFromMinio(req.query.id);
     res.setHeader('Content-Type', 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
     objectStream.pipe(res);
   } catch (e) {
     console.log('ERROR: ' + e.message);

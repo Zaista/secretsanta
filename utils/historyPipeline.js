@@ -90,7 +90,9 @@ export async function getGiftsByYear(groupId, yearId) {
         gifts: {
           $push: {
             santa: '$$ROOT.santaUser.name',
+            santaEmail: '$$ROOT.santaUser.email',
             child: '$$ROOT.childUser.name',
+            childEmail: '$$ROOT.childUser.email',
             gift: '$$ROOT.gifts.gift',
             imageUploaded: '$$ROOT.gifts.imageUploaded',
             giftId: '$$ROOT.gifts.giftId'

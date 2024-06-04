@@ -39,7 +39,7 @@ sessionRouter.post('/api/register', async (req, res) => {
     };
     req.login(temp, function(err) {
       if (!err) {
-        return res.send({ success: 'User registered' });
+        return res.send({ success: 'User registered', id: temp._id });
       } else {
         return res.send({ error: 'Error during registration 2' });
       }

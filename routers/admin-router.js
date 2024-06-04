@@ -105,7 +105,7 @@ adminRouter.post('/api/group', async (req, res) => {
   const result = await updateGroup(req.session.activeGroup._id, req.body);
   if (result.modifiedCount === 1) {
     req.session.activeGroup.name = req.body.name;
-    return res.send({ success: 'Group updated' });
+    return res.send({ success: 'Group settings updated' });
   }
   res.send({ error: 'Something went wrong when updating the group' });
 });
@@ -135,8 +135,13 @@ adminRouter.get('/api/forbidden', async (req, res) => {
 adminRouter.post('/api/forbidden', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await createForbiddenPair(req.session.activeGroup._id, req.body);
-  if (result.insertedId) return res.send({ success: 'Forbidden pair added', id: result.insertedId });
-  res.send({ error: 'Something went wrong' });
+  if (result.insertedId) {
+    return res.send({ success: 'Forbidden pair added', id: result.insertedId });
+  } else if (result.error) {
+    return res.send(result);
+  } else {
+    return res.send({ error: 'Something went wrong while creating a forbidden pair' });
+  }
 });
 
 adminRouter.post('/api/forbidden/delete', async (req, res) => {

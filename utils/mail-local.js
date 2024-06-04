@@ -30,7 +30,7 @@ export async function sendSandboxMail(emailTemplate) {
 
       console.log('Message sent: %s', info.messageId);
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-      resolve({ success: true });
+      resolve({ success: true, emailUrl: nodemailer.getTestMessageUrl(info) });
     });
   });
 }

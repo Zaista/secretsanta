@@ -35,7 +35,7 @@ $(async () => {
     }
   });
 
-  $('form').on('submit', function() {
+  $('#profileSaveButton').on('click', function() {
     const friend = {
       name: $('#name').val(),
       description: $('#description').val(),
@@ -51,8 +51,14 @@ $(async () => {
     if (searchParams.has('id')) {
       updateUrl += `?id=${searchParams.get('id')}`;
     }
-    $.post(updateUrl, friend, result => {
-      showAlert(result);
+    $.ajax({
+      url: updateUrl,
+      type: 'POST',
+      data: JSON.stringify(friend),
+      contentType: 'application/json',
+      success: result => {
+        showAlert(result);
+      }
     });
     return false;
   });

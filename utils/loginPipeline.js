@@ -54,6 +54,9 @@ async function getUser($match) {
         email: 1,
         'groupInfo.name': 1,
         'groupInfo._id': 1,
+        'groupInfo.userAddedNotification': 1,
+        'groupInfo.messageSentNotification': 1,
+        'groupInfo.yearDraftedNotification': 1,
         groups: 1
       }
     },

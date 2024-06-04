@@ -14,3 +14,4 @@ env_variables:
   minioUseSSL: ##_MINIOSSL##
   minioAccessKey: ##_MINIOACCESSKEY##
   minioSecretKey: ##_MINIOSECRETKEY##
+  minioBucket: ##_MINIOBUCKET##

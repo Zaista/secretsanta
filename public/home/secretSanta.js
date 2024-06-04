@@ -33,7 +33,11 @@ $(async () => {
             $('#santaCity').text(`${santa.address.postalCode} ${santa.address.city}`);
           });
         } else {
-          topSecretImage.attr('src', '/resources/images/placeholder.png');
+          topSecretImage.attr('src', '/resources/images/placeholder.png')
+            .removeClass('loading-image');
+          $('#santaName').text(santa.name);
+          $('#santaStreet').text(santa.address.street);
+          $('#santaCity').text(`${santa.address.postalCode} ${santa.address.city}`);
         }
         topSecretImage.off('click');
       });
