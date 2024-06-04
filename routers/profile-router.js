@@ -39,6 +39,7 @@ profileRouter.get('/api/image', async (req, res) => {
   try {
     const objectStream = await getImageFromMinio(req.query.id);
     res.setHeader('Content-Type', 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
     objectStream.pipe(res);
   } catch (e) {
     console.log('ERROR: ' + e.message);
