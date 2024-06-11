@@ -123,7 +123,9 @@ export async function addNewUser(groupId, email, password) {
   const user = {
     password,
     email,
-    groups: [{ groupId: new ObjectId(groupId), role: ROLES.user }]
+    name: '',
+    groups: [{ groupId: new ObjectId(groupId), role: ROLES.user }],
+    address: [{ street: '', city: '', postalCode: '', state: '' }]
   };
   try {
     return await client
