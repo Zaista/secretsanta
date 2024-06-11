@@ -25,6 +25,7 @@ export async function getChat(groupId) {
     {
       $project: {
         name: '$user.name',
+        email: '$user.email',
         message: 1,
         timestamp: 1
       }

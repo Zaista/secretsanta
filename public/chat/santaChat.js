@@ -34,7 +34,7 @@ $(async function() {
           const dateStr = `${hours}:${minutes} - ${date.getDate()}. ${months[date.getMonth()]} ${date.getFullYear()}`;
 
           const chatElement = $.parseHTML(chatTemplate);
-          $(chatElement).find('[data-name="chatTo"]').text(`To: ${item.name}`);
+          $(chatElement).find('[data-name="chatTo"]').text(`To: ${item.name || item.email}`);
           $(chatElement).find('[data-name="chatMessage"]').text(item.message);
           $(chatElement).find('[data-name="chatDate"]').text(dateStr);
           $(chatElement).find('[data-name="chatFrom"]').text(`From: ${item.from || 'Anonymous'}`);

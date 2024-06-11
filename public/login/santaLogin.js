@@ -19,6 +19,18 @@ $(async function() {
     return false;
   });
 
+  $('#email').on('keypress', e => {
+    if (e.which === 13) {
+      $('#password').focus();
+    }
+  });
+
+  $('#password').on('keypress', e => {
+    if (e.which === 13) {
+      $('#login-button').click();
+    }
+  });
+
   $('#santa-email-form').on('submit', function() {
     $.post('api/email', { email: $('#santa-email').val() }, function(result) {
       $('#forgot-password-dialog').modal('hide');
