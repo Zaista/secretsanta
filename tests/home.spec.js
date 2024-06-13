@@ -2,7 +2,7 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { login, registerUser } from './helpers/login.js';
-import { addUserToGroup, createGroup, draftSantaPairs } from './helpers/admin.js';
+import { inviteUserToGroup, createGroup, draftSantaPairs } from './helpers/admin.js';
 
 test.describe('home tests', () => {
   test('user can reveal his santa pair', async ({ page }) => {
@@ -21,8 +21,8 @@ test.describe('home tests', () => {
       password: faker.internet.password()
     };
     await createGroup(page.request, faker.word.noun());
-    await addUserToGroup(page.request, user1.email);
-    await addUserToGroup(page.request, user2.email);
+    await inviteUserToGroup(page.request, user1.email);
+    await inviteUserToGroup(page.request, user2.email);
     await draftSantaPairs(page.request);
 
     await page.goto('/');

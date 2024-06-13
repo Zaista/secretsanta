@@ -2,7 +2,7 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { login, registerUser } from './helpers/login.js';
-import { createGroup, addUserToGroup, addForbiddenPair } from './helpers/admin.js';
+import { createGroup, inviteUserToGroup, addForbiddenPair } from './helpers/admin.js';
 import { createDraftedGroup } from './helpers/setup.js';
 
 test.describe('admin tests', () => {
@@ -13,9 +13,10 @@ test.describe('admin tests', () => {
       await page.goto('/admin');
 
       await expect(page.locator('#groupName')).toHaveText(groupData.group.name);
+      await expect(page.locator('#groupNameSettings')).toHaveValue(groupData.group.name);
       const updatedName = faker.word.noun();
       await page.getByLabel('Group name').fill(updatedName);
-      await page.getByLabel('Email a user when added to the group').check();
+      await page.getByLabel('Email a user when invited to the group').check();
       await page.getByLabel('Email a user when chat message is received').check();
       await page.getByLabel('Email users when new year is drafted').check();
       await page.locator('#groupButton').click();
@@ -42,8 +43,8 @@ test.describe('admin tests', () => {
         password: faker.internet.password()
       };
       await createGroup(page.request, faker.word.noun());
-      await addUserToGroup(page.request, user1.email);
-      await addUserToGroup(page.request, user2.email);
+      await inviteUserToGroup(page.request, user1.email);
+      await inviteUserToGroup(page.request, user2.email);
 
       await page.goto('/admin');
 

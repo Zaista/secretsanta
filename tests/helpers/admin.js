@@ -10,7 +10,7 @@ export function updateGroup(request, groupData) {
   });
 }
 
-export function addUserToGroup(request, email) {
+export function inviteUserToGroup(request, email) {
   return request.post('admin/api/user', {
     form: { email }
   });
