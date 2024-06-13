@@ -35,7 +35,6 @@ export async function getUsersAndRoles(groupId) {
     }
   }, {
     $project: {
-      name: 1,
       email: 1,
       groups: 1
     }

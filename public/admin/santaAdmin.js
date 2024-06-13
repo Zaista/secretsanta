@@ -27,10 +27,9 @@ $(async () => {
         $.each(result, function(index, userData) {
           const userElement = $.parseHTML(userTemplate);
           $(userElement).find('[data-name="userIndex"]').text(++index);
-          $(userElement).find('[data-name="userName"]').text(userData.name);
+          $(userElement).find('[data-name="userEmail"]').text(userData.email);
           $(userElement).find('a').attr('href', `/profile?id=${userData._id}`);
           $(userElement).find('[data-name="userId"]').val(userData._id);
-          $(userElement).find('[data-name="userEmail"]').text(userData.email);
           $(userElement).find('[data-name="userRole"]').val(userData.groups.role);
           $(userElement).find('[data-name="userRole"]').on('input', onChangeDetector);
 
