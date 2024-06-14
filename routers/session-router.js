@@ -69,12 +69,12 @@ sessionRouter.post('/api/email', async (req, res) => {
   const user = await checkEmail(req.body.email);
 
   if (user) {
-    const data = fs.readFileSync('./templates/password.html');
+    const data = fs.readFileSync('./templates/forgot-password-email.html');
     emailText = data.toString()
       .replace(/{{name}}/, user.name)
       .replace(/{{password}}/, user.password);
   } else {
-    const data = fs.readFileSync('./templates/unknown.html');
+    const data = fs.readFileSync('./templates/unknown-user-email.html');
     emailText = data.toString();
   }
 

@@ -219,7 +219,7 @@ adminRouter.put('/api/reveal', async (req, res) => {
 });
 
 async function sendWelcomeEmail(email, groupName, temporaryPassword) {
-  const data = fs.readFileSync('./templates/user.html');
+  const data = fs.readFileSync('./templates/user-invite-email.html');
   let emailText = data.toString().replace(/{{groupName}}/, groupName);
 
   if (temporaryPassword) {

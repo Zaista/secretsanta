@@ -40,7 +40,7 @@ chatRouter.post('/api/send', async (req, res) => {
       insertedId: queryInfo.insertedId
     };
     if (req.session.activeGroup.messageSentNotification) {
-      const data = fs.readFileSync('./templates/question.html');
+      const data = fs.readFileSync('./templates/question-email.html');
       emailText = data.toString().replace(/{{question}}/, req.body.message);
 
       const emailTemplate = {
