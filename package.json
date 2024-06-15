@@ -10,7 +10,7 @@
     "start": "node app.js",
     "test": "npx playwright test --ui",
     "test_ci": "npx playwright test",
-    "lint": "npx prettier .",
+    "lint": "sudo npx prettier .",
     "lint:fix": "npx prettier . --write"
   },
   "dependencies": {
