@@ -22,7 +22,7 @@ jobs:
         run: npm ci
       - working-directory: .
         run: npm run lint
-        
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
@@ -33,7 +33,7 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-          
+
       - name: Stop containers
         if: always()
         run: docker-compose -f "docker-compose.yaml" down

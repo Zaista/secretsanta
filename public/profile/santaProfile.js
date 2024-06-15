@@ -8,12 +8,12 @@ $(async () => {
   let croppie;
   const searchParams = new URLSearchParams(window.location.search);
 
-  $.get(`${apiUrl}/list?id=${searchParams.get('id')}`, friend => {
+  $.get(`${apiUrl}/list?id=${searchParams.get('id')}`, (friend) => {
     if (friend.error) {
       showAlert(friend);
     } else {
       if (friend.imageUploaded) {
-        lazyLoadImage(friend._id, $('#image')).then(image => {
+        lazyLoadImage(friend._id, $('#image')).then((image) => {
           $('#image').attr('src', image.src).removeClass('loading-image');
         });
       } else {
@@ -35,7 +35,7 @@ $(async () => {
     }
   });
 
-  $('#profileSaveButton').on('click', function() {
+  $('#profileSaveButton').on('click', function () {
     const friend = {
       name: $('#name').val(),
       description: $('#description').val(),
@@ -43,9 +43,9 @@ $(async () => {
         street: $('#street').val(),
         postalCode: $('#postalCode').val(),
         city: $('#city').val(),
-        state: $('#state').val()
+        state: $('#state').val(),
       },
-      email: $('#email').val()
+      email: $('#email').val(),
     };
     let updateUrl = `${apiUrl}/update`;
     if (searchParams.has('id')) {
@@ -56,9 +56,9 @@ $(async () => {
       type: 'POST',
       data: JSON.stringify(friend),
       contentType: 'application/json',
-      success: result => {
+      success: (result) => {
         showAlert(result);
-      }
+      },
     });
     return false;
   });
@@ -73,19 +73,19 @@ $(async () => {
     $('#uploadImage').click();
   });
 
-  $('#uploadImage').on('change', function() {
+  $('#uploadImage').on('change', function () {
     const file = this.files[0];
     const image = URL.createObjectURL(file);
     modal.show(image);
   });
 
   $('#submitImage').on('click', () => {
-    croppie.result({ size: 'original' }).then(function(croppedImage) {
+    croppie.result({ size: 'original' }).then(function (croppedImage) {
       let updateImageUrl = `${apiUrl}/image`;
       if (searchParams.has('id')) {
         updateImageUrl += `?id=${searchParams.get('id')}`;
       }
-      $.post(updateImageUrl, { image: croppedImage }, result => {
+      $.post(updateImageUrl, { image: croppedImage }, (result) => {
         modal.hide();
         showAlert(result);
         $('#image').attr('src', croppedImage);
@@ -101,13 +101,13 @@ $(async () => {
         viewport: {
           width: croppieElement.width() - 50,
           height: croppieElement.width() - 50,
-          type: 'circle'
+          type: 'circle',
         },
         boundary: {
           width: croppieElement.width(),
-          height: croppieElement.width()
+          height: croppieElement.width(),
         },
-        url: imageUrl
+        url: imageUrl,
       };
       croppie = new Croppie(croppieElement.get(0), croppieOptions);
     } else {
@@ -116,7 +116,7 @@ $(async () => {
   }
 
   function lazyLoadImage(userId, image) {
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       const lazyImage = new Image();
       const imageUrl = `profile/api/image?id=${userId}`;
       lazyImage.src = imageUrl;

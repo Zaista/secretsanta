@@ -1,23 +1,23 @@
 steps:
-- name: node:18.13.0
-  entrypoint: npm
-  args: ["install"]
-- name: 'gcr.io/cloud-builders/gcloud'
-  entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      sed -i "s|##_PROFILE##|${_PROFILE}|" app.yaml
-      sed -i "s|##_ADMINELEVATEDPRIVILEGES##|${_ADMINELEVATEDPRIVILEGES}|" app.yaml
-      sed -i "s|##_MONGOURI##|${_MONGOURI}|" app.yaml
-      sed -i "s|##_SENDGRIDAPI##|${_SENDGRIDAPI}|" app.yaml
-      sed -i "s|##_SESSIONKEY##|${_SESSIONKEY}|" app.yaml
-      sed -i "s|##_MINIOENDPOINT##|${_MINIOENDPOINT}|" app.yaml
-      sed -i "s|##_MINIOSSL##|${_MINIOSSL}|" app.yaml
-      sed -i "s|##_MINIOACCESSKEY##|${_MINIOACCESSKEY}|" app.yaml
-      sed -i "s|##_MINIOSECRETKEY##|${_MINIOSECRETKEY}|" app.yaml
-      sed -i "s|##_MINIOBUCKET##|${_MINIOBUCKET}|" app.yaml
-      gcloud app deploy
+  - name: node:18.13.0
+    entrypoint: npm
+    args: ['install']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        sed -i "s|##_PROFILE##|${_PROFILE}|" app.yaml
+        sed -i "s|##_ADMINELEVATEDPRIVILEGES##|${_ADMINELEVATEDPRIVILEGES}|" app.yaml
+        sed -i "s|##_MONGOURI##|${_MONGOURI}|" app.yaml
+        sed -i "s|##_SENDGRIDAPI##|${_SENDGRIDAPI}|" app.yaml
+        sed -i "s|##_SESSIONKEY##|${_SESSIONKEY}|" app.yaml
+        sed -i "s|##_MINIOENDPOINT##|${_MINIOENDPOINT}|" app.yaml
+        sed -i "s|##_MINIOSSL##|${_MINIOSSL}|" app.yaml
+        sed -i "s|##_MINIOACCESSKEY##|${_MINIOACCESSKEY}|" app.yaml
+        sed -i "s|##_MINIOSECRETKEY##|${_MINIOSECRETKEY}|" app.yaml
+        sed -i "s|##_MINIOBUCKET##|${_MINIOBUCKET}|" app.yaml
+        gcloud app deploy
 timeout: 1800s
 substitutions:
   _PROFILE: ${_PROFILE}

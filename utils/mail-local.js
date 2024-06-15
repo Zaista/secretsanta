@@ -14,8 +14,8 @@ await nodemailer.createTestAccount((err, account) => {
     secure: account.smtp.secure,
     auth: {
       user: account.user,
-      pass: account.pass
-    }
+      pass: account.pass,
+    },
   });
 
   console.log('Configured test email account.');
@@ -30,7 +30,10 @@ export async function sendSandboxMail(emailTemplate) {
 
       console.log('Message sent: %s', info.messageId);
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-      resolve({ success: true, emailUrl: nodemailer.getTestMessageUrl(info) });
+      resolve({
+        success: true,
+        emailUrl: nodemailer.getTestMessageUrl(info),
+      });
     });
   });
 }

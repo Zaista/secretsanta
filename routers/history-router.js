@@ -5,7 +5,7 @@ import {
   updateYearDescription,
   updateGiftDescription,
   updateGiftImage,
-  updateLocationImage
+  updateLocationImage,
 } from '../utils/historyPipeline.js';
 import { getImageFromMinio, uploadImageToMinio } from '../utils/minio.js';
 
@@ -21,8 +21,10 @@ historyRouter.get('/api/list', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   if (req.session.activeGroup !== undefined) {
     const history = await getYearsByGroup(req.session.activeGroup._id);
-    res.send(history.filter(item => item.revealed));
-  } else { return res.send([]); }
+    res.send(history.filter((item) => item.revealed));
+  } else {
+    return res.send([]);
+  }
 });
 
 /* YEAR ROUTER */
@@ -34,9 +36,14 @@ historyRouter.get('/year', (req, res) => {
 historyRouter.get('/year/api/gifts', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   if (req.session.activeGroup !== undefined) {
-    const yearGifts = await getGiftsByYear(req.session.activeGroup._id, req.query.id);
+    const yearGifts = await getGiftsByYear(
+      req.session.activeGroup._id,
+      req.query.id
+    );
     res.send(yearGifts[0]);
-  } else { return res.send({ year: req.query.year, gifts: [] }); }
+  } else {
+    return res.send({ year: req.query.year, gifts: [] });
+  }
 });
 
 historyRouter.get('/year/api/location-image', async (req, res) => {
@@ -54,7 +61,10 @@ historyRouter.get('/year/api/location-image', async (req, res) => {
 
 historyRouter.post('/year/api/location-image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+  const bitmap = Buffer.from(
+    req.body.image.replace(/^data:image\/\w+;base64,/, ''),
+    'base64'
+  );
   try {
     await uploadImageToMinio(req.query.id, bitmap);
     await updateLocationImage(req.query.id);
@@ -67,7 +77,10 @@ historyRouter.post('/year/api/location-image', async (req, res) => {
 
 historyRouter.post('/year/api/gift-image', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const bitmap = Buffer.from(req.body.image.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+  const bitmap = Buffer.from(
+    req.body.image.replace(/^data:image\/\w+;base64,/, ''),
+    'base64'
+  );
   try {
     await uploadImageToMinio(req.query.giftId, bitmap);
     await updateGiftImage(req.query.yearId, req.query.giftId);
@@ -80,7 +93,10 @@ historyRouter.post('/year/api/gift-image', async (req, res) => {
 
 historyRouter.post('/year/api/gift-description', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await updateGiftDescription(req.body._id, req.body.description);
+  const result = await updateGiftDescription(
+    req.body._id,
+    req.body.description
+  );
   if (result.acknowledged) {
     res.send({ success: 'Gift description was updated successfully' });
   } else {
@@ -90,7 +106,10 @@ historyRouter.post('/year/api/gift-description', async (req, res) => {
 
 historyRouter.post('/year/api/year-description', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await updateYearDescription(req.body._id, req.body.description);
+  const result = await updateYearDescription(
+    req.body._id,
+    req.body.description
+  );
   if (result.acknowledged) {
     res.send({ success: 'Year location was updated successfully' });
   } else {

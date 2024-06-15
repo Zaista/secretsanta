@@ -10,8 +10,8 @@
     "start": "node app.js",
     "test": "npx playwright test --ui",
     "test_ci": "npx playwright test",
-    "lint": "sudo npx eslint .",
-    "lint:fix": "npx eslint . --fix"
+    "lint": "sudo npx prettier .",
+    "lint:fix": "npx prettier . --write"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.0",
@@ -28,10 +28,10 @@
     "@faker-js/faker": "^8.2.0",
     "@playwright/test": "^1.39.0",
     "@types/node": "^20.8.10",
-    "eslint": "^8.39.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-n": "^15.6.1",
-    "eslint-plugin-promise": "^6.1.1"
+    "prettier": "3.3.2"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "singleQuote": true
   }
 }

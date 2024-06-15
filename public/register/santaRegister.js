@@ -1,4 +1,4 @@
-$(async function() {
+$(async function () {
   'use strict';
 
   await $.getScript('/santa.js');
@@ -16,11 +16,11 @@ $(async function() {
         street: $('#street').val(),
         city: $('#city').val(),
         postalCode: $('#postalCode').val(),
-        state: $('#state').val()
-      }
+        state: $('#state').val(),
+      },
     };
 
-    $.post('api/register', user, function(result) {
+    $.post('api/register', user, function (result) {
       if (result.success) {
         window.location.replace('/?registered');
       }

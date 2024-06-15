@@ -1,108 +1,184 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Secret santa for my friends">
-    <meta name="keywords" content="secret,santa,secretsanta,friends,christmas">
-    <meta name="author" content="Zaista">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Secret santa for my friends" />
+    <meta
+      name="keywords"
+      content="secret,santa,secretsanta,friends,christmas"
+    />
+    <meta name="author" content="Zaista" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
     <title>Secret Santa</title>
-    <link rel="stylesheet" type="text/css" href="/santa.css">
+    <link rel="stylesheet" type="text/css" href="/santa.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/profile/santaProfile.js"></script>
-    <link rel="icon" type="img/ico" href="/favicon.ico">
+    <link rel="icon" type="img/ico" href="/favicon.ico" />
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css"
+    />
 
     <!-- For facebook crawler -->
-    <meta property="og:url" content="https://www.secretsanta.jovanilic.com"/>
-    <meta property="og:site_name" content="secretsanta.jovanilic.com"/>
-    <meta property="og:title" content="Secret Santa"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:description" content="Secret Santa for my friends"/>
-    
+    <meta property="og:url" content="https://www.secretsanta.jovanilic.com" />
+    <meta property="og:site_name" content="secretsanta.jovanilic.com" />
+    <meta property="og:title" content="Secret Santa" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Secret Santa for my friends" />
+
     <!-- Croppie -->
     <link rel="stylesheet" href="/utils/croppie/croppie.css" />
     <script src="/utils/croppie/croppie.min.js"></script>
-</head>
+  </head>
 
-<body>
-<div id="menu"></div>
-<div class="container">
-
-    <div class="row mt-3 mb-3">
-
+  <body>
+    <div id="menu"></div>
+    <div class="container">
+      <div class="row mt-3 mb-3">
         <!-- user image -->
         <div class="col-md-2 col-xs-12 text-center">
-            <img id="image" class="img-fluid loading-image mb-3 {{isPointer}}" alt="Profile image" src="/resources/images/placeholder.png">
-            <input accept="image/*" type='file' id="uploadImage" hidden/>
+          <img
+            id="image"
+            class="img-fluid loading-image mb-3 {{isPointer}}"
+            alt="Profile image"
+            src="/resources/images/placeholder.png"
+          />
+          <input accept="image/*" type="file" id="uploadImage" hidden />
         </div>
         <!-- end user image -->
 
         <!-- user data -->
         <div class="col-md-8 col-xs-12">
-            <fieldset {{isDisabled}}>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Name">
-                    <label for="name" class="form-label">Name</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" id="description" placeholder="Description"></textarea>
-                    <label for="description" class="form-label">Description</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="street" name="street" placeholder="Street">
-                    <label for="street" class="form-label">Street</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="postalCode" name="postalCode"
-                           placeholder="Postal code">
-                    <label for="postalCode" class="form-label">Postal code</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="city" name="city" placeholder="City">
-                    <label for="city" class="form-label">City</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="state" name="state" placeholder="State">
-                    <label for="state" class="form-label">State</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input disabled type="email" class="form-control" id="email" placeholder="Name">
-                    <label for="email" class="form-label">Email</label>
-                </div>
-                <button id="profileSaveButton" class="btn btn-primary" {{isHidden}}>Save changes</button>
-            </fieldset>
+          <fieldset {{isDisabled}}>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                placeholder="Name"
+              />
+              <label for="name" class="form-label">Name</label>
+            </div>
+            <div class="form-floating mb-3">
+              <textarea
+                class="form-control"
+                id="description"
+                placeholder="Description"
+              ></textarea>
+              <label for="description" class="form-label">Description</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="street"
+                name="street"
+                placeholder="Street"
+              />
+              <label for="street" class="form-label">Street</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="number"
+                class="form-control"
+                id="postalCode"
+                name="postalCode"
+                placeholder="Postal code"
+              />
+              <label for="postalCode" class="form-label">Postal code</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="city"
+                name="city"
+                placeholder="City"
+              />
+              <label for="city" class="form-label">City</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="state"
+                name="state"
+                placeholder="State"
+              />
+              <label for="state" class="form-label">State</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input
+                disabled
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="Name"
+              />
+              <label for="email" class="form-label">Email</label>
+            </div>
+            <button id="profileSaveButton" class="btn btn-primary" {{isHidden}}>
+              Save changes
+            </button>
+          </fieldset>
         </div>
         <!-- end user data -->
 
         <!-- image cropper -->
-        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="cropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="cropLabel">Crop your image</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div id="cropper" class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button id="submitImage" type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
+        <div
+          class="modal fade"
+          id="imageModal"
+          tabindex="-1"
+          aria-labelledby="cropLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="cropLabel">Crop your image</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div id="cropper" class="modal-body"></div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button id="submitImage" type="button" class="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
             </div>
+          </div>
         </div>
         <!-- end image cropper -->
+      </div>
     </div>
-</div>
-<div id="footer"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
-</body>
+    <div id="footer"></div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

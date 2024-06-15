@@ -6,32 +6,34 @@ export async function getChat(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: new mongodb.ObjectId(groupId)
-      }
+        groupId: new mongodb.ObjectId(groupId),
+      },
     },
     {
       $lookup: {
         from: 'users',
         localField: 'userId',
         foreignField: '_id',
-        as: 'user'
-      }
+        as: 'user',
+      },
     },
     {
       $unwind: {
-        path: '$user'
-      }
+        path: '$user',
+      },
     },
     {
       $project: {
         name: '$user.name',
         email: '$user.email',
         message: 1,
-        timestamp: 1
-      }
-    }, {
-      $sort: { timestamp: 1 }
-    }];
+        timestamp: 1,
+      },
+    },
+    {
+      $sort: { timestamp: 1 },
+    },
+  ];
 
   try {
     return await client
@@ -62,7 +64,12 @@ export async function deleteChatMessage(_id) {
 
 export async function sendMessage(message, userId, groupId) {
   const client = await getClient();
-  const document = { message, userId: new mongodb.ObjectId(userId), groupId: new mongodb.ObjectId(groupId), timestamp: new Date() };
+  const document = {
+    message,
+    userId: new mongodb.ObjectId(userId),
+    groupId: new mongodb.ObjectId(groupId),
+    timestamp: new Date(),
+  };
   try {
     return await client
       .db(process.env.database)

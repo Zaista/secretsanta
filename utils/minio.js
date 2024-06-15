@@ -3,13 +3,17 @@ import * as Minio from 'minio';
 let minioClient = null;
 
 export function uploadImageToMinio(userId, image) {
-  if (minioClient === null) { initializeMinioClient(); }
+  if (minioClient === null) {
+    initializeMinioClient();
+  }
   const fileName = userId + '.png';
   return minioClient.putObject(process.env.minioBucket, fileName, image);
 }
 
 export function getImageFromMinio(userId) {
-  if (minioClient === null) { initializeMinioClient(); }
+  if (minioClient === null) {
+    initializeMinioClient();
+  }
   const fileName = userId + '.png';
   return minioClient.getObject(process.env.minioBucket, fileName);
 }
@@ -24,6 +28,6 @@ function initializeMinioClient() {
     port,
     useSSL: process.env.minioUseSSL.toLowerCase() === 'true',
     accessKey: process.env.minioAccessKey,
-    secretKey: process.env.minioSecretKey
+    secretKey: process.env.minioSecretKey,
   });
 }

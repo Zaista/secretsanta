@@ -5,18 +5,18 @@ export async function getYearsByGroup(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: new mongodb.ObjectId(groupId)
-      }
+        groupId: new mongodb.ObjectId(groupId),
+      },
     },
     {
       $project: {
         groupId: 0,
-        gifts: 0
-      }
+        gifts: 0,
+      },
     },
     {
-      $sort: { year: -1 }
-    }
+      $sort: { year: -1 },
+    },
   ];
 
   const client = await getClient();
@@ -39,13 +39,13 @@ export async function getGiftsByYear(groupId, yearId) {
       $match: {
         _id: new mongodb.ObjectId(yearId),
         groupId: new mongodb.ObjectId(groupId),
-        revealed: true
-      }
+        revealed: true,
+      },
     },
     {
       $unwind: {
-        path: '$gifts'
-      }
+        path: '$gifts',
+      },
     },
     {
       // match santaId and _id to get santa info
@@ -53,8 +53,8 @@ export async function getGiftsByYear(groupId, yearId) {
         from: 'users',
         localField: 'gifts.santaId',
         foreignField: '_id',
-        as: 'santaUser'
-      }
+        as: 'santaUser',
+      },
     },
     {
       // match childId and _id to get child info
@@ -62,30 +62,30 @@ export async function getGiftsByYear(groupId, yearId) {
         from: 'users',
         localField: 'gifts.childId',
         foreignField: '_id',
-        as: 'childUser'
-      }
+        as: 'childUser',
+      },
     },
     {
       $unwind: {
-        path: '$santaUser'
-      }
+        path: '$santaUser',
+      },
     },
     {
       $unwind: {
-        path: '$childUser'
-      }
+        path: '$childUser',
+      },
     },
     {
       $group: {
         _id: '$_id',
         year: {
-          $first: '$$ROOT.year'
+          $first: '$$ROOT.year',
         },
         location: {
-          $first: '$$ROOT.location'
+          $first: '$$ROOT.location',
         },
         imageUploaded: {
-          $first: '$$ROOT.imageUploaded'
+          $first: '$$ROOT.imageUploaded',
         },
         gifts: {
           $push: {
@@ -95,11 +95,11 @@ export async function getGiftsByYear(groupId, yearId) {
             childEmail: '$$ROOT.childUser.email',
             gift: '$$ROOT.gifts.gift',
             imageUploaded: '$$ROOT.gifts.imageUploaded',
-            giftId: '$$ROOT.gifts.giftId'
-          }
-        }
-      }
-    }
+            giftId: '$$ROOT.gifts.giftId',
+          },
+        },
+      },
+    },
   ];
 
   const client = await getClient();
@@ -123,7 +123,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
     location_image: null,
     gifts: [],
     groupId: new mongodb.ObjectId(groupId),
-    revealed: false
+    revealed: false,
   };
 
   santaPairs.forEach((santa, child) => {
@@ -131,7 +131,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
       santaId: new mongodb.ObjectId(santa),
       childId: new mongodb.ObjectId(child),
       gift: null,
-      giftId: new ObjectId()
+      giftId: new ObjectId(),
     };
     document.gifts.push(gift);
   });
@@ -153,7 +153,7 @@ export async function isNextYearDrafted(groupId) {
   const client = await getClient();
   const query = {
     groupId: new mongodb.ObjectId(groupId),
-    year: new Date().getFullYear() + 1
+    year: new Date().getFullYear() + 1,
   };
 
   try {
@@ -172,7 +172,7 @@ export async function isNextYearDrafted(groupId) {
 export async function isLastYearRevealed(groupId) {
   const client = await getClient();
   const query = {
-    groupId: new mongodb.ObjectId(groupId)
+    groupId: new mongodb.ObjectId(groupId),
   };
   const options = { sort: { year: -1 }, projection: { year: 1, revealed: 1 } };
 
@@ -193,7 +193,7 @@ export async function setLastYearRevealed(groupId, year) {
   const client = await getClient();
   const filter = {
     groupId: new mongodb.ObjectId(groupId),
-    year
+    year,
   };
   const update = { $set: { revealed: true } };
 
@@ -213,8 +213,8 @@ export async function updateLocationImage(yearId) {
   const filter = { _id: new ObjectId(yearId) };
   const update = {
     $set: {
-      imageUploaded: true
-    }
+      imageUploaded: true,
+    },
   };
 
   try {
@@ -230,11 +230,14 @@ export async function updateLocationImage(yearId) {
 
 export async function updateGiftImage(yearId, giftId) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(yearId), 'gifts.giftId': new ObjectId(giftId) };
+  const filter = {
+    _id: new ObjectId(yearId),
+    'gifts.giftId': new ObjectId(giftId),
+  };
   const update = {
     $set: {
-      'gifts.$.imageUploaded': true
-    }
+      'gifts.$.imageUploaded': true,
+    },
   };
 
   try {
@@ -253,8 +256,8 @@ export async function updateGiftDescription(giftId, description) {
   const filter = { 'gifts.giftId': new ObjectId(giftId) };
   const update = {
     $set: {
-      'gifts.$.gift': description
-    }
+      'gifts.$.gift': description,
+    },
   };
 
   try {
@@ -273,8 +276,8 @@ export async function updateYearDescription(yearId, description) {
   const filter = { _id: new ObjectId(yearId) };
   const update = {
     $set: {
-      location: description
-    }
+      location: description,
+    },
   };
 
   try {

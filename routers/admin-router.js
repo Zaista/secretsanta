@@ -12,7 +12,7 @@ import {
   createGroup,
   getForbiddenPairs,
   createForbiddenPair,
-  deleteForbiddenPair
+  deleteForbiddenPair,
 } from '../utils/adminPipeline.js';
 import fs from 'fs';
 import {
@@ -20,7 +20,7 @@ import {
   isNextYearDrafted,
   isLastYearRevealed,
   setLastYearRevealed,
-  getYearsByGroup
+  getYearsByGroup,
 } from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
@@ -31,7 +31,8 @@ const adminRouter = express.Router();
 // define the home page route
 adminRouter.get('/', (req, res) => {
   if (!req.user) return res.status(401).redirect('session/login');
-  else if (req.session.activeGroup.role !== ROLES.admin) return res.status(401).redirect('/');
+  else if (req.session.activeGroup.role !== ROLES.admin)
+    return res.status(401).redirect('/');
   res.sendFile('public/admin/santaAdmin.html', { root: '.' });
 });
 
@@ -45,7 +46,10 @@ adminRouter.get('/api/users', async (req, res) => {
 
 adminRouter.post('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const modifiedCount = await updateUsersRoles(req.session.activeGroup._id, req.body.usersRoles);
+  const modifiedCount = await updateUsersRoles(
+    req.session.activeGroup._id,
+    req.body.usersRoles
+  );
   return res.send({ success: `Modified ${modifiedCount} user(s)` });
 });
 
@@ -57,26 +61,50 @@ adminRouter.post('/api/user', async (req, res) => {
 
   if (user === null) {
     temporaryPassword = Math.random().toString(36).slice(2, 10);
-    const addNewUserResult = await addNewUser(req.session.activeGroup._id, req.body.email, temporaryPassword);
+    const addNewUserResult = await addNewUser(
+      req.session.activeGroup._id,
+      req.body.email,
+      temporaryPassword
+    );
     if (addNewUserResult.acknowledged !== true) {
-      return res.send({ error: 'Error inviting user to the SecretSanta group' });
+      return res.send({
+        error: 'Error inviting user to the SecretSanta group',
+      });
     }
   } else {
-    const alreadyPartOfGroup = user.groups?.find(userGroup => userGroup.groupId.equals(activeGroup._id));
+    const alreadyPartOfGroup = user.groups?.find((userGroup) =>
+      userGroup.groupId.equals(activeGroup._id)
+    );
     if (alreadyPartOfGroup !== undefined) {
-      return res.send({ error: 'User already part of the SecretSanta group' });
+      return res.send({
+        error: 'User already part of the SecretSanta group',
+      });
     }
-    const addUserToGroupResult = await addUserToGroup(req.session.activeGroup._id, req.body.email, ROLES.user);
+    const addUserToGroupResult = await addUserToGroup(
+      req.session.activeGroup._id,
+      req.body.email,
+      ROLES.user
+    );
     if (addUserToGroupResult !== true) {
-      return res.send({ error: 'Error inviting user to the SecretSanta group' });
+      return res.send({
+        error: 'Error inviting user to the SecretSanta group',
+      });
     }
   }
 
-  const response = { success: `User ${req.body.email} invited to the SecretSanta group` };
+  const response = {
+    success: `User ${req.body.email} invited to the SecretSanta group`,
+  };
   if (activeGroup.userAddedNotification === true) {
-    const emailStatus = await sendWelcomeEmail(req.body.email, activeGroup.name, temporaryPassword);
+    const emailStatus = await sendWelcomeEmail(
+      req.body.email,
+      activeGroup.name,
+      temporaryPassword
+    );
     if (emailStatus.success !== true) {
-      return res.send({ error: `Error inviting user to the SecretSanta group: ${emailStatus.error}` });
+      return res.send({
+        error: `Error inviting user to the SecretSanta group: ${emailStatus.error}`,
+      });
     }
     response.emailUrl = emailStatus.emailUrl;
   }
@@ -85,11 +113,18 @@ adminRouter.post('/api/user', async (req, res) => {
 
 adminRouter.post('/api/user/delete', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await removeUserFromGroup(req.body._id, req.session.activeGroup._id);
+  const result = await removeUserFromGroup(
+    req.body._id,
+    req.session.activeGroup._id
+  );
   if (result === null) {
-    return res.send({ error: 'User could not be removed from the SecretSanta group' });
+    return res.send({
+      error: 'User could not be removed from the SecretSanta group',
+    });
   }
-  return res.send({ success: `User ${req.body.email} removed from the SecretSanta group` });
+  return res.send({
+    success: `User ${req.body.email} removed from the SecretSanta group`,
+  });
 });
 
 // Secret Santa groups
@@ -118,7 +153,11 @@ adminRouter.post('/api/group/create', async (req, res) => {
   }
   const result = await addUserToGroup(group._id, req.user.email, ROLES.admin);
   if (result === true) {
-    req.session.activeGroup = { _id: group._id, name: group.name, role: ROLES.admin };
+    req.session.activeGroup = {
+      _id: group._id,
+      name: group.name,
+      role: ROLES.admin,
+    };
     return res.send({ success: 'Group created', groupId: group._id });
   }
   return res.send({ error: 'Something went wrong during group creation' });
@@ -134,20 +173,31 @@ adminRouter.get('/api/forbidden', async (req, res) => {
 
 adminRouter.post('/api/forbidden', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
-  const result = await createForbiddenPair(req.session.activeGroup._id, req.body);
+  const result = await createForbiddenPair(
+    req.session.activeGroup._id,
+    req.body
+  );
   if (result.insertedId) {
-    return res.send({ success: 'Forbidden pair added', id: result.insertedId });
+    return res.send({
+      success: 'Forbidden pair added',
+      id: result.insertedId,
+    });
   } else if (result.error) {
     return res.send(result);
   } else {
-    return res.send({ error: 'Something went wrong while creating a forbidden pair' });
+    return res.send({
+      error: 'Something went wrong while creating a forbidden pair',
+    });
   }
 });
 
 adminRouter.post('/api/forbidden/delete', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await deleteForbiddenPair(req.body._id);
-  if (result.deletedCount === 1) return res.send({ success: 'The forbidden pair was successfully deleted' });
+  if (result.deletedCount === 1)
+    return res.send({
+      success: 'The forbidden pair was successfully deleted',
+    });
   return res.send({ error: 'Something went wrong' });
 });
 
@@ -178,10 +228,15 @@ adminRouter.put('/api/draft', async (req, res) => {
   const santaPairs = draftPairs(users, forbiddenPairs);
   if (!santaPairs) {
     console.log(`Unsuccessful draft for group ${req.session.activeGroup._id}`);
-    return res.send({ error: 'Error matching pairs, try again or recheck forbidden pairs' });
+    return res.send({
+      error: 'Error matching pairs, try again or recheck forbidden pairs',
+    });
   }
 
-  const result = await addDraftsForNextYear(req.session.activeGroup._id, santaPairs);
+  const result = await addDraftsForNextYear(
+    req.session.activeGroup._id,
+    santaPairs
+  );
   if (result.acknowledged) {
     return res.send({ success: 'Pairs successfully drafted' });
   } else {
@@ -209,7 +264,10 @@ adminRouter.put('/api/reveal', async (req, res) => {
     return res.send({ error: 'Year already revealed' });
   }
 
-  const result = await setLastYearRevealed(req.session.activeGroup._id, history[0].year);
+  const result = await setLastYearRevealed(
+    req.session.activeGroup._id,
+    history[0].year
+  );
 
   if (result.acknowledged) {
     return res.send({ success: 'Last year successfully revealed' });
@@ -230,7 +288,7 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
     from: 'SecretSanta <secretsanta@jovanilic.com>',
     to: email,
     subject: 'Welcome to Secret Santa',
-    html: emailText
+    html: emailText,
   };
 
   return await sendEmail(emailTemplate);
