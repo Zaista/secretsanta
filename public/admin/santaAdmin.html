@@ -188,7 +188,7 @@
                   </button>
 
                   <table
-                    id="users"
+                    id="usersTable"
                     class="table table-borderless caption-top mt-3"
                   >
                     <caption>
@@ -258,7 +258,7 @@
         </div>
       </div>
 
-      <!-- Dialog for adding new users -->
+      <!-- invite-user dialog -->
       <div class="modal" id="newUsersModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -271,34 +271,39 @@
                 aria-label="Close"
               ></button>
             </div>
-            <form id="newUsersForm">
-              <div class="modal-body">
-                <div class="form-floating mb-3">
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="newUserEmail"
-                    placeholder="name@example.com"
-                  />
-                  <label for="newUserEmail">Email address</label>
-                </div>
+            <div class="modal-body">
+              <div class="form-floating mb-3">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="newUserEmail"
+                  placeholder="name@example.com"
+                />
+                <label for="newUserEmail">Email address</label>
               </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" class="btn btn-primary">Invite</button>
-              </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                id="userRemoveButton"
+                type="button"
+                class="btn btn-primary"
+              >
+                Invite
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      <!-- end invite-user dialog -->
 
-      <!-- Dialog for forbidden pairs -->
+      <!-- dialog for forbidden pairs -->
       <div class="modal" id="forbiddenPairsModal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -341,18 +346,18 @@
         </div>
       </div>
 
-      <!-- Confirmation Dialog -->
+      <!-- remove-user-confirmation-dialog -->
       <div
         class="modal fade"
-        id="confirmationDialog"
+        id="removeUserDialog"
         tabindex="-1"
-        aria-labelledby="confirmationDialogLabel"
+        aria-labelledby="removeUserDialogLabel"
         aria-hidden="true"
       >
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="confirmationDialogLabel">
+              <h1 class="modal-title fs-5" id="removeUserDialogLabel">
                 Warning
               </h1>
               <button
@@ -362,7 +367,9 @@
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">Are you sure you want to delete?</div>
+            <div class="modal-body">
+              Are you sure you want to remove the user?
+            </div>
             <div class="modal-footer">
               <button
                 type="button"
@@ -372,15 +379,53 @@
                 Close
               </button>
               <button
-                id="removeUserDialog"
+                id="removeUserButton"
                 type="button"
                 data-bs-dismiss="modal"
                 class="btn btn-primary"
               >
                 Remove user
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end remove-user-confirmation dialog -->
+
+      <!-- delete-forbidden-pair-confirmation dialog -->
+      <div
+        class="modal fade"
+        id="deleteForbiddenPairDialog"
+        tabindex="-1"
+        aria-labelledby="deleteForbiddenPairDialogLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="deleteForbiddenPairDialogLabel">
+                Warning
+              </h1>
               <button
-                id="deletePairButton"
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete the forbidden pair?
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                id="deleteForbiddenPairButton"
                 type="button"
                 data-bs-dismiss="modal"
                 class="btn btn-primary"
@@ -391,11 +436,9 @@
           </div>
         </div>
       </div>
-      <!-- End Confirmation Dialog -->
+      <!-- end delete-forbidden-pair-confirmation dialog -->
     </div>
     <div id="footer"></div>
-    <script
-      src="../utils/bootstrap/js/bootstrap.bundle.min-5.2.3.js"
-    ></script>
+    <script src="../utils/bootstrap/js/bootstrap.bundle.min-5.2.3.js"></script>
   </body>
 </html>

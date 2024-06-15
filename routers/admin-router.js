@@ -58,6 +58,7 @@ adminRouter.post('/api/user', async (req, res) => {
   const user = await checkIfUserExists(req.body.email);
   const activeGroup = await getGroup(req.session.activeGroup._id);
   let temporaryPassword = null;
+  let userId = null;
 
   if (user === null) {
     temporaryPassword = Math.random().toString(36).slice(2, 10);
@@ -71,7 +72,9 @@ adminRouter.post('/api/user', async (req, res) => {
         error: 'Error inviting user to the SecretSanta group',
       });
     }
+    userId = addNewUserResult.insertedId.toString();
   } else {
+    userId = user._id.toString();
     const alreadyPartOfGroup = user.groups?.find((userGroup) =>
       userGroup.groupId.equals(activeGroup._id)
     );
@@ -94,6 +97,7 @@ adminRouter.post('/api/user', async (req, res) => {
 
   const response = {
     success: `User ${req.body.email} invited to the SecretSanta group`,
+    userId: userId,
   };
   if (activeGroup.userAddedNotification === true) {
     const emailStatus = await sendWelcomeEmail(

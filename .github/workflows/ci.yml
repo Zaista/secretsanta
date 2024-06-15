@@ -21,7 +21,7 @@ jobs:
       - working-directory: .
         run: npm ci
       - working-directory: .
-        run: npm run lint
+        run: npm run format
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
