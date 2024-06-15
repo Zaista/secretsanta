@@ -1,21 +1,20 @@
-span[data-name="chatName"] {
+span[data-name='chatName'] {
 }
 
-span[data-name="chatTo"] {
+span[data-name='chatTo'] {
   font-size: 0.8rem;
 }
 
-p[data-name="chatMessage"] {
+p[data-name='chatMessage'] {
   font-size: 1rem;
   text-align: right;
   margin-top: 1rem;
 }
 
-span[data-name="chatDate"] {
+span[data-name='chatDate'] {
   font-size: 0.7rem;
 }
 
-span[data-name="chatFrom"] {
+span[data-name='chatFrom'] {
   font-size: 1rem;
 }
-

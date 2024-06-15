@@ -3,15 +3,19 @@ export function draftPairs(users, forbiddenPairs) {
   const friends = [];
   const forbiddenPairsMap = new Map();
 
-  users.forEach(user => {
+  users.forEach((user) => {
     friends.push(user._id.toString());
   });
 
-  forbiddenPairs.forEach(pair => {
+  forbiddenPairs.forEach((pair) => {
     if (forbiddenPairsMap.get(pair.userId.toString()) === undefined) {
-      forbiddenPairsMap.set(pair.userId.toString(), [pair.forbiddenPairId.toString()]);
+      forbiddenPairsMap.set(pair.userId.toString(), [
+        pair.forbiddenPairId.toString(),
+      ]);
     } else {
-      forbiddenPairsMap.get(pair.userId.toString()).push(pair.forbiddenPairId.toString());
+      forbiddenPairsMap
+        .get(pair.userId.toString())
+        .push(pair.forbiddenPairId.toString());
     }
   });
 
@@ -19,7 +23,10 @@ export function draftPairs(users, forbiddenPairs) {
   const santaPairs = new Map();
 
   // pick one name randomly from the bucket to start with
-  const first = friends.splice(Math.floor(Math.random() * friends.length), 1)[0];
+  const first = friends.splice(
+    Math.floor(Math.random() * friends.length),
+    1
+  )[0];
   let santa = first;
 
   // then for all the other friends, but set a limit
@@ -36,8 +43,12 @@ export function draftPairs(users, forbiddenPairs) {
     const child = friends[index];
 
     // check if you picked a forbidden pair, and if so try again
-    if (forbiddenPairsMap.get(santa)?.includes(child)) { continue; }
-    if (forbiddenPairsMap.get(child)?.includes(santa)) { continue; }
+    if (forbiddenPairsMap.get(santa)?.includes(child)) {
+      continue;
+    }
+    if (forbiddenPairsMap.get(child)?.includes(santa)) {
+      continue;
+    }
 
     // if the pairing is valid, remove the child from the friends group
     friends.splice(index, 1);
@@ -52,7 +63,10 @@ export function draftPairs(users, forbiddenPairs) {
   }
 
   // finally, set the last picked friend as a santa for the first one, unless it's forbidden
-  if (forbiddenPairsMap.get(santa)?.includes(first) || forbiddenPairsMap.get(first)?.includes(santa)) {
+  if (
+    forbiddenPairsMap.get(santa)?.includes(first) ||
+    forbiddenPairsMap.get(first)?.includes(santa)
+  ) {
     return null;
   }
 

@@ -45,8 +45,8 @@ export async function updateProfile(_id, friend) {
     $set: {
       name: friend.name,
       description: friend.description,
-      address: friend.address
-    }
+      address: friend.address,
+    },
   };
 
   try {
@@ -65,8 +65,8 @@ export async function updateProfileImage(_id) {
   const filter = { _id: new ObjectId(_id) };
   const update = {
     $set: {
-      imageUploaded: true
-    }
+      imageUploaded: true,
+    },
   };
 
   try {

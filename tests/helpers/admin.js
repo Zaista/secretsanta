@@ -1,18 +1,18 @@
 export function createGroup(request, name) {
   return request.post('admin/api/group/create', {
-    form: { groupName: name }
+    form: { groupName: name },
   });
 }
 
 export function updateGroup(request, groupData) {
   return request.post('admin/api/group', {
-    data: groupData
+    data: groupData,
   });
 }
 
 export function inviteUserToGroup(request, email) {
   return request.post('admin/api/user', {
-    form: { email }
+    form: { email },
   });
 }
 
@@ -22,7 +22,7 @@ export function draftSantaPairs(request) {
 
 export function addForbiddenPair(request, forbiddenPair) {
   return request.post('admin/api/forbidden', {
-    form: forbiddenPair
+    form: forbiddenPair,
   });
 }
 

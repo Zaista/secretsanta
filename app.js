@@ -23,7 +23,7 @@ app.use(
   session({
     secret: process.env.sessionKey,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
   })
 );
 
@@ -31,7 +31,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // register regenerate & save until passport v0.6 is fixed
-app.use(function(request, response, next) {
+app.use(function (request, response, next) {
   if (request.session && !request.session.regenerate) {
     request.session.regenerate = (cb) => {
       cb();
@@ -64,7 +64,7 @@ app.use('/modules/menu', (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const options = {
     groups: req.user.groups,
-    activeGroup: req.session.activeGroup
+    activeGroup: req.session.activeGroup,
   };
   res.render('modules/menu.html', options);
 });
@@ -74,11 +74,13 @@ app.use('/modules/footer', (req, res) => {
 });
 
 app.use('/api/setActiveGroup', (req, res) => {
-  req.session.activeGroup = req.user.groups.filter(group => group._id.toString() === req.query.groupId)[0];
+  req.session.activeGroup = req.user.groups.filter(
+    (group) => group._id.toString() === req.query.groupId
+  )[0];
   res.send({ success: 'Group changed' });
 });
 
-app.use(function(req, res) {
+app.use(function (req, res) {
   res.status(404).sendFile('public/not-found/santa404.html', { root: '.' });
 });
 

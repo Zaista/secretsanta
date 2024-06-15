@@ -1,6 +1,6 @@
 import mongodb from 'mongodb';
 
-const database = (function() {
+const database = (function () {
   let instance;
 
   function createClient() {
@@ -10,13 +10,13 @@ const database = (function() {
   }
 
   return {
-    getClient: function() {
+    getClient: function () {
       if (!instance) {
         instance = createClient();
       }
 
       return instance;
-    }
+    },
   };
 })();
 

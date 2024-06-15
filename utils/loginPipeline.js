@@ -4,7 +4,7 @@ import { getClient } from './database.js';
 export function getUserByEmailAndPassword(email, password) {
   const $match = {
     email: { $regex: new RegExp(email, 'i') },
-    password
+    password,
   };
 
   return getUser($match);
@@ -12,7 +12,7 @@ export function getUserByEmailAndPassword(email, password) {
 
 export function getUserById(_id) {
   const $match = {
-    _id: new mongodb.ObjectId(_id)
+    _id: new mongodb.ObjectId(_id),
   };
 
   return getUser($match);
@@ -38,15 +38,15 @@ async function getUser($match) {
   const client = await getClient();
   const pipeline = [
     {
-      $match
+      $match,
     },
     {
       $lookup: {
         from: 'groups',
         localField: 'groups.groupId',
         foreignField: '_id',
-        as: 'groupInfo'
-      }
+        as: 'groupInfo',
+      },
     },
     {
       $project: {
@@ -57,8 +57,8 @@ async function getUser($match) {
         'groupInfo.userAddedNotification': 1,
         'groupInfo.messageSentNotification': 1,
         'groupInfo.yearDraftedNotification': 1,
-        groups: 1
-      }
+        groups: 1,
+      },
     },
     {
       $project: {
@@ -74,31 +74,31 @@ async function getUser($match) {
                         $filter: {
                           input: '$groups',
                           cond: {
-                            $eq: [
-                              '$$mb.groupId', '$$this._id'
-                            ]
+                            $eq: ['$$mb.groupId', '$$this._id'],
                           },
-                          as: 'mb'
-                        }
-                      }, 0
-                    ]
-                  }
+                          as: 'mb',
+                        },
+                      },
+                      0,
+                    ],
+                  },
                 },
                 in: {
                   $mergeObjects: [
-                    '$$this', {
-                      role: '$$m.role'
-                    }
-                  ]
-                }
-              }
-            }
-          }
+                    '$$this',
+                    {
+                      role: '$$m.role',
+                    },
+                  ],
+                },
+              },
+            },
+          },
         },
         email: 1,
-        name: 1
-      }
-    }
+        name: 1,
+      },
+    },
   ];
 
   try {

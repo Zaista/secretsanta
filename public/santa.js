@@ -1,12 +1,15 @@
 // eslint-disable-next-line no-unused-vars
-const pageLoaded = new Promise(resolve => {
+const pageLoaded = new Promise((resolve) => {
   $('#menu').load('/modules/menu', () => {
     // group selection and info
-    $('.groupOp').on('click', function() {
-      $.get(`/api/setActiveGroup?groupId=${$(this).attr('value')}`, response => {
-        if (response.success) location.reload();
-        else showAlert(response);
-      });
+    $('.groupOp').on('click', function () {
+      $.get(
+        `/api/setActiveGroup?groupId=${$(this).attr('value')}`,
+        (response) => {
+          if (response.success) location.reload();
+          else showAlert(response);
+        }
+      );
     });
 
     // active page
@@ -19,7 +22,7 @@ const pageLoaded = new Promise(resolve => {
     // create new group
     $('#create-group-form').on('submit', () => {
       const groupName = $('#group-name').val();
-      $.post('admin/api/group/create', { groupName }, result => {
+      $.post('admin/api/group/create', { groupName }, (result) => {
         if (result.success) {
           window.location.href = '/admin?group-created';
         } else {
@@ -53,7 +56,7 @@ function showAlert(alert, timeout = 3000) {
   $('#footerAlert span').text(message);
   alertElement.show();
   if (timeout !== 0) {
-    setTimeout(function() {
+    setTimeout(function () {
       $('#footerAlert').hide();
     }, timeout);
   }

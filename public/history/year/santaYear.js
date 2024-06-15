@@ -24,7 +24,7 @@ $(async () => {
 
   const searchParams = new URLSearchParams(window.location.search);
 
-  $.getJSON(`${apiUrl}/gifts?id=${searchParams.get('id')}`, year => {
+  $.getJSON(`${apiUrl}/gifts?id=${searchParams.get('id')}`, (year) => {
     $('#yearTitle').text(year.year);
     if (year.location === null) {
       year.location = 'N/A';
@@ -40,7 +40,7 @@ $(async () => {
     });
 
     if (year.imageUploaded) {
-      lazyLoadImage(year._id, $('#locationImage')).then(image => {
+      lazyLoadImage(year._id, $('#locationImage')).then((image) => {
         $('#locationImage').attr('src', image.src).attr('hidden', false);
         $('#locationIcon').attr('hidden', true);
       });
@@ -52,7 +52,7 @@ $(async () => {
       showAlert({ warning: 'No gifts' });
       return;
     }
-    year.gifts.forEach(gift => {
+    year.gifts.forEach((gift) => {
       listGifts(gift);
     });
   });
@@ -61,8 +61,12 @@ $(async () => {
     const giftElement = $.parseHTML(giftTemplate);
     let santaName = gift.santa;
     let childName = gift.child;
-    if (gift.santa === '') { santaName = gift.santaEmail; }
-    if (gift.child === '') { childName = gift.childEmail; }
+    if (gift.santa === '') {
+      santaName = gift.santaEmail;
+    }
+    if (gift.child === '') {
+      childName = gift.childEmail;
+    }
     $(giftElement).find('#santa').text(santaName);
     $(giftElement).find('#child').text(childName);
     if (gift.gift === null) {
@@ -70,35 +74,41 @@ $(async () => {
     }
     $(giftElement).find('#giftText').text(gift.gift);
 
-    $(giftElement).find('#descriptionEdit').on('click', () => {
-      $('#editDescriptionInput')
-        .attr('data-id', gift.giftId)
-        .attr('data-type', 'gift')
-        .val(gift.gift);
-      descriptionEditElement = $(giftElement).find('#giftText');
-      editDescriptionModal.show();
-    });
+    $(giftElement)
+      .find('#descriptionEdit')
+      .on('click', () => {
+        $('#editDescriptionInput')
+          .attr('data-id', gift.giftId)
+          .attr('data-type', 'gift')
+          .val(gift.gift);
+        descriptionEditElement = $(giftElement).find('#giftText');
+        editDescriptionModal.show();
+      });
 
-    $(giftElement).find('#giftIcon, #giftImage').on('click', (e) => {
-      uploadEndpoint = `gift-image?yearId=${searchParams.get('id')}&giftId=${gift.giftId}`;
-      imageElement = $(giftElement).find('#giftImage');
-      iconElement = $(giftElement).find('#giftIcon');
+    $(giftElement)
+      .find('#giftIcon, #giftImage')
+      .on('click', (e) => {
+        uploadEndpoint = `gift-image?yearId=${searchParams.get('id')}&giftId=${gift.giftId}`;
+        imageElement = $(giftElement).find('#giftImage');
+        iconElement = $(giftElement).find('#giftIcon');
 
-      if (e.currentTarget.src === undefined) {
-        $('#imagePopup').attr('src', '');
-      } else {
-        $('#imagePopup').attr('src', e.currentTarget.src);
-      }
-    });
+        if (e.currentTarget.src === undefined) {
+          $('#imagePopup').attr('src', '');
+        } else {
+          $('#imagePopup').attr('src', e.currentTarget.src);
+        }
+      });
 
     $(giftElement).find('#giftImageUpload').on('change', showCroppie);
 
     if (gift.imageUploaded !== undefined) {
-      lazyLoadImage(gift.giftId, $(giftElement).find('#giftImage')).then(image => {
-        $(giftElement).find('#giftImage').attr('src', image.src);
-        $(giftElement).find('#giftIcon').attr('hidden', true);
-        $(giftElement).find('#giftImage').attr('hidden', false);
-      });
+      lazyLoadImage(gift.giftId, $(giftElement).find('#giftImage')).then(
+        (image) => {
+          $(giftElement).find('#giftImage').attr('src', image.src);
+          $(giftElement).find('#giftIcon').attr('hidden', true);
+          $(giftElement).find('#giftImage').attr('hidden', false);
+        }
+      );
     } else {
       $(giftElement).find('#giftIcon').removeClass('loading-image');
     }
@@ -110,7 +120,7 @@ $(async () => {
   });
 
   function lazyLoadImage(yearId, image) {
-    return new Promise(function(resolve) {
+    return new Promise(function (resolve) {
       const lazyImage = new Image();
       const imageUrl = `${apiUrl}/location-image?id=${yearId}`;
       lazyImage.src = imageUrl;
@@ -140,20 +150,24 @@ $(async () => {
   $('#imageSubmit').on('click', (e) => {
     $(e.currentTarget).addClass('loading-image');
     showAlert({ warning: 'Uploading image, please wait...' }, 0);
-    croppie.result({ size: 'original' }).then(croppedImage => {
-      $.post(`${apiUrl}/${uploadEndpoint}`, { image: croppedImage }, result => {
-        modal.hide();
-        $(e.currentTarget).removeClass('loading-image');
-        showAlert(result);
-        if (result.success) {
-          imageElement.attr('src', croppedImage).attr('hidden', false);
-          iconElement.attr('hidden', true);
-          $('#imagePopup').parent().prop('hidden', false);
-          $('#imageEdit').prop('hidden', false);
-          $('#imageSubmit').prop('hidden', true);
-          $('#cropper').prop('hidden', true);
+    croppie.result({ size: 'original' }).then((croppedImage) => {
+      $.post(
+        `${apiUrl}/${uploadEndpoint}`,
+        { image: croppedImage },
+        (result) => {
+          modal.hide();
+          $(e.currentTarget).removeClass('loading-image');
+          showAlert(result);
+          if (result.success) {
+            imageElement.attr('src', croppedImage).attr('hidden', false);
+            iconElement.attr('hidden', true);
+            $('#imagePopup').parent().prop('hidden', false);
+            $('#imageEdit').prop('hidden', false);
+            $('#imageSubmit').prop('hidden', true);
+            $('#cropper').prop('hidden', true);
+          }
         }
-      });
+      );
     });
   });
 
@@ -165,13 +179,13 @@ $(async () => {
         enableResize: true,
         viewport: {
           width: croppieElement.width() - 50,
-          height: croppieElement.width() - 50
+          height: croppieElement.width() - 50,
         },
         boundary: {
           width: croppieElement.width(),
-          height: croppieElement.width()
+          height: croppieElement.width(),
         },
-        url: imageUrl
+        url: imageUrl,
       };
       croppie = new Croppie(croppieElement.get(0), croppieOptions);
     } else {
@@ -195,9 +209,9 @@ $(async () => {
     const type = editDescriptionInput.attr('data-type');
     const data = {
       _id: editDescriptionInput.attr('data-id'),
-      description: editDescriptionInput.val()
+      description: editDescriptionInput.val(),
     };
-    $.post(`${apiUrl}/${type}-description`, data, result => {
+    $.post(`${apiUrl}/${type}-description`, data, (result) => {
       editDescriptionModal.hide();
       showAlert(result);
       if (result.success) {

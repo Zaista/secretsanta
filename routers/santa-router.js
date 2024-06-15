@@ -14,7 +14,9 @@ santaRouter.get('/api/santa', async (req, res) => {
   if (req.session.activeGroup !== undefined) {
     const santa = await getSanta(req.user._id, req.session.activeGroup._id);
     if (santa.length === 0) {
-      return res.send({ warning: 'Santa pairs not drafted yet for the next year' });
+      return res.send({
+        warning: 'Santa pairs not drafted yet for the next year',
+      });
     }
     return res.send(santa[0]);
   } else {

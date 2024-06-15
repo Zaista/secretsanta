@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
   mongo:
     image: mongo
     restart: always
@@ -25,7 +24,7 @@ services:
     ports:
       - '9000:${minioPort}'
       - '9001:9001'
-  
+
   createbuckets:
     image: minio/mc
     depends_on:

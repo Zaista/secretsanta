@@ -16,7 +16,9 @@ test.describe('session tests', () => {
     await page.locator('#confirmPassword').fill(password);
 
     await page.getByRole('button', { name: 'Register' }).click();
-    await expect(page.locator('#footerAlert')).toHaveText('Registration completed successfully');
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'Registration completed successfully'
+    );
 
     await expect(page).toHaveTitle(/Secret Santa/);
     await expect(page.locator('#unavailableImage')).toBeVisible();
@@ -25,7 +27,7 @@ test.describe('session tests', () => {
   test('user can login', async ({ request, page }) => {
     const user = {
       email: faker.internet.email(),
-      password: faker.internet.password()
+      password: faker.internet.password(),
     };
     await registerUser(request, user);
 

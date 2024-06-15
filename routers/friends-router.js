@@ -14,7 +14,9 @@ friendsRouter.get('/api/list', async (req, res) => {
   if (req.session.activeGroup !== undefined) {
     const result = await getFriends(req.session.activeGroup._id);
     res.send(result);
-  } else { return res.send([]); }
+  } else {
+    return res.send([]);
+  }
 });
 
 export { friendsRouter };

@@ -7,7 +7,7 @@ export async function getUsers(groupId) {
   const query = { 'groups.groupId': new ObjectId(groupId) };
   const options = {
     projection: { name: 1, email: 1 },
-    sort: { name: 1 }
+    sort: { name: 1 },
   };
 
   try {
@@ -25,20 +25,24 @@ export async function getUsers(groupId) {
 export async function getUsersAndRoles(groupId) {
   const client = await getClient();
 
-  const pipeline = [{
-    $unwind: {
-      path: '$groups'
-    }
-  }, {
-    $match: {
-      'groups.groupId': new ObjectId(groupId)
-    }
-  }, {
-    $project: {
-      email: 1,
-      groups: 1
-    }
-  }];
+  const pipeline = [
+    {
+      $unwind: {
+        path: '$groups',
+      },
+    },
+    {
+      $match: {
+        'groups.groupId': new ObjectId(groupId),
+      },
+    },
+    {
+      $project: {
+        email: 1,
+        groups: 1,
+      },
+    },
+  ];
 
   try {
     return await client
@@ -72,8 +76,8 @@ export async function addUserToGroup(groupId, email, role) {
   const filter = { email };
   const update = {
     $push: {
-      groups: { groupId: new ObjectId(groupId), role }
-    }
+      groups: { groupId: new ObjectId(groupId), role },
+    },
   };
 
   try {
@@ -97,8 +101,8 @@ export async function removeUserFromGroup(userId, groupId) {
   const filter = { _id: new ObjectId(userId) };
   const update = {
     $pull: {
-      groups: { groupId: new ObjectId(groupId) }
-    }
+      groups: { groupId: new ObjectId(groupId) },
+    },
   };
 
   try {
@@ -124,7 +128,7 @@ export async function addNewUser(groupId, email, password) {
     email,
     name: '',
     groups: [{ groupId: new ObjectId(groupId), role: ROLES.user }],
-    address: [{ street: '', city: '', postalCode: '', state: '' }]
+    address: [{ street: '', city: '', postalCode: '', state: '' }],
   };
   try {
     return await client
@@ -157,12 +161,13 @@ export async function updateUsersRoles(groupId, usersRoles) {
     for (const userData of usersRoles) {
       const filter = {
         'groups.groupId': new ObjectId(groupId),
-        _id: new ObjectId(userData._id)
+        _id: new ObjectId(userData._id),
       };
       const update = {
-        $set: { 'groups.$.role': userData.role }
+        $set: { 'groups.$.role': userData.role },
       };
-      const result = await client.db(process.env.database)
+      const result = await client
+        .db(process.env.database)
         .collection('users')
         .updateOne(filter, update);
       if (result.modifiedCount !== 0) {
@@ -197,7 +202,7 @@ export async function createGroup(groupName) {
     name: groupName,
     userAddedNotification: false,
     messageSentNotification: false,
-    yearDraftedNotification: false
+    yearDraftedNotification: false,
   };
 
   try {
@@ -222,7 +227,7 @@ export async function updateGroup(groupId, groupData) {
   const client = await getClient();
   const filter = { _id: new ObjectId(groupId) };
   const update = {
-    $set: groupData
+    $set: groupData,
   };
 
   try {
@@ -256,32 +261,35 @@ export async function getForbiddenPairs(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: new ObjectId(groupId)
-      }
-    }, {
+        groupId: new ObjectId(groupId),
+      },
+    },
+    {
       $lookup: {
         from: 'users',
         localField: 'userId',
         foreignField: '_id',
-        as: 'user'
-      }
-    }, {
+        as: 'user',
+      },
+    },
+    {
       $lookup: {
         from: 'users',
         localField: 'forbiddenPairId',
         foreignField: '_id',
-        as: 'forbiddenPair'
-      }
-    }, {
+        as: 'forbiddenPair',
+      },
+    },
+    {
       $project: {
         user: { $first: '$user.name' },
         userEmail: { $first: '$user.email' },
         userId: { $first: '$user._id' },
         forbiddenPair: { $first: '$forbiddenPair.name' },
         forbiddenPairEmail: { $first: '$forbiddenPair.email' },
-        forbiddenPairId: { $first: '$forbiddenPair._id' }
-      }
-    }
+        forbiddenPairId: { $first: '$forbiddenPair._id' },
+      },
+    },
   ];
 
   try {
@@ -308,7 +316,7 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
     const document = {
       groupId: new ObjectId(groupId),
       userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
-      forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
+      forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id),
     };
 
     return await client
@@ -330,12 +338,12 @@ async function findExistingPair(client, groupId, forbiddenPair) {
       $or: [
         {
           userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
-          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id)
+          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id),
         },
         {
           userId: new ObjectId(forbiddenPair.forbiddenUser2Id),
-          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser1Id)
-        }
-      ]
+          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser1Id),
+        },
+      ],
     });
 }

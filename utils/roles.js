@@ -1,6 +1,6 @@
 const ROLES = {
   admin: 'admin',
-  user: 'user'
+  user: 'user',
 };
 
 export { ROLES };

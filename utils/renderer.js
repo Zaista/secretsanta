@@ -6,16 +6,22 @@ export const renderer = (filePath, options, callback) => {
     if (err) return callback(err);
     let rendered = content.toString();
 
-    if (options.activeGroup === undefined || options.activeGroup.role !== ROLES.admin) {
-      rendered = rendered.replace(/<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m, '');
+    if (
+      options.activeGroup === undefined ||
+      options.activeGroup.role !== ROLES.admin
+    ) {
+      rendered = rendered.replace(
+        /<!--adminStart-->(.|\n|\r)*<!--adminEnd-->/m,
+        ''
+      );
     }
 
     if (filePath.includes('menu.html')) {
-      options.groups.sort(
-        (o1, o2) => (o1.name > o2.name) ? 1 : (o1.name < o2.name) ? -1 : 0
+      options.groups.sort((o1, o2) =>
+        o1.name > o2.name ? 1 : o1.name < o2.name ? -1 : 0
       );
       let groupOptions = '';
-      options.groups.forEach(group => {
+      options.groups.forEach((group) => {
         groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
       });
       rendered = rendered.replace('<!--groupOptions-->', groupOptions);
@@ -23,15 +29,28 @@ export const renderer = (filePath, options, callback) => {
       if (options.activeGroup === undefined) {
         rendered = rendered.replace('<!--groupName-->', 'N/A');
       } else {
-        rendered = rendered.replace('<!--groupName-->', options.activeGroup.name);
+        rendered = rendered.replace(
+          '<!--groupName-->',
+          options.activeGroup.name
+        );
       }
     }
 
     if (filePath.includes('santaProfile.html')) {
-      const elevatedPrivileges = process.env.adminElevatedPrivileges.toLowerCase() === 'true';
-      rendered = rendered.replaceAll('{{isHidden}}', elevatedPrivileges || options.isCurrentUser ? '' : 'hidden');
-      rendered = rendered.replace('{{isDisabled}}', elevatedPrivileges || options.isCurrentUser ? '' : 'disabled');
-      rendered = rendered.replace('{{isPointer}}', elevatedPrivileges || options.isCurrentUser ? 'pointer' : '');
+      const elevatedPrivileges =
+        process.env.adminElevatedPrivileges.toLowerCase() === 'true';
+      rendered = rendered.replaceAll(
+        '{{isHidden}}',
+        elevatedPrivileges || options.isCurrentUser ? '' : 'hidden'
+      );
+      rendered = rendered.replace(
+        '{{isDisabled}}',
+        elevatedPrivileges || options.isCurrentUser ? '' : 'disabled'
+      );
+      rendered = rendered.replace(
+        '{{isPointer}}',
+        elevatedPrivileges || options.isCurrentUser ? 'pointer' : ''
+      );
     }
     return callback(null, rendered);
   });
