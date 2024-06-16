@@ -3,11 +3,10 @@ const apiUrl = 'admin/api';
 $(async () => {
   'use strict';
 
-  let userId;
-  let userEmail;
-  let userEl;
-  let pairId;
-  let pairEl;
+  // let userId;
+  // let userEmail;
+  let userElement;
+  let pairElement;
 
   await $.getScript('/santa.js');
   pageLoaded.then(async () => {
@@ -25,33 +24,31 @@ $(async () => {
     $.getJSON(`${apiUrl}/users`, function (result) {
       $.get('admin/user.html', (userTemplate) => {
         $.each(result, function (index, userData) {
-          const userElement = $.parseHTML(userTemplate);
-          $(userElement).find('[data-name="userIndex"]').text(++index);
-          $(userElement).find('[data-name="userEmail"]').text(userData.email);
-          $(userElement).find('a').attr('href', `/profile?id=${userData._id}`);
-          $(userElement).find('[data-name="userId"]').val(userData._id);
-          $(userElement)
+          const _userElement = $.parseHTML(userTemplate);
+          $(_userElement).find('[data-name="userIndex"]').text(++index);
+          $(_userElement).find('[data-name="userEmail"]').text(userData.email);
+          $(_userElement).find('a').attr('href', `/profile?id=${userData._id}`);
+          $(_userElement).find('[data-name="userId"]').val(userData._id);
+          $(_userElement)
             .find('[data-name="userRole"]')
             .val(userData.groups.role);
-          $(userElement)
+          $(_userElement)
             .find('[data-name="userRole"]')
             .on('input', onChangeDetector);
 
-          $(userElement)
+          $(_userElement)
             .find('[data-name="userRemove"]')
             .on('click', () => {
-              $('#removeUserDialog').prop('hidden', false);
-              $('#deletePairDialog').prop('hidden', true);
-              userId = userData._id;
-              userEmail = userData.email;
-              userEl = userElement;
+              // userId = userData._id;
+              // userEmail = userData.email;
+              userElement = _userElement;
             });
-          $('#users tbody').append(userElement);
+          $('#usersTable tbody').append(_userElement);
         });
       });
     });
 
-    $('#userButton').on('click', () => {
+    $('#userButton').on('click', function () {
       const usersRoles = [];
       $('tr[data-name="userRow"]').each(function () {
         const userData = {
@@ -62,7 +59,7 @@ $(async () => {
       });
       $.post(`${apiUrl}/users`, { usersRoles }, (result) => {
         showAlert(result);
-        $('#userButton').prop('disabled', true);
+        $(this).prop('disabled', true);
       });
       return false;
     });
@@ -106,30 +103,28 @@ $(async () => {
     $.getJSON(`${apiUrl}/forbidden`, function (result) {
       $.get('admin/pair.html', (pairTemplate) => {
         result.forEach((pair, index) => {
-          const pairElement = $.parseHTML(pairTemplate);
-          $(pairElement).find('[data-name="pairIndex"]').text(++index);
+          const _pairElement = $.parseHTML(pairTemplate);
+          $(_pairElement).find('[data-name="pairId"]').val(pair._id);
+          $(_pairElement).find('[data-name="pairIndex"]').text(++index);
           let santaName = pair.user;
           if (pair.user === undefined || pair.user === '') {
             santaName = pair.userEmail;
           }
-          $(pairElement).find('[data-name="pairUser"]').text(santaName);
+          $(_pairElement).find('[data-name="pairUser"]').text(santaName);
           let childName = pair.forbiddenPair;
           if (pair.forbiddenPair === undefined || pair.forbiddenPair === '') {
             childName = pair.forbiddenPairEmail;
           }
-          $(pairElement)
+          $(_pairElement)
             .find('[data-name="pairForbiddenPair"]')
             .text(childName);
 
-          $(pairElement)
+          $(_pairElement)
             .find('[data-name="pairDelete"]')
             .on('click', () => {
-              $('#removeUserDialog').prop('hidden', true);
-              $('#deletePairDialog').prop('hidden', false);
-              pairId = pair._id;
-              pairEl = pairElement;
+              pairElement = _pairElement;
             });
-          $('#forbiddenPairsTable tbody').append(pairElement);
+          $('#forbiddenPairsTable tbody').append(_pairElement);
         });
       });
     });
@@ -153,39 +148,64 @@ $(async () => {
       };
       $.post(`${apiUrl}/forbidden`, pair, (result) => {
         showAlert(result);
-        const rowIndex = $('#forbiddenPairsTable tr').length;
-        // TODO after adding try delete last pair, add template
         if (result.success) {
-          $('#forbiddenPairsTable > tbody:last-child')
-            .append(`<tr value="${result.id}">
-    <td>
-        <b>${rowIndex}</b>
-    </td>
-    <td>${$('#forbiddenUser1 option:selected').text()}</td>
-</td><td>${$('#forbiddenUser2 option:selected').text()}</td>
-    <td>
-        <i class="buttonDelete bi bi-trash" style="cursor:pointer; color:red"></i>
-    </td></td>
-</tr>`);
+          $.get('admin/pair.html', (pairTemplate) => {
+            const _pairElement = $.parseHTML(pairTemplate);
+            $(_pairElement).find('[data-name="pairId"]').val(result.id);
+            const rowIndex = $('#forbiddenPairsTable tr').length;
+            $(_pairElement).find('[data-name="pairIndex"]').text(rowIndex);
+            $(_pairElement)
+              .find('[data-name="pairUser"]')
+              .text($('#forbiddenUser1 option:selected').text());
+
+            $(_pairElement)
+              .find('[data-name="pairForbiddenPair"]')
+              .text($('#forbiddenUser2 option:selected').text());
+
+            $(_pairElement)
+              .find('[data-name="pairDelete"]')
+              .on('click', () => {
+                pairElement = _pairElement;
+              });
+            $('#forbiddenPairsTable > tbody:last-child').append(_pairElement);
+          });
         }
         const modal = $('#forbiddenPairsModal');
         bootstrap.Modal.getInstance(modal).hide();
-        // TODO reload page or add item to the table manually
       });
       return false;
     });
 
-    $('#newUsersForm').on('submit', () => {
+    $('#userRemoveButton').on('click', () => {
       const newUser = {
         email: $('#newUserEmail').val(),
       };
       $.post(`${apiUrl}/user`, newUser, (result) => {
         showAlert(result);
-        // TODO reload page or add item to the table manually, close modal
+        $.get('admin/user.html', (userTemplate) => {
+          const _userElement = $.parseHTML(userTemplate);
+          const rowIndex = $('#usersTable tr').length;
+          $(_userElement).find('[data-name="userIndex"]').text(rowIndex);
+          $(_userElement).find('[data-name="userEmail"]').text(newUser.email);
+          $(_userElement)
+            .find('a')
+            .attr('href', `/profile?id=${result.userId}`);
+          $(_userElement).find('[data-name="userId"]').val(result.userId);
+          $(_userElement).find('[data-name="userRole"]').val('user');
+          $(_userElement)
+            .find('[data-name="userRole"]')
+            .on('input', onChangeDetector);
+
+          $(_userElement)
+            .find('[data-name="userRemove"]')
+            .on('click', () => {
+              userElement = _userElement;
+            });
+          $('#usersTable tbody').append(_userElement);
+          const modal = $('#newUsersModal');
+          bootstrap.Modal.getInstance(modal).hide();
+        });
       });
-      const modal = $('#newUsersModal');
-      bootstrap.Modal.getInstance(modal).hide();
-      return false;
     });
 
     $.getJSON(`${apiUrl}/draft`, (response) => {
@@ -244,26 +264,33 @@ $(async () => {
       }
     }
 
-    $('#removeUserDialog').on('click', () => {
+    $('#removeUserButton').on('click', () => {
       $.post(
         `${apiUrl}/user/delete`,
-        { _id: userId, email: userEmail },
+        {
+          _id: $(userElement).find('[data-name="userId"]').val(),
+          email: $(userElement).find('[data-name="userEmail"]').text(),
+        },
         (response) => {
           showAlert(response);
           if (response.success) {
-            $(userEl).remove();
+            $(userElement).remove();
           }
         }
       );
     });
 
-    $('#deletePairButton').on('click', () => {
-      $.post(`${apiUrl}/forbidden/delete`, { _id: pairId }, (result) => {
-        showAlert(result);
-        if (result.success) {
-          $(pairEl).remove();
+    $('#deleteForbiddenPairButton').on('click', () => {
+      $.post(
+        `${apiUrl}/forbidden/delete`,
+        { _id: $(pairElement).find('[data-name="pairId"]').val() },
+        (result) => {
+          showAlert(result);
+          if (result.success) {
+            $(pairElement).remove();
+          }
         }
-      });
+      );
     });
   });
 });

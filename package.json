@@ -10,8 +10,8 @@
     "start": "node app.js",
     "test": "npx playwright test --ui",
     "test_ci": "npx playwright test",
-    "lint": "sudo npx prettier .",
-    "lint:fix": "npx prettier . --write"
+    "format": "sudo npx prettier .",
+    "format:fix": "npx prettier . --write"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.0",
