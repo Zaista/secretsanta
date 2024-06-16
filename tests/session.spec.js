@@ -33,12 +33,36 @@ test.describe('session tests', () => {
 
     await page.goto('/');
     await page.getByLabel('Santa email').fill(user.email);
-    await page.getByLabel('Santa password').fill(user.password);
+    await page.getByLabel('Santa password').fill(faker.internet.password());
 
+    await page.getByRole('button', { name: 'Login' }).click();
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'Email or password wrong'
+    );
+
+    await page.getByLabel('Santa password').fill(user.password);
     await page.getByRole('button', { name: 'Login' }).click();
     await expect(page.locator('#footerAlert')).toHaveText('No active group');
 
     await expect(page).toHaveTitle(/Secret Santa/);
     await expect(page.locator('#unavailableImage')).toBeVisible();
+  });
+
+  test('user can request password', async ({ request, page }) => {
+    const user = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+    await registerUser(request, user);
+
+    await page.goto('/');
+
+    await page.getByText('Forgot password').click();
+    await page.getByLabel('Enter your email address').fill(user.email);
+    await page.getByRole('button', { name: 'Email' }).click();
+
+    await expect(page.locator('#footerAlert')).toHaveText(
+      `Email successfully sent to ${user.email}`
+    );
   });
 });

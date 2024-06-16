@@ -13,3 +13,9 @@ export function login(request, email, password) {
     data: { username: email, password },
   });
 }
+
+export function forgotPassword(request, email) {
+  return request.post('session/api/email', {
+    data: { email },
+  });
+}

@@ -39,7 +39,7 @@ $(async function () {
   $('#santa-email-form').on('submit', function () {
     $.post(
       'api/email',
-      { email: $('#santa-email').val() },
+      { email: $('#forgot-email').val() },
       function (result) {
         $('#forgot-password-dialog').modal('hide');
         showAlert(result);

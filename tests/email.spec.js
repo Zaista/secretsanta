@@ -1,14 +1,38 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
-import { login, registerUser } from './helpers/login.js';
+import { forgotPassword, login, registerUser } from './helpers/login.js';
 import { inviteUserToGroup, updateGroup } from './helpers/admin.js';
 import { createDraftedGroup, createNewGroup } from './helpers/setup.js';
 import { sendMessage } from './helpers/chat.js';
 
 test.describe('email tests', () => {
-
   test.describe('admin tests', () => {
+    test('user should receive an email when forgot password is triggered', async ({
+      page,
+    }) => {
+      const user = {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      await registerUser(page.request, user);
+      const response = await forgotPassword(page.request, user.email);
+      const responseJson = await response.json();
+      await expect(responseJson).toHaveProperty('emailUrl');
+      await page.goto(responseJson.emailUrl);
+
+      await expect(page).toHaveScreenshot('forgot-password-email.png', {
+        mask: [
+          page.locator('.mp_address_group').nth(1),
+          page.locator('.datestring'),
+          // Message-ID
+          page.locator('#message-header div').nth(4).locator('span'),
+          page.frameLocator('[style]').locator('#email-placeholder'),
+          page.frameLocator('[style]').locator('#password-placeholder'),
+        ],
+        fullPage: true,
+      });
+    });
 
     test('new user receives an email when invited to the group', async ({
       page,
@@ -44,7 +68,6 @@ test.describe('email tests', () => {
       await page.goto(bodyWithUrl.emailUrl);
 
       await expect(page).toHaveScreenshot('invite-email.png', {
-        maxDiffPixelRatio: 0.05,
         mask: [
           page.locator('.mp_address_group').nth(1),
           page.locator('.datestring'),
@@ -53,6 +76,7 @@ test.describe('email tests', () => {
           page.frameLocator('[style]').locator('#group-placeholder'),
           page.frameLocator('[style]').locator('#password-placeholder'),
         ],
+        fullPage: true,
       });
     });
 
@@ -88,7 +112,6 @@ test.describe('email tests', () => {
       await page.goto(bodyWithUrl.emailUrl);
 
       await expect(page).toHaveScreenshot('invite-email.png', {
-        maxDiffPixelRatio: 0.05,
         mask: [
           page.locator('.mp_address_group').nth(1),
           page.locator('.datestring'),
@@ -97,12 +120,12 @@ test.describe('email tests', () => {
           page.frameLocator('[style]').locator('#group-placeholder'),
           page.frameLocator('[style]').locator('#password-placeholder'),
         ],
+        fullPage: true,
       });
     });
-  })
+  });
 
   test.describe('chat tests', () => {
-
     test('user should receive a chat email', async ({ page }) => {
       const groupData = await createDraftedGroup(page.request);
       const updatedGroupData = {
@@ -131,7 +154,9 @@ test.describe('email tests', () => {
       await expect(page.locator('#message-header')).toContainText(
         '<secretsanta@jovanilic.com>'
       );
-      await expect(page.locator('#message-header')).toContainText(message.email);
+      await expect(page.locator('#message-header')).toContainText(
+        message.email
+      );
       await expect(
         page.frameLocator('#message iframe').locator('body')
       ).toContainText(message.message);
@@ -152,5 +177,5 @@ test.describe('email tests', () => {
       const messageData = await sendMessage(page.request, message);
       await expect(messageData).not.toHaveProperty('emailUrl');
     });
-  })
+  });
 });
