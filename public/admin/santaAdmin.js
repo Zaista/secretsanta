@@ -3,8 +3,6 @@ const apiUrl = 'admin/api';
 $(async () => {
   'use strict';
 
-  // let userId;
-  // let userEmail;
   let userElement;
   let pairElement;
 
