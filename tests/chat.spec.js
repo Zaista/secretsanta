@@ -9,10 +9,10 @@ test.describe('chat tests', () => {
   let groupData;
   let page;
 
-  test.beforeAll('setup', async ({ browser })=> {
+  test.beforeAll('setup', async ({ browser }) => {
     page = await browser.newPage();
     groupData = await createNewGroup(page.request);
-  })
+  });
 
   test('user can send a message', async ({ page }) => {
     await login(
@@ -53,8 +53,14 @@ test.describe('chat tests', () => {
     );
     await page.goto('/chat');
 
-    await expect(page.locator('[data-name="chatTo"]')).toContainText(groupData.users.user2.name);
-    await expect(page.locator('[data-name="chatMessage"]')).toHaveText(message.message);
-    await expect(page.locator('[data-name="chatFrom"]')).toHaveText('From: Anonymous');
+    await expect(page.locator('[data-name="chatTo"]')).toContainText(
+      groupData.users.user2.name
+    );
+    await expect(page.locator('[data-name="chatMessage"]')).toHaveText(
+      message.message
+    );
+    await expect(page.locator('[data-name="chatFrom"]')).toHaveText(
+      'From: Anonymous'
+    );
   });
 });

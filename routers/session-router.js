@@ -82,7 +82,7 @@ sessionRouter.post('/api/email', async (req, res) => {
     const data = fs.readFileSync('./templates/forgot-password-email.html');
     emailText = data
       .toString()
-      .replace(/{{name}}/, user.name)
+      .replace(/{{email}}/, user.email)
       .replace(/{{password}}/, user.password);
   } else {
     const data = fs.readFileSync('./templates/unknown-user-email.html');
@@ -98,11 +98,13 @@ sessionRouter.post('/api/email', async (req, res) => {
 
   const emailStatus = await sendEmail(emailTemplate);
 
-  if (emailStatus.success) {
-    res.send({ success: `Email successfully sent to ${emailTemplate.to}` });
-  } else {
-    res.send({ error: `Error sending email: ${emailStatus.error}` });
+  if (emailStatus.success !== true) {
+    return res.send({ error: `Error sending email: ${emailStatus.error}` });
   }
+  return res.send({
+    success: `Email successfully sent to ${emailTemplate.to}`,
+    emailUrl: emailStatus.emailUrl,
+  });
 });
 
 passport.use(
