@@ -228,7 +228,7 @@ adminRouter.put('/api/draft', async (req, res) => {
   console.log(`Drafting pairs for group ${req.session.activeGroup._id}`);
 
   const users = await getUsers(req.session.activeGroup._id);
-  const forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
+  let forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
   const santaPairs = draftPairs(users, forbiddenPairs);
   if (!santaPairs) {
     console.log(`Unsuccessful draft for group ${req.session.activeGroup._id}`);
