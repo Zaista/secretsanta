@@ -67,6 +67,30 @@ test.describe('admin tests', () => {
         'Pairs successfully drafted'
       );
     });
+
+    test('admin can reveal drafted pairs', async ({ page }) => {
+      const groupData = await createDraftedGroup(page.request)
+
+      await page.goto('/admin');
+
+      await page.getByRole('button', { name: 'Reveal' }).click();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'Last year successfully revealed'
+      );
+
+      await page.goto('/history');
+      await expect(page.locator('#yearTitle')).toHaveText(
+        '2025'
+      );
+
+      await page.locator('#yearTitle').click();
+
+      for (let user in groupData.users) {
+        await expect(page.locator('tbody')).toContainText(
+          groupData.users[user].name
+        );
+      }
+    });
   });
 
   test.describe('forbidden pairs tests', () => {
