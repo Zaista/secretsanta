@@ -67,7 +67,9 @@ chatRouter.post('/api/send', async (req, res) => {
         response.success = `Message posted in chat and email sent to ${emailTemplate.to}`;
         response.emailUrl = emailStatus.emailUrl;
       } else {
-        res.send({ error: `Error sending email: ${emailStatus.error}` });
+        res.send({
+          error: `Error sending email: ${emailStatus.error}`,
+        });
       }
     }
     res.send(response);

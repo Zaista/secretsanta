@@ -69,7 +69,7 @@ test.describe('admin tests', () => {
     });
 
     test('admin can reveal drafted pairs', async ({ page }) => {
-      const groupData = await createDraftedGroup(page.request)
+      const groupData = await createDraftedGroup(page.request);
 
       await page.goto('/admin');
 
@@ -79,9 +79,7 @@ test.describe('admin tests', () => {
       );
 
       await page.goto('/history');
-      await expect(page.locator('#yearTitle')).toHaveText(
-        '2025'
-      );
+      await expect(page.locator('#yearTitle')).toHaveText('2025');
 
       await page.locator('#yearTitle').click();
 

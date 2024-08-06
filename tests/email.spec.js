@@ -27,8 +27,8 @@ test.describe('email tests', () => {
           page.locator('.datestring'),
           // Message-ID
           page.locator('#message-header div').nth(4).locator('span'),
-          page.frameLocator('[style]').locator('#email-placeholder'),
-          page.frameLocator('[style]').locator('#password-placeholder'),
+          page.frameLocator('#message iframe').locator('#email-placeholder'),
+          page.frameLocator('#message iframe').locator('#password-placeholder'),
         ],
         fullPage: true,
       });
@@ -73,8 +73,8 @@ test.describe('email tests', () => {
           page.locator('.datestring'),
           // Message-ID
           page.locator('#message-header div').nth(4).locator('span'),
-          page.frameLocator('[style]').locator('#group-placeholder'),
-          page.frameLocator('[style]').locator('#password-placeholder'),
+          page.frameLocator('#message iframe').locator('#group-placeholder'),
+          page.frameLocator('#message iframe').locator('#password-placeholder'),
         ],
         fullPage: true,
       });
@@ -117,8 +117,8 @@ test.describe('email tests', () => {
           page.locator('.datestring'),
           // Message-ID
           page.locator('#message-header div').nth(4).locator('span'),
-          page.frameLocator('[style]').locator('#group-placeholder'),
-          page.frameLocator('[style]').locator('#password-placeholder'),
+          page.frameLocator('#message iframe').locator('#group-placeholder'),
+          page.frameLocator('#message iframe').locator('#password-placeholder'),
         ],
         fullPage: true,
       });
