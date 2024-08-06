@@ -1,11 +1,13 @@
 import nodemailer from 'nodemailer';
+import { getLogger } from './logger.js';
 
+const log = getLogger('mailLocal');
 let mailTransporter;
 
 // Generate SMTP service account from ethereal.email
 await nodemailer.createTestAccount((err, account) => {
   if (err) {
-    console.error('Failed to create a testing account. ' + err.message);
+    log.error('Failed to create a testing account. ' + err.message);
   }
 
   mailTransporter = nodemailer.createTransport({
@@ -18,7 +20,7 @@ await nodemailer.createTestAccount((err, account) => {
     },
   });
 
-  console.log('Configured test email account.');
+  log.debug('Configured test email account.');
 });
 
 export async function sendSandboxMail(emailTemplate) {
@@ -28,8 +30,8 @@ export async function sendSandboxMail(emailTemplate) {
         reject(error);
       }
 
-      console.log('Message sent: %s', info.messageId);
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      log.debug('Message sent: %s', info.messageId);
+      log.debug('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       resolve({
         success: true,
         emailUrl: nodemailer.getTestMessageUrl(info),

@@ -20,6 +20,7 @@ export default [
     rules: {
       quotes: ['warn', 'single'],
       semi: ['warn', 'always'],
+      'no-console': ['warn'],
     },
   },
   js.configs.recommended,

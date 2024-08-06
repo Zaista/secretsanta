@@ -2,6 +2,7 @@ import express from 'express';
 import { loadEnvironment } from './utils/environment.js';
 import session from 'cookie-session';
 import { renderer } from './utils/renderer.js';
+import { getLogger } from './utils/logger.js';
 
 // routers
 import { santaRouter } from './routers/santa-router.js';
@@ -14,6 +15,7 @@ import { adminRouter } from './routers/admin-router.js';
 
 await loadEnvironment();
 
+const log = getLogger('app');
 const app = express();
 app.use(express.static('./public', { redirect: false }));
 app.use(express.json());
@@ -87,5 +89,5 @@ app.use(function (req, res) {
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`Server app listening at http://localhost:${PORT}`);
+  log.info(`Server app listening at http://localhost:${PORT}`);
 });

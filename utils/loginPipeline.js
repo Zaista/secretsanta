@@ -1,5 +1,8 @@
 import mongodb from 'mongodb';
 import { getClient } from './database.js';
+import { getLogger } from './logger.js';
+
+const log = getLogger('loginPipeline');
 
 export function getUserByEmailAndPassword(email, password) {
   const $match = {
@@ -29,7 +32,7 @@ export async function checkEmail(email) {
       .collection('users')
       .findOne(query, options);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR checkEmail: ' + err.stack);
     return null;
   }
 }
@@ -108,7 +111,7 @@ async function getUser($match) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getUser: ' + err.stack);
     return null;
   }
 }

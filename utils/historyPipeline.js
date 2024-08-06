@@ -1,5 +1,8 @@
 import { getClient } from './database.js';
 import mongodb, { ObjectId } from 'mongodb';
+import { getLogger } from './logger.js';
+
+const log = getLogger('historyPipeline');
 
 export async function getYearsByGroup(groupId) {
   const pipeline = [
@@ -28,7 +31,7 @@ export async function getYearsByGroup(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getYearsByGroup: ' + err.stack);
     return null;
   }
 }
@@ -111,7 +114,7 @@ export async function getGiftsByYear(groupId, yearId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getClient: ' + err.stack);
     return null;
   }
 }
@@ -144,7 +147,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
       .collection('history')
       .insertOne(document);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR addDraftsForNextYear: ' + err.stack);
     return null;
   }
 }
@@ -164,7 +167,7 @@ export async function isNextYearDrafted(groupId) {
 
     return !result;
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR isNextYearDrafted: ' + err.stack);
     return null;
   }
 }
@@ -187,7 +190,7 @@ export async function isLastYearRevealed(groupId) {
 
     return result?.revealed;
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR isLastYearRevealed: ' + err.stack);
     return null;
   }
 }
@@ -206,7 +209,7 @@ export async function setLastYearRevealed(groupId, year) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR setLastYearRevealed: ' + err.stack);
     return null;
   }
 }
@@ -226,7 +229,7 @@ export async function updateLocationImage(yearId) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateLocationImage: ' + err.stack);
     return null;
   }
 }
@@ -249,7 +252,7 @@ export async function updateGiftImage(yearId, giftId) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateGiftImage: ' + err.stack);
     return null;
   }
 }
@@ -269,7 +272,7 @@ export async function updateGiftDescription(giftId, description) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateGiftDescription: ' + err.stack);
     return null;
   }
 }
@@ -289,7 +292,7 @@ export async function updateYearDescription(yearId, description) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateYearDescription: ' + err.stack);
     return null;
   }
 }

@@ -1,5 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
+import { getLogger } from './logger.js';
+
+const log = getLogger('friendsPipeline');
 
 export async function getFriends(groupId) {
   const client = await getClient();
@@ -13,7 +16,7 @@ export async function getFriends(groupId) {
       .find(query, options)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getFriends: ' + err.stack);
     return null;
   }
 }
@@ -33,7 +36,7 @@ export async function getProfile(_id) {
       .collection('users')
       .findOne(query, options);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getProfile: ' + err.stack);
     return null;
   }
 }
@@ -55,7 +58,7 @@ export async function updateProfile(_id, friend) {
       .collection('users')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateProfile: ' + err.stack);
     return null;
   }
 }
@@ -75,7 +78,7 @@ export async function updateProfileImage(_id) {
       .collection('users')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateProfileImage: ' + err.stack);
     return null;
   }
 }

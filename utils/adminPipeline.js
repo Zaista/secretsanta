@@ -1,6 +1,9 @@
 import { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
 import { ROLES } from './roles.js';
+import { getLogger } from './logger.js';
+
+const log = getLogger('adminPipeline');
 
 export async function getUsers(groupId) {
   const client = await getClient();
@@ -17,7 +20,7 @@ export async function getUsers(groupId) {
       .find(query, options)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getUsers: ' + err.stack);
     return null;
   }
 }
@@ -51,7 +54,7 @@ export async function getUsersAndRoles(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getUsersAndRoles: ' + err.stack);
     return null;
   }
 }
@@ -66,7 +69,7 @@ export async function checkIfUserExists(email) {
       .collection('users')
       .findOne(query);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR checkIfUserExists: ' + err.stack);
     return null;
   }
 }
@@ -86,12 +89,12 @@ export async function addUserToGroup(groupId, email, role) {
       .collection('users')
       .updateOne(filter, update);
     if (result.acknowledged !== true || result.modifiedCount !== 1) {
-      console.log('ERROR: failed to add user to the group');
+      log.error('ERROR addUserToGroup: failed to add user to the group');
       return null;
     }
     return true;
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR addUserToGroup: ' + err.stack);
     return null;
   }
 }
@@ -111,12 +114,14 @@ export async function removeUserFromGroup(userId, groupId) {
       .collection('users')
       .updateOne(filter, update);
     if (result.acknowledged !== true || result.modifiedCount !== 1) {
-      console.log('ERROR: failed to remove the user from the group');
+      log.error(
+        'ERROR removeUserFromGroup: failed to remove the user from the group'
+      );
       return null;
     }
     return true;
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR removeUserFromGroup: ' + err.stack);
     return null;
   }
 }
@@ -136,7 +141,7 @@ export async function addNewUser(groupId, email, password) {
       .collection('users')
       .insertOne(user);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR addNewUser: ' + err.stack);
     return null;
   }
 }
@@ -149,7 +154,7 @@ export async function createNewUser(user) {
       .collection('users')
       .insertOne(user);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR createNewUser: ' + err.stack);
     return null;
   }
 }
@@ -176,7 +181,7 @@ export async function updateUsersRoles(groupId, usersRoles) {
     }
     return modifiedCount;
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateUsersRoles: ' + err.stack);
     return null;
   }
 }
@@ -191,7 +196,7 @@ export async function getGroup(groupId) {
       .collection('groups')
       .findOne(query);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getGroup: ' + err.stack);
     return null;
   }
 }
@@ -212,13 +217,13 @@ export async function createGroup(groupName) {
       .insertOne(group);
 
     if (result.acknowledged !== true) {
-      console.log('ERROR: failed to create new group');
+      log.error('ERROR createGroup: failed to create new group');
       return null;
     }
     group._id = result.insertedId;
     return group;
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR createGroup: ' + err.stack);
     return null;
   }
 }
@@ -236,7 +241,7 @@ export async function updateGroup(groupId, groupData) {
       .collection('groups')
       .updateOne(filter, update);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR updateGroup: ' + err.stack);
     return null;
   }
 }
@@ -251,7 +256,7 @@ export async function deleteForbiddenPair(_id) {
       .collection('forbiddenPairs')
       .deleteOne(filter);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR deleteForbiddenPair: ' + err.stack);
     return null;
   }
 }
@@ -299,7 +304,7 @@ export async function getForbiddenPairs(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getForbiddenPairs: ' + err.stack);
     return null;
   }
 }
@@ -324,7 +329,7 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
       .collection('forbiddenPairs')
       .insertOne(document);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR createForbiddenPair: ' + err.stack);
     return null;
   }
 }
