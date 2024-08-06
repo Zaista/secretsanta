@@ -174,7 +174,10 @@ export async function isLastYearRevealed(groupId) {
   const query = {
     groupId: new mongodb.ObjectId(groupId),
   };
-  const options = { sort: { year: -1 }, projection: { year: 1, revealed: 1 } };
+  const options = {
+    sort: { year: -1 },
+    projection: { year: 1, revealed: 1 },
+  };
 
   try {
     const result = await client
