@@ -1,5 +1,5 @@
 import { getClient } from './database.js';
-import mongodb, { ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { getLogger } from './logger.js';
 
 const log = getLogger('historyPipeline');
@@ -8,7 +8,7 @@ export async function getYearsByGroup(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: new mongodb.ObjectId(groupId),
+        groupId: ObjectId.createFromHexString(groupId),
       },
     },
     {
@@ -40,8 +40,8 @@ export async function getGiftsByYear(groupId, yearId) {
   const pipeline = [
     {
       $match: {
-        _id: new mongodb.ObjectId(yearId),
-        groupId: new mongodb.ObjectId(groupId),
+        _id: ObjectId.createFromHexString(yearId),
+        groupId: ObjectId.createFromHexString(groupId),
         revealed: true,
       },
     },
@@ -123,16 +123,16 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
   const document = {
     year: new Date().getFullYear() + 1,
     location: null,
-    location_image: null,
+    imageUploaded: false,
     gifts: [],
-    groupId: new mongodb.ObjectId(groupId),
+    groupId: ObjectId.createFromHexString(groupId),
     revealed: false,
   };
 
   santaPairs.forEach((santa, child) => {
     const gift = {
-      santaId: new mongodb.ObjectId(santa),
-      childId: new mongodb.ObjectId(child),
+      santaId: santa,
+      childId: child,
       gift: null,
       giftId: new ObjectId(),
     };
@@ -155,7 +155,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
 export async function isNextYearDrafted(groupId) {
   const client = await getClient();
   const query = {
-    groupId: new mongodb.ObjectId(groupId),
+    groupId: ObjectId.createFromHexString(groupId),
     year: new Date().getFullYear() + 1,
   };
 
@@ -175,7 +175,7 @@ export async function isNextYearDrafted(groupId) {
 export async function isLastYearRevealed(groupId) {
   const client = await getClient();
   const query = {
-    groupId: new mongodb.ObjectId(groupId),
+    groupId: ObjectId.createFromHexString(groupId),
   };
   const options = {
     sort: { year: -1 },
@@ -198,7 +198,7 @@ export async function isLastYearRevealed(groupId) {
 export async function setLastYearRevealed(groupId, year) {
   const client = await getClient();
   const filter = {
-    groupId: new mongodb.ObjectId(groupId),
+    groupId: ObjectId.createFromHexString(groupId),
     year,
   };
   const update = { $set: { revealed: true } };
@@ -216,7 +216,7 @@ export async function setLastYearRevealed(groupId, year) {
 
 export async function updateLocationImage(yearId) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(yearId) };
+  const filter = { _id: ObjectId.createFromHexString(yearId) };
   const update = {
     $set: {
       imageUploaded: true,
@@ -237,8 +237,8 @@ export async function updateLocationImage(yearId) {
 export async function updateGiftImage(yearId, giftId) {
   const client = await getClient();
   const filter = {
-    _id: new ObjectId(yearId),
-    'gifts.giftId': new ObjectId(giftId),
+    _id: ObjectId.createFromHexString(yearId),
+    'gifts.giftId': ObjectId.createFromHexString(giftId),
   };
   const update = {
     $set: {
@@ -259,7 +259,7 @@ export async function updateGiftImage(yearId, giftId) {
 
 export async function updateGiftDescription(giftId, description) {
   const client = await getClient();
-  const filter = { 'gifts.giftId': new ObjectId(giftId) };
+  const filter = { 'gifts.giftId': ObjectId.createFromHexString(giftId) };
   const update = {
     $set: {
       'gifts.$.gift': description,
@@ -279,7 +279,7 @@ export async function updateGiftDescription(giftId, description) {
 
 export async function updateYearDescription(yearId, description) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(yearId) };
+  const filter = { _id: ObjectId.createFromHexString(yearId) };
   const update = {
     $set: {
       location: description,

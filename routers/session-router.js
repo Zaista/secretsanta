@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
+import { serialize, deserialize } from 'bson';
 import { getLogger } from '../utils/logger.js';
 import {
   getUserByEmailAndPassword,
@@ -28,7 +29,7 @@ sessionRouter.post(
   '/api/login',
   passport.authenticate('local'),
   async (req, res) => {
-    log.info(`User ${req.user.email} logged in`);
+    log.info(`User logged in:  ${req.user.email}`);
     req.session.activeGroup = req.user.groups[0];
     res.send({ success: 'Logged in' });
   }
@@ -41,7 +42,7 @@ sessionRouter.post('/api/register', async (req, res) => {
   }
   const result = await createNewUser(req.body);
   if (result.insertedId) {
-    log.info(`User ${req.body.email} registered`);
+    log.info(`User registered: ${req.body.email}`);
     const temp = {
       _id: req.body._id,
       email: req.body.email,
@@ -64,7 +65,7 @@ sessionRouter.get('/logout', (req, res, next) => {
     delete req.session.activeGroup;
   }
   if (req.user) {
-    log.info(`User ${req.user.email} logged out`);
+    log.info(`User logged out:  ${req.user.email}`);
     req.logout(function (err) {
       if (err) {
         return next(err);
@@ -121,11 +122,13 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
-  done(null, user._id);
+  const serializedUser = serialize(user);
+  done(null, serializedUser);
 });
 
-passport.deserializeUser(async function (_id, done) {
-  const user = await getUserById(_id);
+passport.deserializeUser(async function (serializedUser, done) {
+  const deserializedUser = deserialize(Buffer.from(serializedUser));
+  const user = await getUserById(deserializedUser._id);
   if (user.length === 0) {
     done(null, null, { error: 'User not found' });
   } else {

@@ -6,7 +6,7 @@ const log = getLogger('friendsPipeline');
 
 export async function getFriends(groupId) {
   const client = await getClient();
-  const query = { 'groups.groupId': new ObjectId(groupId) };
+  const query = { 'groups.groupId': ObjectId.createFromHexString(groupId) };
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
@@ -27,7 +27,7 @@ export async function getProfile(_id) {
   }
 
   const client = await getClient();
-  const query = { _id: new ObjectId(_id) };
+  const query = { _id: _id };
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
@@ -43,7 +43,7 @@ export async function getProfile(_id) {
 
 export async function updateProfile(_id, friend) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(_id) };
+  const filter = { _id: _id };
   const update = {
     $set: {
       name: friend.name,
@@ -65,7 +65,7 @@ export async function updateProfile(_id, friend) {
 
 export async function updateProfileImage(_id) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(_id) };
+  const filter = { _id: _id };
   const update = {
     $set: {
       imageUploaded: true,

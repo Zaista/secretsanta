@@ -6,19 +6,15 @@ export function draftPairs(users, forbiddenPairs) {
   const santaPairs = new Map();
 
   users.forEach((user) => {
-    friends.push(user._id.toString());
+    friends.push(user._id);
   });
 
   // transform array of forbidden pairs into a map, for ease of use
   forbiddenPairs.forEach((pair) => {
-    if (forbiddenPairsMap.get(pair.userId.toString()) === undefined) {
-      forbiddenPairsMap.set(pair.userId.toString(), [
-        pair.forbiddenPairId.toString(),
-      ]);
+    if (forbiddenPairsMap.get(pair.userId) === undefined) {
+      forbiddenPairsMap.set(pair.userId, [pair.forbiddenPairId]);
     } else {
-      forbiddenPairsMap
-        .get(pair.userId.toString())
-        .push(pair.forbiddenPairId.toString());
+      forbiddenPairsMap.get(pair.userId).push(pair.forbiddenPairId);
     }
   });
 
