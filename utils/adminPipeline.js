@@ -133,7 +133,7 @@ export async function addNewUser(groupId, email, password) {
     email,
     name: '',
     groups: [{ groupId: groupId, role: ROLES.user }],
-    address: [{ street: '', city: '', postalCode: '', state: '' }],
+    address: { street: '', city: '', postalCode: '', state: '' },
   };
   try {
     return await client

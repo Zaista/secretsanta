@@ -29,6 +29,7 @@ $(async () => {
 
             // show santa data only after image is shown
             $('#santaName').text(santa.name);
+            $('#santaEmail').text(santa.email);
             $('#santaStreet').text(santa.address.street);
             $('#santaCity').text(
               `${santa.address.postalCode} ${santa.address.city}`
@@ -39,6 +40,7 @@ $(async () => {
             .attr('src', '/resources/images/placeholder.png')
             .removeClass('loading-image');
           $('#santaName').text(santa.name);
+          $('#santaEmail').text(santa.email);
           $('#santaStreet').text(santa.address.street);
           $('#santaCity').text(
             `${santa.address.postalCode} ${santa.address.city}`
