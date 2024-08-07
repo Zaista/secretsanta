@@ -2,32 +2,12 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { login, registerUser } from './helpers/login.js';
-import {
-  inviteUserToGroup,
-  createGroup,
-  draftSantaPairs,
-} from './helpers/admin.js';
+import { getSanta } from './helpers/santa.js';
+import { createDraftedGroup } from './helpers/setup.js';
 
 test.describe('home tests', () => {
   test('user can reveal his santa pair', async ({ page }) => {
-    const adminUser = {
-      email: faker.internet.email(),
-      password: 'test',
-    };
-    await registerUser(page.request, adminUser);
-    await login(page.request, adminUser.email, adminUser.password);
-    const user1 = {
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    };
-    const user2 = {
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    };
-    await createGroup(page.request, faker.word.noun());
-    await inviteUserToGroup(page.request, user1.email);
-    await inviteUserToGroup(page.request, user2.email);
-    await draftSantaPairs(page.request);
+    await createDraftedGroup(page.request);
 
     await page.goto('/');
 
@@ -41,11 +21,26 @@ test.describe('home tests', () => {
     );
 
     await topSecretImage.click();
-    await expect(async () => {
-      await expect(await topSecretImage.getAttribute('src')).not.toEqual(
-        '/resources/images/topSecret.png'
-      );
-    }).toPass();
+    await expect(topSecretImage.getAttribute('src')).not.toEqual(
+      '/resources/images/topSecret.png'
+    );
+
+    const santa = await getSanta(page.request);
+    expect(await page.locator('#santaName').textContent()).toContain(
+      santa.name
+    );
+    expect(await page.locator('#santaEmail').textContent()).toContain(
+      santa.email
+    );
+    expect(await page.locator('#santaStreet').textContent()).toContain(
+      santa.address.street
+    );
+    expect(await page.locator('#santaCity').textContent()).toContain(
+      santa.address.city
+    );
+    expect(await page.locator('#santaCity').textContent()).toContain(
+      santa.address.postalCode
+    );
   });
 
   test('user can create a new group', async ({ page }) => {

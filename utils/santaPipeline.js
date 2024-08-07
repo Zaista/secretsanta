@@ -41,6 +41,7 @@ export async function getSanta(_id, groupId) {
       $project: {
         _id: '$user._id',
         name: '$user.name',
+        email: '$user.email',
         address: '$user.address',
         year: '$year',
         imageUploaded: '$user.imageUploaded',
