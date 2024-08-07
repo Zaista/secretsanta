@@ -1,4 +1,3 @@
-import mongodb from 'mongodb';
 import { getClient } from './database.js';
 import { getLogger } from './logger.js';
 
@@ -15,7 +14,7 @@ export function getUserByEmailAndPassword(email, password) {
 
 export function getUserById(_id) {
   const $match = {
-    _id: new mongodb.ObjectId(_id),
+    _id: _id,
   };
 
   return getUser($match);

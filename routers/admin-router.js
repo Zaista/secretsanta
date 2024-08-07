@@ -65,7 +65,7 @@ adminRouter.post('/api/user', async (req, res) => {
   if (user === null) {
     temporaryPassword = Math.random().toString(36).slice(2, 10);
     const addNewUserResult = await addNewUser(
-      req.session.activeGroup._id,
+      activeGroup._id,
       req.body.email,
       temporaryPassword
     );
@@ -86,7 +86,7 @@ adminRouter.post('/api/user', async (req, res) => {
       });
     }
     const addUserToGroupResult = await addUserToGroup(
-      req.session.activeGroup._id,
+      activeGroup._id,
       req.body.email,
       ROLES.user
     );
@@ -98,7 +98,7 @@ adminRouter.post('/api/user', async (req, res) => {
   }
 
   const response = {
-    success: `User ${req.body.email} invited to the SecretSanta group`,
+    success: `User '${req.body.email}' invited to the group: ${activeGroup._id}`,
     userId: userId,
   };
   if (activeGroup.userAddedNotification === true) {
@@ -109,7 +109,7 @@ adminRouter.post('/api/user', async (req, res) => {
     );
     if (emailStatus.success !== true) {
       return res.send({
-        error: `Error inviting user to the SecretSanta group: ${emailStatus.error}`,
+        error: `Error inviting user to the group: ${emailStatus.error}`,
       });
     }
     response.emailUrl = emailStatus.emailUrl;
@@ -125,11 +125,11 @@ adminRouter.post('/api/user/delete', async (req, res) => {
   );
   if (result === null) {
     return res.send({
-      error: 'User could not be removed from the SecretSanta group',
+      error: 'User could not be removed from the group',
     });
   }
   return res.send({
-    success: `User ${req.body.email} removed from the SecretSanta group`,
+    success: `User '${req.body.email}' removed from the group: ${req.session.activeGroup._id}`,
   });
 });
 
@@ -164,6 +164,7 @@ adminRouter.post('/api/group/create', async (req, res) => {
       name: group.name,
       role: ROLES.admin,
     };
+    log.info(`Group created:  ${group._id}`);
     return res.send({ success: 'Group created', groupId: group._id });
   }
   return res.send({ error: 'Something went wrong during group creation' });
@@ -230,7 +231,7 @@ adminRouter.put('/api/draft', async (req, res) => {
   log.info(`Drafting pairs for group ${req.session.activeGroup._id}`);
 
   const users = await getUsers(req.session.activeGroup._id);
-  let forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
+  const forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
   const santaPairs = draftPairs(users, forbiddenPairs);
   if (!santaPairs) {
     log.error(`Unsuccessful draft for group ${req.session.activeGroup._id}`);

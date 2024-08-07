@@ -1,4 +1,4 @@
-import mongodb, { ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
 import { getLogger } from './logger.js';
 
@@ -9,7 +9,7 @@ export async function getChat(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: new mongodb.ObjectId(groupId),
+        groupId: ObjectId.createFromHexString(groupId),
       },
     },
     {
@@ -52,7 +52,7 @@ export async function getChat(groupId) {
 
 export async function deleteChatMessage(_id) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(_id) };
+  const filter = { _id: ObjectId.createFromHexString(_id) };
 
   try {
     return await client
@@ -69,8 +69,8 @@ export async function sendMessage(message, userId, groupId) {
   const client = await getClient();
   const document = {
     message,
-    userId: new mongodb.ObjectId(userId),
-    groupId: new mongodb.ObjectId(groupId),
+    userId: ObjectId.createFromHexString(userId),
+    groupId: ObjectId.createFromHexString(groupId),
     timestamp: new Date(),
   };
   try {

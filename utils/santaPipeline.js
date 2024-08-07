@@ -1,4 +1,4 @@
-import mongodb from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
 import { getLogger } from './logger.js';
 
@@ -8,7 +8,7 @@ export async function getSanta(_id, groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: new mongodb.ObjectId(groupId),
+        groupId: ObjectId.createFromHexString(groupId),
         year: new Date().getFullYear() + 1,
       },
     },

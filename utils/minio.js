@@ -2,19 +2,19 @@ import * as Minio from 'minio';
 
 let minioClient = null;
 
-export function uploadImageToMinio(userId, image) {
+export function uploadImageToMinio(imageId, image) {
   if (minioClient === null) {
     initializeMinioClient();
   }
-  const fileName = userId + '.png';
+  const fileName = imageId + '.png';
   return minioClient.putObject(process.env.minioBucket, fileName, image);
 }
 
-export function getImageFromMinio(userId) {
+export function getImageFromMinio(imageId) {
   if (minioClient === null) {
     initializeMinioClient();
   }
-  const fileName = userId + '.png';
+  const fileName = imageId + '.png';
   return minioClient.getObject(process.env.minioBucket, fileName);
 }
 

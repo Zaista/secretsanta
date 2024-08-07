@@ -7,7 +7,7 @@ const log = getLogger('adminPipeline');
 
 export async function getUsers(groupId) {
   const client = await getClient();
-  const query = { 'groups.groupId': new ObjectId(groupId) };
+  const query = { 'groups.groupId': ObjectId.createFromHexString(groupId) };
   const options = {
     projection: { name: 1, email: 1 },
     sort: { name: 1 },
@@ -36,7 +36,7 @@ export async function getUsersAndRoles(groupId) {
     },
     {
       $match: {
-        'groups.groupId': new ObjectId(groupId),
+        'groups.groupId': ObjectId.createFromHexString(groupId),
       },
     },
     {
@@ -79,7 +79,7 @@ export async function addUserToGroup(groupId, email, role) {
   const filter = { email };
   const update = {
     $push: {
-      groups: { groupId: new ObjectId(groupId), role },
+      groups: { groupId: groupId, role },
     },
   };
 
@@ -101,10 +101,10 @@ export async function addUserToGroup(groupId, email, role) {
 
 export async function removeUserFromGroup(userId, groupId) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(userId) };
+  const filter = { _id: userId };
   const update = {
     $pull: {
-      groups: { groupId: new ObjectId(groupId) },
+      groups: { groupId: ObjectId.createFromHexString(groupId) },
     },
   };
 
@@ -132,7 +132,7 @@ export async function addNewUser(groupId, email, password) {
     password,
     email,
     name: '',
-    groups: [{ groupId: new ObjectId(groupId), role: ROLES.user }],
+    groups: [{ groupId: groupId, role: ROLES.user }],
     address: [{ street: '', city: '', postalCode: '', state: '' }],
   };
   try {
@@ -165,8 +165,8 @@ export async function updateUsersRoles(groupId, usersRoles) {
     let modifiedCount = 0;
     for (const userData of usersRoles) {
       const filter = {
-        'groups.groupId': new ObjectId(groupId),
-        _id: new ObjectId(userData._id),
+        'groups.groupId': ObjectId.createFromHexString(groupId),
+        _id: userData._id,
       };
       const update = {
         $set: { 'groups.$.role': userData.role },
@@ -188,7 +188,7 @@ export async function updateUsersRoles(groupId, usersRoles) {
 
 export async function getGroup(groupId) {
   const client = await getClient();
-  const query = { _id: new ObjectId(groupId) };
+  const query = { _id: ObjectId.createFromHexString(groupId) };
 
   try {
     return await client
@@ -230,7 +230,7 @@ export async function createGroup(groupName) {
 
 export async function updateGroup(groupId, groupData) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(groupId) };
+  const filter = { _id: ObjectId.createFromHexString(groupId) };
   const update = {
     $set: groupData,
   };
@@ -248,7 +248,7 @@ export async function updateGroup(groupId, groupData) {
 
 export async function deleteForbiddenPair(_id) {
   const client = await getClient();
-  const filter = { _id: new ObjectId(_id) };
+  const filter = { _id: _id };
 
   try {
     return await client
@@ -266,7 +266,7 @@ export async function getForbiddenPairs(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: new ObjectId(groupId),
+        groupId: ObjectId.createFromHexString(groupId),
       },
     },
     {
@@ -319,9 +319,11 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
     }
 
     const document = {
-      groupId: new ObjectId(groupId),
-      userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
-      forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id),
+      groupId: ObjectId.createFromHexString(groupId),
+      userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser1Id),
+      forbiddenPairId: ObjectId.createFromHexString(
+        forbiddenPair.forbiddenUser2Id
+      ),
     };
 
     return await client
@@ -339,15 +341,19 @@ async function findExistingPair(client, groupId, forbiddenPair) {
     .db(process.env.database)
     .collection('forbiddenPairs')
     .findOne({
-      groupId: new ObjectId(groupId),
+      groupId: ObjectId.createFromHexString(groupId),
       $or: [
         {
-          userId: new ObjectId(forbiddenPair.forbiddenUser1Id),
-          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser2Id),
+          userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser1Id),
+          forbiddenPairId: ObjectId.createFromHexString(
+            forbiddenPair.forbiddenUser2Id
+          ),
         },
         {
-          userId: new ObjectId(forbiddenPair.forbiddenUser2Id),
-          forbiddenPairId: new ObjectId(forbiddenPair.forbiddenUser1Id),
+          userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser2Id),
+          forbiddenPairId: ObjectId.createFromHexString(
+            forbiddenPair.forbiddenUser1Id
+          ),
         },
       ],
     });
