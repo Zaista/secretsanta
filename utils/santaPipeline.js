@@ -1,5 +1,8 @@
 import mongodb from 'mongodb';
 import { getClient } from './database.js';
+import { getLogger } from './logger.js';
+
+const log = getLogger('santaPipeline');
 
 export async function getSanta(_id, groupId) {
   const pipeline = [
@@ -54,7 +57,7 @@ export async function getSanta(_id, groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getSanta: ' + err.stack);
     return null;
   }
 }

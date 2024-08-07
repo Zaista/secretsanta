@@ -1,4 +1,5 @@
 import express from 'express';
+import { getLogger } from '../utils/logger.js';
 import {
   getUsers,
   getUsersAndRoles,
@@ -26,6 +27,7 @@ import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
 import { sendEmail } from '../utils/environment.js';
 
+const log = getLogger('adminRouter');
 const adminRouter = express.Router();
 
 // define the home page route
@@ -225,13 +227,13 @@ adminRouter.put('/api/draft', async (req, res) => {
     return res.send({ error: 'Next year pairs already drafted' });
   }
 
-  console.log(`Drafting pairs for group ${req.session.activeGroup._id}`);
+  log.info(`Drafting pairs for group ${req.session.activeGroup._id}`);
 
   const users = await getUsers(req.session.activeGroup._id);
   let forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
   const santaPairs = draftPairs(users, forbiddenPairs);
   if (!santaPairs) {
-    console.log(`Unsuccessful draft for group ${req.session.activeGroup._id}`);
+    log.error(`Unsuccessful draft for group ${req.session.activeGroup._id}`);
     return res.send({
       error: 'Error matching pairs, try again or recheck forbidden pairs',
     });

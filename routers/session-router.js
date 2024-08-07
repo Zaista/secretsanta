@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
+import { getLogger } from '../utils/logger.js';
 import {
   getUserByEmailAndPassword,
   getUserById,
@@ -11,6 +12,7 @@ import { sendEmail } from '../utils/environment.js';
 import { checkIfUserExists, createNewUser } from '../utils/adminPipeline.js';
 
 const sessionRouter = express.Router();
+const log = getLogger('seesion');
 
 sessionRouter.get('/login', (req, res) => {
   if (req.user) return res.redirect('/');
@@ -26,7 +28,7 @@ sessionRouter.post(
   '/api/login',
   passport.authenticate('local'),
   async (req, res) => {
-    console.log(`User ${req.user.email} logged in`);
+    log.info(`User ${req.user.email} logged in`);
     req.session.activeGroup = req.user.groups[0];
     res.send({ success: 'Logged in' });
   }
@@ -39,7 +41,7 @@ sessionRouter.post('/api/register', async (req, res) => {
   }
   const result = await createNewUser(req.body);
   if (result.insertedId) {
-    console.log(`User ${req.body.email} registered`);
+    log.info(`User ${req.body.email} registered`);
     const temp = {
       _id: req.body._id,
       email: req.body.email,
@@ -62,7 +64,7 @@ sessionRouter.get('/logout', (req, res, next) => {
     delete req.session.activeGroup;
   }
   if (req.user) {
-    console.log(`User ${req.user.email} logged out`);
+    log.info(`User ${req.user.email} logged out`);
     req.logout(function (err) {
       if (err) {
         return next(err);

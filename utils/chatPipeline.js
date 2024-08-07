@@ -1,5 +1,8 @@
 import mongodb, { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
+import { getLogger } from './logger.js';
+
+const log = getLogger('chatRouter');
 
 export async function getChat(groupId) {
   const client = await getClient();
@@ -42,7 +45,7 @@ export async function getChat(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR getChat: ' + err.stack);
     return null;
   }
 }
@@ -57,7 +60,7 @@ export async function deleteChatMessage(_id) {
       .collection('chat')
       .deleteOne(filter);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR deleteChatMessage: ' + err.stack);
     return null;
   }
 }
@@ -76,7 +79,7 @@ export async function sendMessage(message, userId, groupId) {
       .collection('chat')
       .insertOne(document);
   } catch (err) {
-    console.log('ERROR: ' + err.stack);
+    log.error('ERROR sendMessage: ' + err.stack);
     return null;
   }
 }

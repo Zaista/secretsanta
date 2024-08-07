@@ -1,4 +1,5 @@
 import express from 'express';
+import { getLogger } from '../utils/logger.js';
 import {
   getGiftsByYear,
   getYearsByGroup,
@@ -9,6 +10,7 @@ import {
 } from '../utils/historyPipeline.js';
 import { getImageFromMinio, uploadImageToMinio } from '../utils/minio.js';
 
+const log = getLogger('historyRouter');
 const historyRouter = express.Router();
 
 /* HISTORY ROUTER */
@@ -54,7 +56,7 @@ historyRouter.get('/year/api/location-image', async (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
     objectStream.pipe(res);
   } catch (e) {
-    console.log('ERROR: ' + e.message);
+    log.error('ERROR 1: ' + e.message);
     res.sendFile('public/resources/images/placeholder.png', { root: '.' });
   }
 });
@@ -70,7 +72,7 @@ historyRouter.post('/year/api/location-image', async (req, res) => {
     await updateLocationImage(req.query.id);
     res.send({ success: 'Location image was uploaded successfully' });
   } catch (e) {
-    console.log('ERROR: ' + e.message);
+    log.error('ERROR 2: ' + e.message);
     res.send({ error: 'Failed to upload the year location image' });
   }
 });
@@ -86,7 +88,7 @@ historyRouter.post('/year/api/gift-image', async (req, res) => {
     await updateGiftImage(req.query.yearId, req.query.giftId);
     res.send({ success: 'Gift image was uploaded successfully' });
   } catch (e) {
-    console.log('ERROR: ' + e.message);
+    log.error('ERROR 3: ' + e.message);
     res.send({ error: 'Failed to upload the gift image' });
   }
 });

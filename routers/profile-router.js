@@ -1,4 +1,5 @@
 import express from 'express';
+import { getLogger } from '../utils/logger.js';
 import {
   getProfile,
   updateProfile,
@@ -6,6 +7,7 @@ import {
 } from '../utils/friendsPipeline.js';
 import { uploadImageToMinio, getImageFromMinio } from '../utils/minio.js';
 
+const log = getLogger('profileRouter');
 const profileRouter = express.Router();
 
 // define the home page route
@@ -54,7 +56,7 @@ profileRouter.get('/api/image', async (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
     objectStream.pipe(res);
   } catch (e) {
-    console.log('ERROR: ' + e.message);
+    log.error('ERROR 1: ' + e.message);
     res.sendFile('public/resources/images/placeholder.png', { root: '.' });
   }
 });
@@ -74,7 +76,7 @@ profileRouter.post('/api/image', async (req, res) => {
     await updateProfileImage(userId);
     res.send({ success: 'Profile image updated successfully' });
   } catch (e) {
-    console.log('ERROR: ' + e.message);
+    log.error('ERROR 2: ' + e.message);
     res.send({ error: 'Failed to update the profile image' });
   }
 });
