@@ -6,6 +6,7 @@ import {
   updateProfileImage,
 } from '../utils/friendsPipeline.js';
 import { uploadImageToMinio, getImageFromMinio } from '../utils/minio.js';
+import { ObjectId } from 'mongodb';
 
 const log = getLogger('profileRouter');
 const profileRouter = express.Router();
@@ -24,7 +25,7 @@ profileRouter.get('/api/list', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let userId = req.user._id;
   if (req.query.id !== 'null') {
-    userId = req.query.id;
+    userId = ObjectId.createFromHexString(req.query.id);
   }
   const friend = await getProfile(userId);
   if (friend === null) {
@@ -38,7 +39,7 @@ profileRouter.post('/api/update', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let userId = req.user._id;
   if (req.query.id) {
-    userId = req.query.id;
+    userId = ObjectId.createFromHexString(req.query.id);
   }
   const result = await updateProfile(userId, req.body);
   if (result.modifiedCount) {
