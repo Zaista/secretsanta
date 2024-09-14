@@ -16,4 +16,4 @@ RUN npm install
 RUN npx playwright install
 RUN npx playwright install-deps
 
-ENTRYPOINT npm run test_ci
+ENTRYPOINT npm run test:ci

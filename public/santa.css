@@ -65,6 +65,10 @@
   animation: loadingAnimation 1s infinite;
 }
 
+.form-label {
+  opacity: 0.65;
+}
+
 /* end common */
 
 /* santaHistory */
