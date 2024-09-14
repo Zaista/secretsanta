@@ -9,23 +9,23 @@
   "scripts": {
     "start": "node app.js",
     "test": "npx playwright test --ui",
-    "test_ci": "npx playwright test",
+    "test:ci": "npx playwright test",
     "format": "npm run lint && npm run prettier",
     "format:fix": "npm run lint:fix && npm run prettier:fix",
     "prettier": "sudo npx prettier . --check",
     "prettier:fix": "prettier . --write",
     "lint": "eslint .",
-    "lint:fix": "npx eslint . --fix"
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.3",
     "cookie-session": "^2.1.0",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "log4js": "^6.9.1",
     "minio": "^8.0.1",
-    "mongodb": "^6.8.0",
-    "nodemailer": "^6.9.14",
+    "mongodb": "^6.9.0",
+    "nodemailer": "^6.9.15",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
   },
