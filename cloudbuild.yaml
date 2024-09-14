@@ -17,6 +17,7 @@ steps:
         sed -i "s|##_MINIOACCESSKEY##|${_MINIOACCESSKEY}|" app.yaml
         sed -i "s|##_MINIOSECRETKEY##|${_MINIOSECRETKEY}|" app.yaml
         sed -i "s|##_MINIOBUCKET##|${_MINIOBUCKET}|" app.yaml
+        sed -i "s|##_SERVICE##|${_SERVICE}|" app.yaml
         gcloud app deploy
 timeout: 1800s
 substitutions:
@@ -30,3 +31,4 @@ substitutions:
   _MINIOACCESSKEY: ${_MINIOACCESSKEY}
   _MINIOSECRETKEY: ${_MINIOSECRETKEY}
   _MINIOBUCKET: ${_MINIOBUCKET}
+  _SERVICE: ${_SERVICE}
