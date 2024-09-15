@@ -12,7 +12,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
-    <title>Secret Santa</title>
+    <title>Secret Santa Profile</title>
     <link rel="stylesheet" type="text/css" href="/santa.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="/profile/santaProfile.js"></script>
@@ -120,13 +120,7 @@
               <label for="state" class="form-label">State</label>
             </div>
             <div class="form-floating mb-3">
-              <input
-                disabled
-                type="email"
-                class="form-control"
-                id="email"
-                placeholder="Name"
-              />
+              <input disabled type="email" class="form-control" id="email" />
               <label for="email" class="form-label">Email</label>
             </div>
             <button id="profileSaveButton" class="btn btn-primary" {{isHidden}}>
@@ -165,7 +159,7 @@
                   Close
                 </button>
                 <button id="submitImage" type="button" class="btn btn-primary">
-                  Save changes
+                  Upload image
                 </button>
               </div>
             </div>

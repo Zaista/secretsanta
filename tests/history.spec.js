@@ -1,7 +1,8 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import { login } from './helpers/login.js';
+import { login, registerUser } from './helpers/login.js';
 import { createRevealedGroup } from './helpers/setup.js';
+import { faker } from '@faker-js/faker';
 
 test.describe('history tests', () => {
   test('user can edit santa history', async ({ page }) => {
@@ -64,5 +65,20 @@ test.describe('history tests', () => {
       /history\/year\/api\/location-image\?id=/
     );
     await expect(page.getByText('Random location')).toBeVisible();
+  });
+
+  test('user with no group cannot access history page', async ({ page }) => {
+    const user = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+    await registerUser(page.request, user);
+
+    await page.goto('/history');
+
+    await expect(page).toHaveTitle('Secret Santa History');
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'No recorded history'
+    );
   });
 });

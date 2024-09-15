@@ -8,7 +8,7 @@ export async function getYearsByGroup(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: ObjectId.createFromHexString(groupId),
+        groupId: groupId,
       },
     },
     {
@@ -31,7 +31,7 @@ export async function getYearsByGroup(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    log.error('ERROR getYearsByGroup: ' + err.stack);
+    log.error('getYearsByGroup: ' + err);
     return null;
   }
 }
@@ -41,7 +41,7 @@ export async function getGiftsByYear(groupId, yearId) {
     {
       $match: {
         _id: ObjectId.createFromHexString(yearId),
-        groupId: ObjectId.createFromHexString(groupId),
+        groupId: groupId,
         revealed: true,
       },
     },
@@ -114,7 +114,7 @@ export async function getGiftsByYear(groupId, yearId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    log.error('ERROR getClient: ' + err.stack);
+    log.error('getClient: ' + err);
     return null;
   }
 }
@@ -125,7 +125,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
     location: null,
     imageUploaded: false,
     gifts: [],
-    groupId: ObjectId.createFromHexString(groupId),
+    groupId: groupId,
     revealed: false,
   };
 
@@ -147,7 +147,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
       .collection('history')
       .insertOne(document);
   } catch (err) {
-    log.error('ERROR addDraftsForNextYear: ' + err.stack);
+    log.error('addDraftsForNextYear: ' + err);
     return null;
   }
 }
@@ -155,7 +155,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
 export async function isNextYearDrafted(groupId) {
   const client = await getClient();
   const query = {
-    groupId: ObjectId.createFromHexString(groupId),
+    groupId: groupId,
     year: new Date().getFullYear() + 1,
   };
 
@@ -167,7 +167,7 @@ export async function isNextYearDrafted(groupId) {
 
     return !result;
   } catch (err) {
-    log.error('ERROR isNextYearDrafted: ' + err.stack);
+    log.error('isNextYearDrafted: ' + err);
     return null;
   }
 }
@@ -175,7 +175,7 @@ export async function isNextYearDrafted(groupId) {
 export async function isLastYearRevealed(groupId) {
   const client = await getClient();
   const query = {
-    groupId: ObjectId.createFromHexString(groupId),
+    groupId: groupId,
   };
   const options = {
     sort: { year: -1 },
@@ -190,7 +190,7 @@ export async function isLastYearRevealed(groupId) {
 
     return result?.revealed;
   } catch (err) {
-    log.error('ERROR isLastYearRevealed: ' + err.stack);
+    log.error('isLastYearRevealed: ' + err);
     return null;
   }
 }
@@ -198,7 +198,7 @@ export async function isLastYearRevealed(groupId) {
 export async function setLastYearRevealed(groupId, year) {
   const client = await getClient();
   const filter = {
-    groupId: ObjectId.createFromHexString(groupId),
+    groupId: groupId,
     year,
   };
   const update = { $set: { revealed: true } };
@@ -209,7 +209,7 @@ export async function setLastYearRevealed(groupId, year) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR setLastYearRevealed: ' + err.stack);
+    log.error('setLastYearRevealed: ' + err);
     return null;
   }
 }
@@ -229,7 +229,7 @@ export async function updateLocationImage(yearId) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR updateLocationImage: ' + err.stack);
+    log.error('updateLocationImage: ' + err);
     return null;
   }
 }
@@ -252,7 +252,7 @@ export async function updateGiftImage(yearId, giftId) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR updateGiftImage: ' + err.stack);
+    log.error('updateGiftImage: ' + err);
     return null;
   }
 }
@@ -272,7 +272,7 @@ export async function updateGiftDescription(giftId, description) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR updateGiftDescription: ' + err.stack);
+    log.error('updateGiftDescription: ' + err);
     return null;
   }
 }
@@ -292,7 +292,7 @@ export async function updateYearDescription(yearId, description) {
       .collection('history')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR updateYearDescription: ' + err.stack);
+    log.error('updateYearDescription: ' + err);
     return null;
   }
 }

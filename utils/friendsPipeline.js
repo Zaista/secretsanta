@@ -6,7 +6,7 @@ const log = getLogger('friendsPipeline');
 
 export async function getFriends(groupId) {
   const client = await getClient();
-  const query = { 'groups.groupId': ObjectId.createFromHexString(groupId) };
+  const query = { 'groups.groupId': groupId };
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
@@ -16,7 +16,7 @@ export async function getFriends(groupId) {
       .find(query, options)
       .toArray();
   } catch (err) {
-    log.error('ERROR getFriends: ' + err.stack);
+    log.error('getFriends: ' + err);
     return null;
   }
 }
@@ -36,7 +36,7 @@ export async function getProfile(_id) {
       .collection('users')
       .findOne(query, options);
   } catch (err) {
-    log.error('ERROR getProfile: ' + err.stack);
+    log.error('getProfile: ' + err);
     return null;
   }
 }
@@ -58,7 +58,7 @@ export async function updateProfile(_id, friend) {
       .collection('users')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR updateProfile: ' + err.stack);
+    log.error('updateProfile: ' + err);
     return null;
   }
 }
@@ -78,7 +78,7 @@ export async function updateProfileImage(_id) {
       .collection('users')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR updateProfileImage: ' + err.stack);
+    log.error('updateProfileImage: ' + err);
     return null;
   }
 }

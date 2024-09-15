@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { getClient } from './database.js';
 import { getLogger } from './logger.js';
 
@@ -8,7 +7,7 @@ export async function getSanta(_id, groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: ObjectId.createFromHexString(groupId),
+        groupId: groupId,
         year: new Date().getFullYear() + 1,
       },
     },
@@ -58,7 +57,7 @@ export async function getSanta(_id, groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    log.error('ERROR getSanta: ' + err.stack);
+    log.error('getSanta: ' + err);
     return null;
   }
 }

@@ -38,7 +38,8 @@ export const renderer = (filePath, options, callback) => {
 
     if (filePath.includes('santaProfile.html')) {
       const elevatedPrivileges =
-        process.env.adminElevatedPrivileges.toLowerCase() === 'true';
+        process.env.adminElevatedPrivileges.toLowerCase() === 'true' &&
+        options.activeGroup?.role === ROLES.admin;
       rendered = rendered.replaceAll(
         '{{isHidden}}',
         elevatedPrivileges || options.isCurrentUser ? '' : 'hidden'
