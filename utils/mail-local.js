@@ -7,7 +7,7 @@ let mailTransporter;
 // Generate SMTP service account from ethereal.email
 await nodemailer.createTestAccount((err, account) => {
   if (err) {
-    log.error('Failed to create a testing account. ' + err.message);
+    log.error('Failed to create a testing account. ' + err);
   }
 
   mailTransporter = nodemailer.createTransport({

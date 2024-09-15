@@ -20,7 +20,7 @@ santaRouter.get('/api/santa', async (req, res) => {
     }
     return res.send(santa[0]);
   } else {
-    return res.send({ warning: 'No active group' });
+    return res.send({ warning: 'No Secret Santa group selected' });
   }
 });
 

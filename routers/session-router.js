@@ -13,7 +13,7 @@ import { sendEmail } from '../utils/environment.js';
 import { checkIfUserExists, createNewUser } from '../utils/adminPipeline.js';
 
 const sessionRouter = express.Router();
-const log = getLogger('seesion');
+const log = getLogger('session');
 
 sessionRouter.get('/login', (req, res) => {
   if (req.user) return res.redirect('/');
@@ -126,12 +126,13 @@ passport.serializeUser(function (user, done) {
   done(null, serializedUser);
 });
 
-passport.deserializeUser(async function (serializedUser, done) {
+passport.deserializeUser(async function (req, serializedUser, done) {
   const deserializedUser = deserialize(Buffer.from(serializedUser));
   const user = await getUserById(deserializedUser._id);
-  if (user.length === 0) {
+  if (user === null || user.length === 0) {
     done(null, null, { error: 'User not found' });
   } else {
+    req.session.activeGroup = user[0].groups[0];
     done(null, user[0]);
   }
 });

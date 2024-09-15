@@ -31,7 +31,7 @@ export async function checkEmail(email) {
       .collection('users')
       .findOne(query, options);
   } catch (err) {
-    log.error('ERROR checkEmail: ' + err.stack);
+    log.error('checkEmail: ' + err);
     return null;
   }
 }
@@ -110,7 +110,7 @@ async function getUser($match) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    log.error('ERROR getUser: ' + err.stack);
+    log.error('getUser: ' + err);
     return null;
   }
 }

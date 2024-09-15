@@ -7,7 +7,7 @@ const log = getLogger('adminPipeline');
 
 export async function getUsers(groupId) {
   const client = await getClient();
-  const query = { 'groups.groupId': ObjectId.createFromHexString(groupId) };
+  const query = { 'groups.groupId': groupId };
   const options = {
     projection: { name: 1, email: 1 },
     sort: { name: 1 },
@@ -20,7 +20,7 @@ export async function getUsers(groupId) {
       .find(query, options)
       .toArray();
   } catch (err) {
-    log.error('ERROR getUsers: ' + err.stack);
+    log.error('getUsers: ' + err);
     return null;
   }
 }
@@ -36,7 +36,7 @@ export async function getUsersAndRoles(groupId) {
     },
     {
       $match: {
-        'groups.groupId': ObjectId.createFromHexString(groupId),
+        'groups.groupId': groupId,
       },
     },
     {
@@ -54,7 +54,7 @@ export async function getUsersAndRoles(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    log.error('ERROR getUsersAndRoles: ' + err.stack);
+    log.error('getUsersAndRoles: ' + err);
     return null;
   }
 }
@@ -69,7 +69,7 @@ export async function checkIfUserExists(email) {
       .collection('users')
       .findOne(query);
   } catch (err) {
-    log.error('ERROR checkIfUserExists: ' + err.stack);
+    log.error('checkIfUserExists: ' + err);
     return null;
   }
 }
@@ -94,7 +94,7 @@ export async function addUserToGroup(groupId, email, role) {
     }
     return true;
   } catch (err) {
-    log.error('ERROR addUserToGroup: ' + err.stack);
+    log.error('addUserToGroup: ' + err);
     return null;
   }
 }
@@ -104,7 +104,7 @@ export async function removeUserFromGroup(userId, groupId) {
   const filter = { _id: userId };
   const update = {
     $pull: {
-      groups: { groupId: ObjectId.createFromHexString(groupId) },
+      groups: { groupId: groupId },
     },
   };
 
@@ -115,13 +115,13 @@ export async function removeUserFromGroup(userId, groupId) {
       .updateOne(filter, update);
     if (result.acknowledged !== true || result.modifiedCount !== 1) {
       log.error(
-        'ERROR removeUserFromGroup: failed to remove the user from the group'
+        'removeUserFromGroup: failed to remove the user from the group'
       );
       return null;
     }
     return true;
   } catch (err) {
-    log.error('ERROR removeUserFromGroup: ' + err.stack);
+    log.error('removeUserFromGroup: ' + err);
     return null;
   }
 }
@@ -141,7 +141,7 @@ export async function addNewUser(groupId, email, password) {
       .collection('users')
       .insertOne(user);
   } catch (err) {
-    log.error('ERROR addNewUser: ' + err.stack);
+    log.error('addNewUser: ' + err);
     return null;
   }
 }
@@ -154,7 +154,7 @@ export async function createNewUser(user) {
       .collection('users')
       .insertOne(user);
   } catch (err) {
-    log.error('ERROR createNewUser: ' + err.stack);
+    log.error('createNewUser: ' + err);
     return null;
   }
 }
@@ -165,7 +165,7 @@ export async function updateUsersRoles(groupId, usersRoles) {
     let modifiedCount = 0;
     for (const userData of usersRoles) {
       const filter = {
-        'groups.groupId': ObjectId.createFromHexString(groupId),
+        'groups.groupId': groupId,
         _id: userData._id,
       };
       const update = {
@@ -181,14 +181,14 @@ export async function updateUsersRoles(groupId, usersRoles) {
     }
     return modifiedCount;
   } catch (err) {
-    log.error('ERROR updateUsersRoles: ' + err.stack);
+    log.error('updateUsersRoles: ' + err);
     return null;
   }
 }
 
 export async function getGroup(groupId) {
   const client = await getClient();
-  const query = { _id: ObjectId.createFromHexString(groupId) };
+  const query = { _id: groupId };
 
   try {
     return await client
@@ -196,7 +196,7 @@ export async function getGroup(groupId) {
       .collection('groups')
       .findOne(query);
   } catch (err) {
-    log.error('ERROR getGroup: ' + err.stack);
+    log.error('getGroup: ' + err);
     return null;
   }
 }
@@ -223,14 +223,14 @@ export async function createGroup(groupName) {
     group._id = result.insertedId;
     return group;
   } catch (err) {
-    log.error('ERROR createGroup: ' + err.stack);
+    log.error('createGroup: ' + err);
     return null;
   }
 }
 
 export async function updateGroup(groupId, groupData) {
   const client = await getClient();
-  const filter = { _id: ObjectId.createFromHexString(groupId) };
+  const filter = { _id: groupId };
   const update = {
     $set: groupData,
   };
@@ -241,7 +241,7 @@ export async function updateGroup(groupId, groupData) {
       .collection('groups')
       .updateOne(filter, update);
   } catch (err) {
-    log.error('ERROR updateGroup: ' + err.stack);
+    log.error('updateGroup: ' + err);
     return null;
   }
 }
@@ -256,7 +256,7 @@ export async function deleteForbiddenPair(_id) {
       .collection('forbiddenPairs')
       .deleteOne(filter);
   } catch (err) {
-    log.error('ERROR deleteForbiddenPair: ' + err.stack);
+    log.error('deleteForbiddenPair: ' + err);
     return null;
   }
 }
@@ -266,7 +266,7 @@ export async function getForbiddenPairs(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: ObjectId.createFromHexString(groupId),
+        groupId: groupId,
       },
     },
     {
@@ -304,7 +304,7 @@ export async function getForbiddenPairs(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    log.error('ERROR getForbiddenPairs: ' + err.stack);
+    log.error('getForbiddenPairs: ' + err);
     return null;
   }
 }
@@ -319,7 +319,7 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
     }
 
     const document = {
-      groupId: ObjectId.createFromHexString(groupId),
+      groupId: groupId,
       userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser1Id),
       forbiddenPairId: ObjectId.createFromHexString(
         forbiddenPair.forbiddenUser2Id
@@ -331,7 +331,7 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
       .collection('forbiddenPairs')
       .insertOne(document);
   } catch (err) {
-    log.error('ERROR createForbiddenPair: ' + err.stack);
+    log.error('createForbiddenPair: ' + err);
     return null;
   }
 }
@@ -341,7 +341,7 @@ async function findExistingPair(client, groupId, forbiddenPair) {
     .db(process.env.database)
     .collection('forbiddenPairs')
     .findOne({
-      groupId: ObjectId.createFromHexString(groupId),
+      groupId: groupId,
       $or: [
         {
           userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser1Id),
