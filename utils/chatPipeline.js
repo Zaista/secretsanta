@@ -9,7 +9,7 @@ export async function getChat(groupId) {
   const pipeline = [
     {
       $match: {
-        groupId: ObjectId.createFromHexString(groupId),
+        groupId: groupId,
       },
     },
     {
@@ -45,7 +45,7 @@ export async function getChat(groupId) {
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
-    log.error('ERROR getChat: ' + err.stack);
+    log.error('getChat: ' + err);
     return null;
   }
 }
@@ -60,7 +60,7 @@ export async function deleteChatMessage(_id) {
       .collection('chat')
       .deleteOne(filter);
   } catch (err) {
-    log.error('ERROR deleteChatMessage: ' + err.stack);
+    log.error('deleteChatMessage: ' + err);
     return null;
   }
 }
@@ -70,7 +70,7 @@ export async function sendMessage(message, userId, groupId) {
   const document = {
     message,
     userId: ObjectId.createFromHexString(userId),
-    groupId: ObjectId.createFromHexString(groupId),
+    groupId: groupId,
     timestamp: new Date(),
   };
   try {
@@ -79,7 +79,7 @@ export async function sendMessage(message, userId, groupId) {
       .collection('chat')
       .insertOne(document);
   } catch (err) {
-    log.error('ERROR sendMessage: ' + err.stack);
+    log.error('sendMessage: ' + err);
     return null;
   }
 }

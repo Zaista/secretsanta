@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
-import { login } from './helpers/login.js';
+import { login, registerUser } from './helpers/login.js';
 import { sendMessage } from './helpers/chat.js';
 import { createNewGroup } from './helpers/setup.js';
 
@@ -62,5 +62,18 @@ test.describe('chat tests', () => {
     await expect(page.locator('[data-name="chatFrom"]')).toHaveText(
       'From: Anonymous'
     );
+  });
+
+  test('user with no group cannot access chat page', async ({ page }) => {
+    const user = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+    await registerUser(page.request, user);
+
+    await page.goto('/chat');
+
+    await expect(page).toHaveTitle('Secret Santa Chat');
+    await expect(page.locator('#footerAlert')).toHaveText('No chat activity');
   });
 });

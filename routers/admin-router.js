@@ -33,7 +33,7 @@ const adminRouter = express.Router();
 // define the home page route
 adminRouter.get('/', (req, res) => {
   if (!req.user) return res.status(401).redirect('session/login');
-  else if (req.session.activeGroup.role !== ROLES.admin)
+  else if (req.session.activeGroup?.role !== ROLES.admin)
     return res.status(401).redirect('/');
   res.sendFile('public/admin/santaAdmin.html', { root: '.' });
 });

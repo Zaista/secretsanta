@@ -18,7 +18,11 @@ profileRouter.get('/', async (req, res) => {
   if (req.query.id === undefined || req.user._id.toString() === req.query.id) {
     isCurrentUser = true;
   }
-  res.render('profile/santaProfile.html', { isCurrentUser });
+  const options = {
+    isCurrentUser: isCurrentUser,
+    activeGroup: req.session.activeGroup,
+  };
+  res.render('profile/santaProfile.html', options);
 });
 
 profileRouter.get('/api/list', async (req, res) => {
@@ -57,7 +61,7 @@ profileRouter.get('/api/image', async (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
     objectStream.pipe(res);
   } catch (e) {
-    log.error('ERROR 1: ' + e.message);
+    log.error('ERROR 1: ' + e);
     res.sendFile('public/resources/images/placeholder.png', { root: '.' });
   }
 });
@@ -77,7 +81,7 @@ profileRouter.post('/api/image', async (req, res) => {
     await updateProfileImage(userId);
     res.send({ success: 'Profile image updated successfully' });
   } catch (e) {
-    log.error('ERROR 2: ' + e.message);
+    log.error('ERROR 2: ' + e);
     res.send({ error: 'Failed to update the profile image' });
   }
 });

@@ -69,4 +69,19 @@ test.describe('home tests', () => {
     ).toBeVisible();
     await expect(page).toHaveTitle('Secret Santa Admin');
   });
+
+  test('user with no group cannot access home page', async ({ page }) => {
+    const user = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+    await registerUser(page.request, user);
+
+    await page.goto('/');
+
+    await expect(page).toHaveTitle('Secret Santa');
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'No Secret Santa group selected'
+    );
+  });
 });

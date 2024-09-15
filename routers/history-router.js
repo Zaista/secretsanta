@@ -55,8 +55,8 @@ historyRouter.get('/year/api/location-image', async (req, res) => {
     res.setHeader('Content-Type', 'image/jpeg');
     res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
     objectStream.pipe(res);
-  } catch (e) {
-    log.error('ERROR 1: ' + e.message);
+  } catch (err) {
+    log.error('ERROR 1: ' + err);
     res.sendFile('public/resources/images/placeholder.png', { root: '.' });
   }
 });
@@ -72,7 +72,7 @@ historyRouter.post('/year/api/location-image', async (req, res) => {
     await updateLocationImage(req.query.id);
     res.send({ success: 'Location image was uploaded successfully' });
   } catch (e) {
-    log.error('ERROR 2: ' + e.message);
+    log.error('ERROR 2: ' + e);
     res.send({ error: 'Failed to upload the year location image' });
   }
 });
@@ -88,7 +88,7 @@ historyRouter.post('/year/api/gift-image', async (req, res) => {
     await updateGiftImage(req.query.yearId, req.query.giftId);
     res.send({ success: 'Gift image was uploaded successfully' });
   } catch (e) {
-    log.error('ERROR 3: ' + e.message);
+    log.error('ERROR 3: ' + e);
     res.send({ error: 'Failed to upload the gift image' });
   }
 });

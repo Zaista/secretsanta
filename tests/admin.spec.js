@@ -7,7 +7,7 @@ import {
   inviteUserToGroup,
   addForbiddenPair,
 } from './helpers/admin.js';
-import { createDraftedGroup } from './helpers/setup.js';
+import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
 
 test.describe('admin tests', () => {
   test.describe('group settings tests', () => {
@@ -134,6 +134,37 @@ test.describe('admin tests', () => {
       await page.getByRole('button', { name: 'Forbid' }).click();
       await expect(page.locator('#footerAlert')).toHaveText(
         'Forbidden pair already exists.'
+      );
+    });
+  });
+
+  test.describe('admin access tests', () => {
+    test('user cannot access admin page', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      await login(
+        page.request,
+        groupData.users.user1.email,
+        groupData.users.user1.password
+      );
+      await page.goto('/admin');
+
+      await expect(page).toHaveTitle('Secret Santa');
+      await expect(page.getByRole('listitem', { name: 'Admin' })).toBeHidden();
+    });
+
+    test('user with no group cannot access admin page', async ({ page }) => {
+      const user = {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      await registerUser(page.request, user);
+
+      await page.goto('/admin');
+
+      await expect(page).toHaveTitle('Secret Santa');
+      await expect(page.getByRole('listitem', { name: 'Admin' })).toBeHidden();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'No Secret Santa group selected'
       );
     });
   });
