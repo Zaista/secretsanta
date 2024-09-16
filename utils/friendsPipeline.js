@@ -10,13 +10,10 @@ export async function getFriends(groupId) {
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .find(query, options)
-      .toArray();
+    return await client.collection('users').find(query, options).toArray();
   } catch (err) {
     log.error('getFriends: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -31,12 +28,10 @@ export async function getProfile(_id) {
   const options = { projection: { password: 0, chat: 0 } };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .findOne(query, options);
+    return await client.collection('users').findOne(query, options);
   } catch (err) {
     log.error('getProfile: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -53,12 +48,10 @@ export async function updateProfile(_id, friend) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .updateOne(filter, update);
+    return await client.collection('users').updateOne(filter, update);
   } catch (err) {
     log.error('updateProfile: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -73,12 +66,10 @@ export async function updateProfileImage(_id) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .updateOne(filter, update);
+    return await client.collection('users').updateOne(filter, update);
   } catch (err) {
     log.error('updateProfileImage: ' + err);
+    await client.close();
     return null;
   }
 }

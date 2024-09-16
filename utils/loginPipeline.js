@@ -26,12 +26,10 @@ export async function checkEmail(email) {
   const options = { projection: { _id: 0 } };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .findOne(query, options);
+    return await client.collection('users').findOne(query, options);
   } catch (err) {
     log.error('checkEmail: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -104,13 +102,10 @@ async function getUser($match) {
   ];
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .aggregate(pipeline)
-      .toArray();
+    return await client.collection('users').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getUser: ' + err);
+    await client.close();
     return null;
   }
 }
