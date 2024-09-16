@@ -39,13 +39,10 @@ export async function getChat(groupId) {
   ];
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('chat')
-      .aggregate(pipeline)
-      .toArray();
+    return await client.collection('chat').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getChat: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -55,12 +52,10 @@ export async function deleteChatMessage(_id) {
   const filter = { _id: ObjectId.createFromHexString(_id) };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('chat')
-      .deleteOne(filter);
+    return await client.collection('chat').deleteOne(filter);
   } catch (err) {
     log.error('deleteChatMessage: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -74,12 +69,10 @@ export async function sendMessage(message, userId, groupId) {
     timestamp: new Date(),
   };
   try {
-    return await client
-      .db(process.env.database)
-      .collection('chat')
-      .insertOne(document);
+    return await client.collection('chat').insertOne(document);
   } catch (err) {
     log.error('sendMessage: ' + err);
+    await client.close();
     return null;
   }
 }

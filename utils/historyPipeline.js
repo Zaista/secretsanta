@@ -25,13 +25,10 @@ export async function getYearsByGroup(groupId) {
   const client = await getClient();
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .aggregate(pipeline)
-      .toArray();
+    return await client.collection('history').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getYearsByGroup: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -108,13 +105,10 @@ export async function getGiftsByYear(groupId, yearId) {
   const client = await getClient();
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .aggregate(pipeline)
-      .toArray();
+    return await client.collection('history').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getClient: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -142,12 +136,10 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
   const client = await getClient();
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .insertOne(document);
+    return await client.collection('history').insertOne(document);
   } catch (err) {
     log.error('addDraftsForNextYear: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -160,14 +152,12 @@ export async function isNextYearDrafted(groupId) {
   };
 
   try {
-    const result = await client
-      .db(process.env.database)
-      .collection('history')
-      .findOne(query);
+    const result = await client.collection('history').findOne(query);
 
     return !result;
   } catch (err) {
     log.error('isNextYearDrafted: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -183,14 +173,12 @@ export async function isLastYearRevealed(groupId) {
   };
 
   try {
-    const result = await client
-      .db(process.env.database)
-      .collection('history')
-      .findOne(query, options);
+    const result = await client.collection('history').findOne(query, options);
 
     return result?.revealed;
   } catch (err) {
     log.error('isLastYearRevealed: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -204,12 +192,10 @@ export async function setLastYearRevealed(groupId, year) {
   const update = { $set: { revealed: true } };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .updateOne(filter, update);
+    return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('setLastYearRevealed: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -224,12 +210,10 @@ export async function updateLocationImage(yearId) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .updateOne(filter, update);
+    return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateLocationImage: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -247,12 +231,10 @@ export async function updateGiftImage(yearId, giftId) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .updateOne(filter, update);
+    return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateGiftImage: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -267,12 +249,10 @@ export async function updateGiftDescription(giftId, description) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .updateOne(filter, update);
+    return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateGiftDescription: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -287,12 +267,10 @@ export async function updateYearDescription(yearId, description) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .updateOne(filter, update);
+    return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateYearDescription: ' + err);
+    await client.close();
     return null;
   }
 }

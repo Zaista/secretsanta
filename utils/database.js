@@ -6,7 +6,8 @@ const database = (function () {
   function createClient() {
     const { MongoClient } = mongodb;
 
-    return new MongoClient(process.env.mongodbUri);
+    const client = new MongoClient(process.env.mongodbUri);
+    return client.db(process.env.database);
   }
 
   return {

@@ -41,7 +41,7 @@ sessionRouter.post('/api/register', async (req, res) => {
     return res.send({ error: 'Email already used' });
   }
   const result = await createNewUser(req.body);
-  if (result.insertedId) {
+  if (result !== null && result.insertedId) {
     log.info(`User registered: ${req.body.email}`);
     const temp = {
       _id: req.body._id,

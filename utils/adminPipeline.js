@@ -14,13 +14,10 @@ export async function getUsers(groupId) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .find(query, options)
-      .toArray();
+    return await client.collection('users').find(query, options).toArray();
   } catch (err) {
     log.error('getUsers: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -48,13 +45,10 @@ export async function getUsersAndRoles(groupId) {
   ];
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .aggregate(pipeline)
-      .toArray();
+    return await client.collection('users').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getUsersAndRoles: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -64,12 +58,10 @@ export async function checkIfUserExists(email) {
   const query = { email };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .findOne(query);
+    return await client.collection('users').findOne(query);
   } catch (err) {
     log.error('checkIfUserExists: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -84,10 +76,7 @@ export async function addUserToGroup(groupId, email, role) {
   };
 
   try {
-    const result = await client
-      .db(process.env.database)
-      .collection('users')
-      .updateOne(filter, update);
+    const result = await client.collection('users').updateOne(filter, update);
     if (result.acknowledged !== true || result.modifiedCount !== 1) {
       log.error('ERROR addUserToGroup: failed to add user to the group');
       return null;
@@ -95,6 +84,7 @@ export async function addUserToGroup(groupId, email, role) {
     return true;
   } catch (err) {
     log.error('addUserToGroup: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -109,10 +99,7 @@ export async function removeUserFromGroup(userId, groupId) {
   };
 
   try {
-    const result = await client
-      .db(process.env.database)
-      .collection('users')
-      .updateOne(filter, update);
+    const result = await client.collection('users').updateOne(filter, update);
     if (result.acknowledged !== true || result.modifiedCount !== 1) {
       log.error(
         'removeUserFromGroup: failed to remove the user from the group'
@@ -122,6 +109,7 @@ export async function removeUserFromGroup(userId, groupId) {
     return true;
   } catch (err) {
     log.error('removeUserFromGroup: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -136,12 +124,10 @@ export async function addNewUser(groupId, email, password) {
     address: { street: '', city: '', postalCode: '', state: '' },
   };
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .insertOne(user);
+    return await client.collection('users').insertOne(user);
   } catch (err) {
     log.error('addNewUser: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -149,12 +135,10 @@ export async function addNewUser(groupId, email, password) {
 export async function createNewUser(user) {
   const client = await getClient();
   try {
-    return await client
-      .db(process.env.database)
-      .collection('users')
-      .insertOne(user);
+    return await client.collection('users').insertOne(user);
   } catch (err) {
     log.error('createNewUser: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -171,10 +155,7 @@ export async function updateUsersRoles(groupId, usersRoles) {
       const update = {
         $set: { 'groups.$.role': userData.role },
       };
-      const result = await client
-        .db(process.env.database)
-        .collection('users')
-        .updateOne(filter, update);
+      const result = await client.collection('users').updateOne(filter, update);
       if (result.modifiedCount !== 0) {
         modifiedCount += result.modifiedCount;
       }
@@ -182,6 +163,7 @@ export async function updateUsersRoles(groupId, usersRoles) {
     return modifiedCount;
   } catch (err) {
     log.error('updateUsersRoles: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -191,12 +173,10 @@ export async function getGroup(groupId) {
   const query = { _id: groupId };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('groups')
-      .findOne(query);
+    return await client.collection('groups').findOne(query);
   } catch (err) {
     log.error('getGroup: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -211,10 +191,7 @@ export async function createGroup(groupName) {
   };
 
   try {
-    const result = await client
-      .db(process.env.database)
-      .collection('groups')
-      .insertOne(group);
+    const result = await client.collection('groups').insertOne(group);
 
     if (result.acknowledged !== true) {
       log.error('ERROR createGroup: failed to create new group');
@@ -224,6 +201,7 @@ export async function createGroup(groupName) {
     return group;
   } catch (err) {
     log.error('createGroup: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -236,12 +214,10 @@ export async function updateGroup(groupId, groupData) {
   };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('groups')
-      .updateOne(filter, update);
+    return await client.collection('groups').updateOne(filter, update);
   } catch (err) {
     log.error('updateGroup: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -251,12 +227,10 @@ export async function deleteForbiddenPair(_id) {
   const filter = { _id: _id };
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('forbiddenPairs')
-      .deleteOne(filter);
+    return await client.collection('forbiddenPairs').deleteOne(filter);
   } catch (err) {
     log.error('deleteForbiddenPair: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -299,12 +273,12 @@ export async function getForbiddenPairs(groupId) {
 
   try {
     return await client
-      .db(process.env.database)
       .collection('forbiddenPairs')
       .aggregate(pipeline)
       .toArray();
   } catch (err) {
     log.error('getForbiddenPairs: ' + err);
+    await client.close();
     return null;
   }
 }
@@ -326,35 +300,30 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
       ),
     };
 
-    return await client
-      .db(process.env.database)
-      .collection('forbiddenPairs')
-      .insertOne(document);
+    return await client.collection('forbiddenPairs').insertOne(document);
   } catch (err) {
     log.error('createForbiddenPair: ' + err);
+    await client.close();
     return null;
   }
 }
 
 async function findExistingPair(client, groupId, forbiddenPair) {
-  return await client
-    .db(process.env.database)
-    .collection('forbiddenPairs')
-    .findOne({
-      groupId: groupId,
-      $or: [
-        {
-          userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser1Id),
-          forbiddenPairId: ObjectId.createFromHexString(
-            forbiddenPair.forbiddenUser2Id
-          ),
-        },
-        {
-          userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser2Id),
-          forbiddenPairId: ObjectId.createFromHexString(
-            forbiddenPair.forbiddenUser1Id
-          ),
-        },
-      ],
-    });
+  return await client.collection('forbiddenPairs').findOne({
+    groupId: groupId,
+    $or: [
+      {
+        userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser1Id),
+        forbiddenPairId: ObjectId.createFromHexString(
+          forbiddenPair.forbiddenUser2Id
+        ),
+      },
+      {
+        userId: ObjectId.createFromHexString(forbiddenPair.forbiddenUser2Id),
+        forbiddenPairId: ObjectId.createFromHexString(
+          forbiddenPair.forbiddenUser1Id
+        ),
+      },
+    ],
+  });
 }
