@@ -6,6 +6,8 @@ import {
   createGroup,
   inviteUserToGroup,
   addForbiddenPair,
+  draftSantaPairs,
+  revealSantaPairs,
 } from './helpers/admin.js';
 import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
 
@@ -135,6 +137,22 @@ test.describe('admin tests', () => {
       await expect(page.locator('#footerAlert')).toHaveText(
         'Forbidden pair already exists.'
       );
+    });
+
+    test('forbidden pairs should not draft each other', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const forbiddenPair = {
+        forbiddenUser1Id: groupData.users.user1.id,
+        forbiddenUser2Id: groupData.users.user2.id,
+      };
+      await addForbiddenPair(page.request, forbiddenPair);
+      await draftSantaPairs(page.request);
+      await revealSantaPairs(page.request);
+      await page.goto('/history');
+      await page.getByText('N/A').click();
+      await expect(
+        page.getByRole('row', { name: groupData.users.user1.name }).first()
+      ).not.toHaveText(groupData.users.user2.name);
     });
   });
 

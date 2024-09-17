@@ -51,13 +51,10 @@ export async function getSanta(_id, groupId) {
   const client = await getClient();
 
   try {
-    return await client
-      .db(process.env.database)
-      .collection('history')
-      .aggregate(pipeline)
-      .toArray();
+    return await client.collection('history').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getSanta: ' + err);
+    await client.close();
     return null;
   }
 }
