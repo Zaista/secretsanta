@@ -81,9 +81,9 @@ test.describe('admin tests', () => {
       );
 
       await page.goto('/history');
-      await expect(page.locator('#yearTitle')).toHaveText('2025');
+      await expect(page.locator('[data-id="yearTitle"]')).toHaveText('2025');
 
-      await page.locator('#yearTitle').click();
+      await page.locator('[data-id="yearTitle"]').click();
 
       for (let user in groupData.users) {
         await expect(page.locator('tbody')).toContainText(

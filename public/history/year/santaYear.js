@@ -67,30 +67,30 @@ $(async () => {
     if (gift.child === '') {
       childName = gift.childEmail;
     }
-    $(giftElement).find('#santa').text(santaName);
-    $(giftElement).find('#child').text(childName);
+    $(giftElement).find('[data-id="santa"]').text(santaName);
+    $(giftElement).find('[data-id="child"]').text(childName);
     if (gift.gift === null) {
       gift.gift = 'N/A';
     }
-    $(giftElement).find('#giftText').text(gift.gift);
+    $(giftElement).find('[data-id="giftText"]').text(gift.gift);
 
     $(giftElement)
-      .find('#descriptionEdit')
+      .find('[data-id="descriptionEdit"]')
       .on('click', () => {
         $('#editDescriptionInput')
           .attr('data-id', gift.giftId)
           .attr('data-type', 'gift')
           .val(gift.gift);
-        descriptionEditElement = $(giftElement).find('#giftText');
+        descriptionEditElement = $(giftElement).find('[data-id="giftText"]');
         editDescriptionModal.show();
       });
 
     $(giftElement)
-      .find('#giftIcon, #giftImage')
+      .find('[data-id="giftIcon"], [data-id="giftImage"]')
       .on('click', (e) => {
         uploadEndpoint = `gift-image?yearId=${searchParams.get('id')}&giftId=${gift.giftId}`;
-        imageElement = $(giftElement).find('#giftImage');
-        iconElement = $(giftElement).find('#giftIcon');
+        imageElement = $(giftElement).find('[data-id="giftImage"]');
+        iconElement = $(giftElement).find('[data-id="giftIcon"]');
 
         if (e.currentTarget.src === undefined) {
           $('#imagePopup').attr('src', '');
@@ -102,15 +102,16 @@ $(async () => {
     $(giftElement).find('#giftImageUpload').on('change', showCroppie);
 
     if (gift.imageUploaded !== undefined) {
-      lazyLoadImage(gift.giftId, $(giftElement).find('#giftImage')).then(
-        (image) => {
-          $(giftElement).find('#giftImage').attr('src', image.src);
-          $(giftElement).find('#giftIcon').attr('hidden', true);
-          $(giftElement).find('#giftImage').attr('hidden', false);
-        }
-      );
+      lazyLoadImage(
+        gift.giftId,
+        $(giftElement).find('[data-id="giftImage"]')
+      ).then((image) => {
+        $(giftElement).find('[data-id="giftImage"]').attr('src', image.src);
+        $(giftElement).find('[data-id="giftIcon"]').attr('hidden', true);
+        $(giftElement).find('[data-id="giftImage"]').attr('hidden', false);
+      });
     } else {
-      $(giftElement).find('#giftIcon').removeClass('loading-image');
+      $(giftElement).find('[data-id="giftIcon"]').removeClass('loading-image');
     }
     $('tbody').append(giftElement);
   }
