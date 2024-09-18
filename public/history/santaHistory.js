@@ -19,21 +19,23 @@ $(async () => {
 
   function listYears(year) {
     const yearElement = $.parseHTML(yearTemplate);
-    $(yearElement).find('#yearTitle').text(year.year);
+    $(yearElement).find('[data-id="yearTitle"]').text(year.year);
     if (year.location === null) {
       year.location = 'N/A';
     }
-    $(yearElement).find('#yearLocation').text(year.location);
+    $(yearElement).find('[data-id="yearLocation"]').text(year.location);
     if (year.imageUploaded) {
       lazyLoadImage(year._id, $(yearElement).find('img')).then((image) => {
         $(yearElement)
-          .find('#locationImage')
+          .find('[data-id="locationImage"]')
           .attr('src', image.src)
           .attr('hidden', false);
-        $(yearElement).find('#locationIcon').attr('hidden', true);
+        $(yearElement).find('[data-id="locationIcon"]').attr('hidden', true);
       });
     } else {
-      $(yearElement).find('#locationIcon').removeClass('loading-image');
+      $(yearElement)
+        .find('[data-id="locationIcon"]')
+        .removeClass('loading-image');
     }
     $(yearElement).on('click', function () {
       window.location.href = `/history/year?id=${year._id}`;
