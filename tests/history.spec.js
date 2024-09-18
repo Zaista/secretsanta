@@ -27,13 +27,15 @@ test.describe('history tests', () => {
     ).toBeVisible();
     await expect(page.locator('#locationTitle')).toHaveText('Random location');
 
-    await page.locator('#descriptionEdit').nth(0).click();
+    await page.locator('[data-id="descriptionEdit"]').nth(0).click();
     await page.getByLabel('Update description:').fill('Random gift');
     await page.getByText('Save').click();
     await expect(
       page.getByText('Gift description was updated successfully')
     ).toBeVisible();
-    await expect(page.locator('#giftText').nth(0)).toHaveText('Random gift');
+    await expect(page.locator('[data-id="giftText"]').nth(0)).toHaveText(
+      'Random gift'
+    );
 
     await page.locator('#locationIcon').click();
     await page.getByText('Change image').click();
@@ -47,20 +49,20 @@ test.describe('history tests', () => {
       /data:image\/png/
     );
 
-    await page.locator('#giftIcon').nth(0).click();
+    await page.locator('[data-id="giftIcon"]').nth(0).click();
     await page.getByText('Change image').click();
     await page.locator('#imageUpload').setInputFiles('tests/santaGift.jpg');
     await page.getByRole('button', { name: 'Upload' }).click();
     await expect(
       page.getByText('Gift image was uploaded successfully')
     ).toBeVisible();
-    await expect(page.locator('#giftImage').nth(0)).toHaveAttribute(
+    await expect(page.locator('[data-id="giftImage"]').nth(0)).toHaveAttribute(
       'src',
       /data:image\/png/
     );
 
     await page.getByText('History').click();
-    await expect(page.locator('#locationImage')).toHaveAttribute(
+    await expect(page.locator('[data-id="locationImage"]')).toHaveAttribute(
       'src',
       /history\/year\/api\/location-image\?id=/
     );
