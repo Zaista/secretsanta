@@ -11,6 +11,9 @@ $(async () => {
   $.get(`${apiUrl}/list?id=${searchParams.get('id')}`, (friend) => {
     if (friend.error) {
       showAlert(friend);
+      $('#image').removeClass('loading-image');
+      // TODO disable image click
+      $('#profileSaveButton').prop('disabled', true);
     } else {
       if (friend.imageUploaded) {
         lazyLoadImage(friend._id, $('#image')).then((image) => {

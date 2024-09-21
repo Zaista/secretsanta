@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb';
+
 export function draftPairs(users, forbiddenPairs) {
   // prepare a drafting bucket of friends
   const friends = [];
@@ -6,15 +8,19 @@ export function draftPairs(users, forbiddenPairs) {
   const santaPairs = new Map();
 
   users.forEach((user) => {
-    friends.push(user._id);
+    friends.push(user._id.toString());
   });
 
   // transform array of forbidden pairs into a map, for ease of use
   forbiddenPairs.forEach((pair) => {
     if (forbiddenPairsMap.get(pair.userId) === undefined) {
-      forbiddenPairsMap.set(pair.userId, [pair.forbiddenPairId]);
+      forbiddenPairsMap.set(pair.userId.toString(), [
+        pair.forbiddenPairId.toString(),
+      ]);
     } else {
-      forbiddenPairsMap.get(pair.userId).push(pair.forbiddenPairId);
+      forbiddenPairsMap
+        .get(pair.userId.toString())
+        .push(pair.forbiddenPairId.toString());
     }
   });
 
@@ -58,7 +64,10 @@ export function draftPairs(users, forbiddenPairs) {
       friends.splice(index, 1);
 
       // add the two pairs in the santaPairs list
-      santaPairs.set(santa, child);
+      santaPairs.set(
+        ObjectId.createFromHexString(santa),
+        ObjectId.createFromHexString(child)
+      );
 
       // now a child gets to be santa
       santa = child;
@@ -78,7 +87,9 @@ export function draftPairs(users, forbiddenPairs) {
     return null;
   }
 
-  santaPairs.set(santa, first);
-
+  santaPairs.set(
+    ObjectId.createFromHexString(santa),
+    ObjectId.createFromHexString(first)
+  );
   return santaPairs;
 }

@@ -61,10 +61,10 @@ $(async () => {
     const giftElement = $.parseHTML(giftTemplate);
     let santaName = gift.santa;
     let childName = gift.child;
-    if (gift.santa === '') {
+    if (gift.santa === undefined || gift.santa === '') {
       santaName = gift.santaEmail;
     }
-    if (gift.child === '') {
+    if (gift.child === undefined || gift.child === '') {
       childName = gift.childEmail;
     }
     $(giftElement).find('[data-id="santa"]').text(santaName);

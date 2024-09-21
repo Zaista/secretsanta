@@ -184,17 +184,19 @@ adminRouter.post('/api/forbidden', async (req, res) => {
     req.session.activeGroup._id,
     req.body
   );
-  if (result.insertedId) {
+  if (result === null) {
+    return res.send({
+      error: 'Creating forbidden pair failed',
+    });
+  } else if (result.error) {
+    return res.send(result);
+  } else if (result.insertedId) {
     return res.send({
       success: 'Forbidden pair added',
       id: result.insertedId,
     });
-  } else if (result.error) {
-    return res.send(result);
   } else {
-    return res.send({
-      error: 'Something went wrong while creating a forbidden pair',
-    });
+    throw Error('Something went wrong');
   }
 });
 
@@ -267,7 +269,9 @@ adminRouter.put('/api/reveal', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
 
   const history = await getYearsByGroup(req.session.activeGroup._id);
-  if (history[0].revealed) {
+  if (history.length === 0) {
+    return res.send({ error: 'Year not drafted yet' });
+  } else if (history[0].revealed) {
     return res.send({ error: 'Year already revealed' });
   }
 
