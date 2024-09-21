@@ -233,6 +233,7 @@ $(async () => {
         success: (result) => {
           if (result.success) {
             $(this).prop('disabled', true);
+            $('#reveal').prop('disabled', false);
           }
           showAlert(result);
         },

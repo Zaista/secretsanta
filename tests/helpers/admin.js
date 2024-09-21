@@ -11,18 +11,34 @@ export function updateGroup(request, groupData) {
 }
 
 export function inviteUserToGroup(request, email) {
-  return request.post('admin/api/user', {
-    form: { email },
-  });
+  return request
+    .post('admin/api/user', {
+      form: { email },
+    })
+    .then((result) => {
+      return result.json();
+    });
 }
 
 export function draftSantaPairs(request) {
-  return request.put('admin/api/draft');
+  return request.put('admin/api/draft').then((result) => {
+    return result.json();
+  });
 }
 
 export function addForbiddenPair(request, forbiddenPair) {
-  return request.post('admin/api/forbidden', {
-    form: forbiddenPair,
+  return request
+    .post('admin/api/forbidden', {
+      form: forbiddenPair,
+    })
+    .then((result) => {
+      return result.json();
+    });
+}
+
+export function removeForbiddenPair(request, forbiddenPairId) {
+  return request.post('admin/api/forbidden/delete', {
+    data: { _id: forbiddenPairId },
   });
 }
 

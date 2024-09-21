@@ -29,7 +29,6 @@ export async function checkEmail(email) {
     return await client.collection('users').findOne(query, options);
   } catch (err) {
     log.error('checkEmail: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -105,7 +104,6 @@ async function getUser($match) {
     return await client.collection('users').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getUser: ' + err);
-    await client.close();
     return null;
   }
 }

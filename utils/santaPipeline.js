@@ -54,7 +54,6 @@ export async function getSanta(_id, groupId) {
     return await client.collection('history').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getSanta: ' + err);
-    await client.close();
     return null;
   }
 }

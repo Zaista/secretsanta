@@ -30,13 +30,22 @@ profileRouter.get('/api/list', async (req, res) => {
   let userId = req.user._id;
   if (req.query.id !== 'null') {
     userId = ObjectId.createFromHexString(req.query.id);
+    const friend = await getProfile(userId);
+    if (
+      friend?.groups?.some((group) =>
+        group.groupId.equals(req.session.activeGroup._id)
+      )
+    ) {
+      return res.send(friend);
+    } else {
+      return res.send({ error: 'Profile not found' });
+    }
   }
-  const friend = await getProfile(userId);
-  if (friend === null) {
-    res.send({ error: 'Profile not found' });
-  } else {
-    res.send(friend);
+  const profile = await getProfile(userId);
+  if (profile === null) {
+    return res.send({ error: 'Profile not found' });
   }
+  return res.send(profile);
 });
 
 profileRouter.post('/api/update', async (req, res) => {

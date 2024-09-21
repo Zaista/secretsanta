@@ -17,7 +17,6 @@ export async function getUsers(groupId) {
     return await client.collection('users').find(query, options).toArray();
   } catch (err) {
     log.error('getUsers: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -48,7 +47,6 @@ export async function getUsersAndRoles(groupId) {
     return await client.collection('users').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getUsersAndRoles: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -61,7 +59,6 @@ export async function checkIfUserExists(email) {
     return await client.collection('users').findOne(query);
   } catch (err) {
     log.error('checkIfUserExists: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -84,7 +81,6 @@ export async function addUserToGroup(groupId, email, role) {
     return true;
   } catch (err) {
     log.error('addUserToGroup: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -109,7 +105,6 @@ export async function removeUserFromGroup(userId, groupId) {
     return true;
   } catch (err) {
     log.error('removeUserFromGroup: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -127,7 +122,6 @@ export async function addNewUser(groupId, email, password) {
     return await client.collection('users').insertOne(user);
   } catch (err) {
     log.error('addNewUser: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -138,7 +132,6 @@ export async function createNewUser(user) {
     return await client.collection('users').insertOne(user);
   } catch (err) {
     log.error('createNewUser: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -163,7 +156,6 @@ export async function updateUsersRoles(groupId, usersRoles) {
     return modifiedCount;
   } catch (err) {
     log.error('updateUsersRoles: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -176,7 +168,6 @@ export async function getGroup(groupId) {
     return await client.collection('groups').findOne(query);
   } catch (err) {
     log.error('getGroup: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -201,7 +192,6 @@ export async function createGroup(groupName) {
     return group;
   } catch (err) {
     log.error('createGroup: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -217,20 +207,18 @@ export async function updateGroup(groupId, groupData) {
     return await client.collection('groups').updateOne(filter, update);
   } catch (err) {
     log.error('updateGroup: ' + err);
-    await client.close();
     return null;
   }
 }
 
 export async function deleteForbiddenPair(_id) {
   const client = await getClient();
-  const filter = { _id: _id };
+  const filter = { _id: ObjectId.createFromHexString(_id) };
 
   try {
     return await client.collection('forbiddenPairs').deleteOne(filter);
   } catch (err) {
     log.error('deleteForbiddenPair: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -278,7 +266,6 @@ export async function getForbiddenPairs(groupId) {
       .toArray();
   } catch (err) {
     log.error('getForbiddenPairs: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -288,8 +275,7 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
   try {
     const existingPair = await findExistingPair(client, groupId, forbiddenPair);
     if (existingPair) {
-      // Forbidden pair already exists, handle accordingly
-      return { error: 'Forbidden pair already exists.' };
+      return { error: 'Forbidden pair already exists' };
     }
 
     const document = {
@@ -303,7 +289,6 @@ export async function createForbiddenPair(groupId, forbiddenPair) {
     return await client.collection('forbiddenPairs').insertOne(document);
   } catch (err) {
     log.error('createForbiddenPair: ' + err);
-    await client.close();
     return null;
   }
 }
