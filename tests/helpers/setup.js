@@ -7,8 +7,8 @@ import {
 import { faker } from '@faker-js/faker';
 import { login, registerUser } from './login.js';
 
-export async function createNewGroup(request) {
-  const groupData = {
+export function getDefaultData() {
+  return {
     users: {
       admin: {
         email: faker.internet.email(),
@@ -48,20 +48,25 @@ export async function createNewGroup(request) {
       name: faker.word.noun(),
     },
   };
-  const adminData = await registerUser(request, groupData.users.admin);
-  groupData.users.admin.id = adminData.id;
-  const user1Data = await registerUser(request, groupData.users.user1);
-  groupData.users.user1.id = user1Data.id;
-  const user2Data = await registerUser(request, groupData.users.user2);
-  groupData.users.user2.id = user2Data.id;
+}
+
+export async function createNewGroup(request, groupData = getDefaultData()) {
+  for (let user in groupData.users) {
+    const userData = await registerUser(request, groupData.users[user]);
+    groupData.users[user].id = userData.id;
+  }
   await login(
     request,
     groupData.users.admin.email,
     groupData.users.admin.password
   );
   await createGroup(request, groupData.group.name);
-  await inviteUserToGroup(request, groupData.users.user1.email);
-  await inviteUserToGroup(request, groupData.users.user2.email);
+  for (let user in groupData.users) {
+    if (user === 'admin') {
+      continue;
+    }
+    await inviteUserToGroup(request, groupData.users[user].email);
+  }
   return groupData;
 }
 

@@ -8,6 +8,7 @@ import {
   addForbiddenPair,
   draftSantaPairs,
   revealSantaPairs,
+  removeForbiddenPair,
 } from './helpers/admin.js';
 import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
 
@@ -115,7 +116,7 @@ test.describe('admin tests', () => {
     });
 
     test('admin cannot add forbidden pair again', async ({ page }) => {
-      const groupData = await createDraftedGroup(page.request);
+      const groupData = await createNewGroup(page.request);
       const forbiddenPair = {
         forbiddenUser1Id: groupData.users.user1.id,
         forbiddenUser2Id: groupData.users.user2.id,
@@ -135,7 +136,33 @@ test.describe('admin tests', () => {
         .selectOption(groupData.users.user2.id);
       await page.getByRole('button', { name: 'Forbid' }).click();
       await expect(page.locator('#footerAlert')).toHaveText(
-        'Forbidden pair already exists.'
+        'Forbidden pair already exists'
+      );
+    });
+
+    test('admin can remove a forbidden pair', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      const forbiddenPair = {
+        forbiddenUser1Id: groupData.users.user1.id,
+        forbiddenUser2Id: groupData.users.user2.id,
+      };
+      await addForbiddenPair(page.request, forbiddenPair);
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      await page.goto('/admin');
+
+      await page.locator('[data-name="pairDelete"]').click();
+      await page.getByRole('button', { name: 'Delete pair' }).click();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'The forbidden pair was successfully deleted'
       );
     });
 
@@ -145,14 +172,162 @@ test.describe('admin tests', () => {
         forbiddenUser1Id: groupData.users.user1.id,
         forbiddenUser2Id: groupData.users.user2.id,
       };
-      await addForbiddenPair(page.request, forbiddenPair);
-      await draftSantaPairs(page.request);
+      const pairResult = await addForbiddenPair(page.request, forbiddenPair);
+      const draftFailedResult = await draftSantaPairs(page.request);
+      expect(draftFailedResult).toHaveProperty('error');
+      await removeForbiddenPair(page.request, pairResult.id);
+      const draftSuccessfulResult = await draftSantaPairs(page.request);
+      expect(draftSuccessfulResult).toHaveProperty('success');
+    });
+
+    test('multiple forbidden pairs should not draft each other', async ({
+      page,
+    }) => {
+      const groupData = {
+        users: {
+          admin: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user2: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user3: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user4: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user5: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user6: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user7: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user8: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user9: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+          user10: {
+            email: faker.internet.email(),
+            password: 'test',
+          },
+        },
+        group: {
+          name: faker.word.noun(),
+        },
+      };
+
+      await createNewGroup(page.request, groupData);
+      const forbiddenPair1 = {
+        forbiddenUser1Id: groupData.users.admin.id,
+        forbiddenUser2Id: groupData.users.user2.id,
+      };
+      const forbiddenPair2 = {
+        forbiddenUser1Id: groupData.users.user3.id,
+        forbiddenUser2Id: groupData.users.user4.id,
+      };
+      const forbiddenPair3 = {
+        forbiddenUser1Id: groupData.users.user5.id,
+        forbiddenUser2Id: groupData.users.user6.id,
+      };
+      const forbiddenPair4 = {
+        forbiddenUser1Id: groupData.users.user8.id,
+        forbiddenUser2Id: groupData.users.user7.id,
+      };
+      const forbiddenPair5 = {
+        forbiddenUser1Id: groupData.users.user10.id,
+        forbiddenUser2Id: groupData.users.user9.id,
+      };
+      await addForbiddenPair(page.request, forbiddenPair1);
+      await addForbiddenPair(page.request, forbiddenPair2);
+      await addForbiddenPair(page.request, forbiddenPair3);
+      await addForbiddenPair(page.request, forbiddenPair4);
+      await addForbiddenPair(page.request, forbiddenPair5);
+      let i = 0;
+      while (i < 10) {
+        const result = await draftSantaPairs(page.request);
+        if ('success' in result) {
+          break;
+        }
+        i++;
+      }
       await revealSantaPairs(page.request);
       await page.goto('/history');
       await page.getByText('N/A').click();
-      await expect(
-        page.getByRole('row', { name: groupData.users.user1.name }).first()
-      ).not.toHaveText(groupData.users.user2.name);
+
+      let santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.admin.email });
+      let parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user2.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user2.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.admin.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user3.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user4.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user4.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user3.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user5.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user6.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user6.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user5.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user7.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user8.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user8.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user7.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user9.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user10.email);
+
+      santa = page
+        .locator('*[data-id="santa"]')
+        .filter({ hasText: groupData.users.user10.email });
+      parent = page.getByRole('row').filter({ has: santa });
+      await expect(parent).not.toHaveText(groupData.users.user9.email);
     });
   });
 

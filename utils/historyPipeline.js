@@ -28,7 +28,6 @@ export async function getYearsByGroup(groupId) {
     return await client.collection('history').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getYearsByGroup: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -108,7 +107,6 @@ export async function getGiftsByYear(groupId, yearId) {
     return await client.collection('history').aggregate(pipeline).toArray();
   } catch (err) {
     log.error('getClient: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -139,7 +137,6 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
     return await client.collection('history').insertOne(document);
   } catch (err) {
     log.error('addDraftsForNextYear: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -157,7 +154,6 @@ export async function isNextYearDrafted(groupId) {
     return !result;
   } catch (err) {
     log.error('isNextYearDrafted: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -178,7 +174,6 @@ export async function isLastYearRevealed(groupId) {
     return result?.revealed;
   } catch (err) {
     log.error('isLastYearRevealed: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -195,7 +190,6 @@ export async function setLastYearRevealed(groupId, year) {
     return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('setLastYearRevealed: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -213,7 +207,6 @@ export async function updateLocationImage(yearId) {
     return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateLocationImage: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -234,7 +227,6 @@ export async function updateGiftImage(yearId, giftId) {
     return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateGiftImage: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -252,7 +244,6 @@ export async function updateGiftDescription(giftId, description) {
     return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateGiftDescription: ' + err);
-    await client.close();
     return null;
   }
 }
@@ -270,7 +261,6 @@ export async function updateYearDescription(yearId, description) {
     return await client.collection('history').updateOne(filter, update);
   } catch (err) {
     log.error('updateYearDescription: ' + err);
-    await client.close();
     return null;
   }
 }
