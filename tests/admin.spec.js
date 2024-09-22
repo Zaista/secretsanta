@@ -15,7 +15,7 @@ import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
 test.describe('admin tests', () => {
   test.describe('group settings tests', () => {
     test('admin can change group settings', async ({ page }) => {
-      const groupData = await createDraftedGroup(page.request);
+      const groupData = await createNewGroup(page.request);
       await login(
         page.request,
         groupData.users.admin.email,
@@ -40,6 +40,60 @@ test.describe('admin tests', () => {
         'Group settings updated'
       );
       await expect(page.locator('#groupName')).toHaveText(updatedName);
+    });
+  });
+
+  test.describe('user group tests', () => {
+    test('admin can invite a non existing user to the group', async ({
+      page,
+    }) => {
+      const groupData = await createNewGroup(page.request);
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      await page.goto('/admin');
+
+      await page.getByRole('button', { name: 'Invite new users' }).click();
+
+      const email = faker.internet.email();
+      await page.getByLabel('Email address').fill(email);
+      await page.getByRole('button', { name: 'Invite', exact: true }).click();
+
+      await expect(
+        page.locator('[data-name="userEmail"]').getByText(email)
+      ).toBeVisible();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        `User '${email}' invited to the group: ${groupData.group.name}`
+      );
+    });
+
+    test('admin can invite an existing user to the group', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const user = {
+        email: faker.internet.email(),
+        password: faker.internet.password(),
+      };
+      await registerUser(page.request, user);
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      await page.goto('/admin');
+
+      await page.getByRole('button', { name: 'Invite new users' }).click();
+
+      await page.getByLabel('Email address').fill(user.email);
+      await page.getByRole('button', { name: 'Invite', exact: true }).click();
+
+      await expect(
+        page.locator('[data-name="userEmail"]').getByText(user.email)
+      ).toBeVisible();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        `User '${user.email}' invited to the group: ${groupData.group.name}`
+      );
     });
   });
 

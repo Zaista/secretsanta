@@ -64,6 +64,43 @@ test.describe('chat tests', () => {
     );
   });
 
+  test('user/admin cannot/can delete a message', async ({ page }) => {
+    await login(
+      page.request,
+      groupData.users.user1.email,
+      groupData.users.user1.password
+    );
+    const message = {
+      userId: groupData.users.user2.id,
+      email: groupData.users.user2.email,
+      message: faker.word.words(10),
+    };
+    await sendMessage(page.request, message);
+
+    await login(
+      page.request,
+      groupData.users.user2.email,
+      groupData.users.user2.password
+    );
+    await page.goto('/chat');
+    await page.locator('[data-name="deleteChatMessage"]').click();
+    await page.getByRole('button', { name: 'Delete message' }).click();
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'User not allowed to delete messages!'
+    );
+    await login(
+      page.request,
+      groupData.users.admin.email,
+      groupData.users.admin.password
+    );
+    await page.goto('/chat');
+    await page.locator('[data-name="deleteChatMessage"]').click();
+    await page.getByRole('button', { name: 'Delete message' }).click();
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'The message was successfully deleted'
+    );
+  });
+
   test('user with no group cannot access chat page', async ({ page }) => {
     const user = {
       email: faker.internet.email(),

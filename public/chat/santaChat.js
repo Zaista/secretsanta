@@ -61,7 +61,7 @@ $(async function () {
             .text(`From: ${item.from || 'Anonymous'}`);
 
           $(chatElement)
-            .find('[data-name="msgDelete"]')
+            .find('[data-name="deleteChatMessage"]')
             .on('click', function () {
               chatId = item._id;
               chatEl = chatElement;
@@ -93,7 +93,7 @@ $(async function () {
             $(chatElement).find('[data-name="chatFrom"]').text('From: you');
 
             $(chatElement)
-              .find('[data-name="msgDelete"]')
+              .find('[data-name="deleteChatMessage"]')
               .on('click', function () {
                 chatId = response.insertedId;
                 chatEl = chatElement;

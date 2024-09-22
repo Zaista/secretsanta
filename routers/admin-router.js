@@ -98,7 +98,7 @@ adminRouter.post('/api/user', async (req, res) => {
   }
 
   const response = {
-    success: `User '${req.body.email}' invited to the group: ${activeGroup._id}`,
+    success: `User '${req.body.email}' invited to the group: ${activeGroup.name}`,
     userId: userId,
   };
   if (activeGroup.userAddedNotification === true) {
