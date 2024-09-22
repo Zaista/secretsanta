@@ -122,47 +122,7 @@ test.describe('email tests', () => {
 
 test.describe('chat tests', () => {
   test('user should receive a chat email', async ({ page }) => {
-    const defaultData = {
-      users: {
-        admin: {
-          email: faker.internet.email(),
-          password: 'test',
-          name: faker.person.fullName(),
-          address: {
-            street: faker.location.street(),
-            city: faker.location.city(),
-            postalCode: faker.location.zipCode(),
-            state: faker.location.state(),
-          },
-        },
-        user1: {
-          email: faker.internet.email(),
-          password: 'test',
-          name: faker.person.fullName(),
-          address: {
-            street: faker.location.street(),
-            city: faker.location.city(),
-            postalCode: faker.location.zipCode(),
-            state: faker.location.state(),
-          },
-        },
-        user2: {
-          email: faker.internet.email(),
-          password: 'test',
-          name: faker.person.fullName(),
-          address: {
-            street: faker.location.street(),
-            city: faker.location.city(),
-            postalCode: faker.location.zipCode(),
-            state: faker.location.state(),
-          },
-        },
-      },
-      group: {
-        name: faker.word.noun(),
-      },
-    };
-    const groupData = await createDraftedGroup(page.request, defaultData);
+    const groupData = await createDraftedGroup(page.request);
     const updatedGroupData = {
       name: groupData.group.name,
       userAddedNotification: false,
@@ -196,47 +156,7 @@ test.describe('chat tests', () => {
   });
 
   test('user should not receives a chat email', async ({ page }) => {
-    const defaultData = {
-      users: {
-        admin: {
-          email: faker.internet.email(),
-          password: 'test',
-          name: faker.person.fullName(),
-          address: {
-            street: faker.location.street(),
-            city: faker.location.city(),
-            postalCode: faker.location.zipCode(),
-            state: faker.location.state(),
-          },
-        },
-        user1: {
-          email: faker.internet.email(),
-          password: 'test',
-          name: faker.person.fullName(),
-          address: {
-            street: faker.location.street(),
-            city: faker.location.city(),
-            postalCode: faker.location.zipCode(),
-            state: faker.location.state(),
-          },
-        },
-        user2: {
-          email: faker.internet.email(),
-          password: 'test',
-          name: faker.person.fullName(),
-          address: {
-            street: faker.location.street(),
-            city: faker.location.city(),
-            postalCode: faker.location.zipCode(),
-            state: faker.location.state(),
-          },
-        },
-      },
-      group: {
-        name: faker.word.noun(),
-      },
-    };
-    const groupData = await createNewGroup(page.request, defaultData);
+    const groupData = await createNewGroup(page.request);
     await login(
       page.request,
       groupData.users.user2.email,
