@@ -121,7 +121,7 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
     revealed: false,
   };
 
-  santaPairs.forEach((santa, child) => {
+  santaPairs.forEach((child, santa) => {
     const gift = {
       santaId: santa,
       childId: child,
@@ -138,6 +138,26 @@ export async function addDraftsForNextYear(groupId, santaPairs) {
   } catch (err) {
     log.error('addDraftsForNextYear: ' + err);
     return null;
+  }
+}
+
+export async function getLastYearPairs(groupId) {
+  const client = await getClient();
+  const query = {
+    groupId: groupId,
+    year: { $lt: new Date().getFullYear() + 1 },
+  };
+  const options = {
+    sort: { year: -1 },
+    projection: { 'gifts.santaId': 1, 'gifts.childId': 1 },
+  };
+
+  try {
+    const result = await client.collection('history').findOne(query, options);
+    return result?.gifts ?? [];
+  } catch (err) {
+    log.error('getLastYearPairs: ' + err);
+    return [];
   }
 }
 
