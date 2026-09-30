@@ -1,95 +1,83 @@
 import { ObjectId } from 'mongodb';
 
-export function draftPairs(users, forbiddenPairs) {
-  // prepare a drafting bucket of friends
-  const friends = [];
+// upper bound on search steps, so an impossible combination of restrictions can't hang the server
+const MAX_STEPS = 100000;
 
-  const forbiddenPairsMap = new Map();
-  const santaPairs = new Map();
+/**
+ * Drafts santa pairs as a single chain in which every user is santa to the next one, and the last one is santa to the first.
+ *
+ * @param users list of users with _id
+ * @param forbiddenPairs list of { userId, forbiddenPairId }, forbidden in both directions (e.g. married couples)
+ * @param previousPairs list of { santaId, childId } from last year, forbidden only in the same direction
+ * @returns Map of santa ObjectId -> child ObjectId, or null if no valid draft was found
+ */
+export function draftPairs(users, forbiddenPairs, previousPairs = []) {
+  const friends = users.map((user) => user._id.toString());
+  if (friends.length < 2) return null;
 
-  users.forEach((user) => {
-    friends.push(user._id.toString());
-  });
-
-  // transform array of forbidden pairs into a map, for ease of use
+  // map of santa -> set of children that santa is not allowed to draft
+  const forbiddenMap = new Map();
+  const forbid = (santa, child) => {
+    if (!forbiddenMap.has(santa)) forbiddenMap.set(santa, new Set());
+    forbiddenMap.get(santa).add(child);
+  };
   forbiddenPairs.forEach((pair) => {
-    if (forbiddenPairsMap.get(pair.userId) === undefined) {
-      forbiddenPairsMap.set(pair.userId.toString(), [
-        pair.forbiddenPairId.toString(),
-      ]);
-    } else {
-      forbiddenPairsMap
-        .get(pair.userId.toString())
-        .push(pair.forbiddenPairId.toString());
-    }
+    forbid(pair.userId.toString(), pair.forbiddenPairId.toString());
+    forbid(pair.forbiddenPairId.toString(), pair.userId.toString());
   });
+  previousPairs.forEach((pair) => {
+    forbid(pair.santaId.toString(), pair.childId.toString());
+  });
+  const isAllowed = (santa, child) =>
+    santa !== child && !forbiddenMap.get(santa)?.has(child);
 
-  // pick one name randomly from the bucket to start with to be our current santa
-  const first = friends.splice(
-    Math.floor(Math.random() * friends.length),
-    1
-  )[0];
-  let santa = first;
-  let child;
+  // quick check: everyone needs at least one possible child and at least one possible santa
+  for (const friend of friends) {
+    if (!friends.some((other) => isAllowed(friend, other))) return null;
+    if (!friends.some((other) => isAllowed(other, friend))) return null;
+  }
 
-  // then while there are still names in the bucket
-  while (friends.length > 0) {
-    // create a temporary list of potential children for current santa
-    const temporaryList = Array(friends.length)
-      .fill()
-      .map((x, i) => i);
-    while (temporaryList.length >= 0) {
-      // if the list runs outs, tough luck
-      if (temporaryList.length === 0) {
-        return null;
-      }
+  // randomize the order, then search the chain with backtracking
+  const shuffled = shuffle(friends);
+  const first = shuffled[0];
+  const chain = [first];
+  const used = new Set([first]);
+  let steps = 0;
 
-      // pick a child name from the temporary list
-      const childIndex = temporaryList.splice(
-        Math.floor(Math.random() * temporaryList.length),
-        1
-      )[0];
-      child = friends[childIndex];
+  const extendChain = () => {
+    if (++steps > MAX_STEPS) return false;
+    const santa = chain[chain.length - 1];
+    if (chain.length === shuffled.length) return isAllowed(santa, first);
 
-      // if you happen to pick up a forbidden pair, continue with other children in temporary list
-      if (forbiddenPairsMap.get(santa)?.includes(child)) {
-        continue;
-      }
-      if (forbiddenPairsMap.get(child)?.includes(santa)) {
-        continue;
-      }
-
-      // if the pairing is valid, remove the child from the friends list as well
-      const index = friends.indexOf(child);
-      friends.splice(index, 1);
-
-      // add the two pairs in the santaPairs list
-      santaPairs.set(
-        ObjectId.createFromHexString(santa),
-        ObjectId.createFromHexString(child)
-      );
-
-      // now a child gets to be santa
-      santa = child;
-
-      // break out of pooling for potential pair as you've found one, and start anew
-      break;
+    for (const child of shuffle(shuffled)) {
+      if (used.has(child) || !isAllowed(santa, child)) continue;
+      chain.push(child);
+      used.add(child);
+      if (extendChain()) return true;
+      chain.pop();
+      used.delete(child);
     }
-  }
+    return false;
+  };
 
-  if (friends.length > 0) return null;
+  if (!extendChain()) return null;
 
-  // finally, set the last picked friend as a santa for the first one, unless it's forbidden
-  if (
-    forbiddenPairsMap.get(santa)?.includes(first) ||
-    forbiddenPairsMap.get(first)?.includes(santa)
-  ) {
-    return null;
-  }
-
-  santaPairs.set(
-    ObjectId.createFromHexString(santa),
-    ObjectId.createFromHexString(first)
-  );
+  const santaPairs = new Map();
+  chain.forEach((santa, i) => {
+    const child = chain[(i + 1) % chain.length];
+    santaPairs.set(
+      ObjectId.createFromHexString(santa),
+      ObjectId.createFromHexString(child)
+    );
+  });
   return santaPairs;
+}
+
+function shuffle(array) {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
 }

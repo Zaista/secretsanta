@@ -22,6 +22,7 @@ import {
   isLastYearRevealed,
   setLastYearRevealed,
   getYearsByGroup,
+  getLastYearPairs,
 } from '../utils/historyPipeline.js';
 import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
@@ -234,11 +235,13 @@ adminRouter.put('/api/draft', async (req, res) => {
 
   const users = await getUsers(req.session.activeGroup._id);
   const forbiddenPairs = await getForbiddenPairs(req.session.activeGroup._id);
-  const santaPairs = draftPairs(users, forbiddenPairs);
+  const lastYearPairs = await getLastYearPairs(req.session.activeGroup._id);
+  const santaPairs = draftPairs(users, forbiddenPairs, lastYearPairs);
   if (!santaPairs) {
     log.error(`Unsuccessful draft for group ${req.session.activeGroup._id}`);
     return res.send({
-      error: 'Error matching pairs, try again or recheck forbidden pairs',
+      error:
+        'Error matching pairs, recheck forbidden pairs (pairs from last year are also forbidden)',
     });
   }
 
