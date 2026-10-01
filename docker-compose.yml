@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongo:
     image: mongo
@@ -12,27 +10,17 @@ services:
     ports:
       - '27017:27017'
 
-  minio:
-    image: minio/minio
+  # S3-compatible storage for local development and CI; the app talks to it through the minio client
+  s3:
+    image: adobe/s3mock:5.2.3
     restart: always
+    # the bind-mounted /data is created by docker as root, so the default image user can't write to it
+    user: root
     environment:
-      MINIO_ROOT_USER: ${minioAccessKey}
-      MINIO_ROOT_PASSWORD: ${minioSecretKey}
-    command: 'server /data --console-address ":9001"'
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: ${minioBucket}
+      COM_ADOBE_TESTING_S3MOCK_STORE_ROOT: /data
+      COM_ADOBE_TESTING_S3MOCK_STORE_RETAIN_FILES_ON_EXIT: 'true'
     volumes:
-      - ./private/minio/data:/data
+      - ./private/s3mock/data:/data
     ports:
-      - '9000:${minioPort}'
-      - '9001:9001'
-
-  createbuckets:
-    image: minio/mc
-    depends_on:
-      - minio
-    entrypoint: >
-      /bin/sh -c "
-      /usr/bin/mc config host add myminio http://minio:${minioPort} ${minioAccessKey} ${minioSecretKey};
-      /usr/bin/mc mb myminio/${minioBucket};
-      /usr/bin/mc anonymous set download myminio/${minioBucket};
-      exit 0;
-      "
+      - '${minioPort}:9090'
