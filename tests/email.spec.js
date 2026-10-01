@@ -6,6 +6,14 @@ import { inviteUserToGroup, updateGroup } from './helpers/admin.js';
 import { createDraftedGroup, createNewGroup } from './helpers/setup.js';
 import { sendMessage } from './helpers/chat.js';
 
+// compare only the email content, not the ethereal.email page around it, which changes independently
+async function expectEmailScreenshot(page, name, maskedSelectors) {
+  const email = page.frameLocator('#message iframe');
+  await expect(email.locator('body')).toHaveScreenshot(name, {
+    mask: maskedSelectors.map((selector) => email.locator(selector)),
+  });
+}
+
 test.describe('email tests', () => {
   test('user should receive an email when forgot password is triggered', async ({
     page,
@@ -20,17 +28,10 @@ test.describe('email tests', () => {
     await expect(responseJson).toHaveProperty('emailUrl');
     await page.goto(responseJson.emailUrl);
 
-    await expect(page).toHaveScreenshot('forgot-password-email.png', {
-      mask: [
-        page.locator('.mp_address_group').nth(1),
-        page.locator('.datestring'),
-        // Message-ID
-        page.locator('#message-header div').nth(4).locator('span'),
-        page.frameLocator('#message iframe').locator('#email-placeholder'),
-        page.frameLocator('#message iframe').locator('#password-placeholder'),
-      ],
-      fullPage: true,
-    });
+    await expectEmailScreenshot(page, 'forgot-password-email.png', [
+      '#email-placeholder',
+      '#password-placeholder',
+    ]);
   });
 
   test('new user receives an email when invited to the group', async ({
@@ -64,17 +65,10 @@ test.describe('email tests', () => {
     await expect(resultWithUrl).toHaveProperty('emailUrl');
     await page.goto(resultWithUrl.emailUrl);
 
-    await expect(page).toHaveScreenshot('invite-email.png', {
-      mask: [
-        page.locator('.mp_address_group').nth(1),
-        page.locator('.datestring'),
-        // Message-ID
-        page.locator('#message-header div').nth(4).locator('span'),
-        page.frameLocator('#message iframe').locator('#group-placeholder'),
-        page.frameLocator('#message iframe').locator('#password-placeholder'),
-      ],
-      fullPage: true,
-    });
+    await expectEmailScreenshot(page, 'invite-email.png', [
+      '#group-placeholder',
+      '#password-placeholder',
+    ]);
   });
 
   test('existing user receives an email when invited to the group', async ({
@@ -106,17 +100,10 @@ test.describe('email tests', () => {
     await expect(resultWithUrl).toHaveProperty('emailUrl');
     await page.goto(resultWithUrl.emailUrl);
 
-    await expect(page).toHaveScreenshot('invite-email.png', {
-      mask: [
-        page.locator('.mp_address_group').nth(1),
-        page.locator('.datestring'),
-        // Message-ID
-        page.locator('#message-header div').nth(4).locator('span'),
-        page.frameLocator('#message iframe').locator('#group-placeholder'),
-        page.frameLocator('#message iframe').locator('#password-placeholder'),
-      ],
-      fullPage: true,
-    });
+    await expectEmailScreenshot(page, 'invite-email.png', [
+      '#group-placeholder',
+      '#password-placeholder',
+    ]);
   });
 });
 
