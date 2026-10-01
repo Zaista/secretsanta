@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-A Secret Santa web app: users belong to groups; a group admin drafts santa→child pairs for the **next** year, users reveal their pair, and past years become visible in history once the admin "reveals" them. Node.js 20+ (ESM, `"type": "module"`) + Express, MongoDB, S3-compatible object storage for images (production endpoint from the `minio*` settings; S3Mock locally), vanilla jQuery/Bootstrap frontend. Deployed to Google App Engine.
+A Secret Santa web app: users belong to groups; a group admin drafts santa→child pairs for the **next** year, users reveal their pair, and past years become visible in history once the admin "reveals" them. Node.js 24 (ESM, `"type": "module"`) + Express, MongoDB, S3-compatible object storage for images (production endpoint from the `minio*` settings; S3Mock locally), vanilla jQuery/Bootstrap frontend. Deployed to Google App Engine.
 
 ## Commands
 
@@ -22,7 +22,7 @@ npm run format                # lint + prettier check (what CI runs)
 
 - Local config comes from `.env` (loaded by `utils/environment.js` only when `profile !== 'production'`). Keys: `profile`, `adminElevatedPrivileges`, `sessionKey`, `mongodbUri`, `database`, `sendgridApi`, `minio*`. In production these are injected into `app.yaml` by `cloudbuild.yaml` placeholder substitution — adding a new env var means updating `app.yaml`, `cloudbuild.yaml`, and `.env`.
 - Docker Compose is only for local development and CI; production never runs it. Its data lives in `private/` (root-owned on Linux), which the prettier scripts exclude with `"!private"`.
-- Most tests are end-to-end and need MongoDB and S3Mock running; `tests/drafter.spec.js` unit-tests the drafter without a browser or database. CI (`.github/workflows/ci.yml`) runs `docker compose`, `npm run format`, then Playwright on Node 20. Playwright 1.46/1.47 hangs on Node 24, so keep Playwright current.
+- Most tests are end-to-end and need MongoDB and S3Mock running; `tests/drafter.spec.js` unit-tests the drafter without a browser or database. CI (`.github/workflows/ci.yml`) runs `docker compose`, `npm run format`, then Playwright on Node 24 (matching the App Engine `nodejs24` runtime in `app.yaml`). Playwright 1.46/1.47 hangs on Node 24, so keep Playwright current.
 - `tests/email.spec.js` screenshots only the email body inside the ethereal.email message iframe (not Ethereal's own page, which changes independently), with per-platform snapshots (`-win32.png`, `-linux.png`). With `docker compose up -d` running, regenerate the Linux ones in the Playwright image matching the installed version:
 
   ```bash
