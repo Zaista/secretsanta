@@ -136,7 +136,10 @@ test.describe('admin tests', () => {
       );
 
       await page.goto('/history');
-      await expect(page.locator('[data-id="yearTitle"]')).toHaveText('2025');
+      // pairs are always drafted for the next year
+      await expect(page.locator('[data-id="yearTitle"]')).toHaveText(
+        String(new Date().getFullYear() + 1)
+      );
 
       await page.locator('[data-id="yearTitle"]').click();
 
