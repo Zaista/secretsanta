@@ -12,8 +12,8 @@
     "test:ci": "npx playwright test",
     "format": "npm run lint && npm run prettier",
     "format:fix": "npm run lint:fix && npm run prettier:fix",
-    "prettier": "sudo npx prettier . --check",
-    "prettier:fix": "prettier . --write",
+    "prettier": "prettier . \"!private\" --check",
+    "prettier:fix": "prettier . \"!private\" --write",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
