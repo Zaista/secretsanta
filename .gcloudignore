@@ -19,7 +19,7 @@
 
 # local development files:
 /private
-docker-compose.yaml
+docker-compose.yml
 
 # test files
 /tests
