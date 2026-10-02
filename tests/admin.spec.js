@@ -223,6 +223,36 @@ test.describe('admin tests', () => {
       );
     });
 
+    test('removing a user deletes their forbidden pairs', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const { admin, user1, user2 } = groupData.users;
+      await addForbiddenPair(page.request, {
+        forbiddenUser1Id: user1.id,
+        forbiddenUser2Id: user2.id,
+      });
+      await addForbiddenPair(page.request, {
+        forbiddenUser1Id: admin.id,
+        forbiddenUser2Id: user2.id,
+      });
+      await page.goto('/admin');
+
+      await page
+        .locator('[data-name="userRow"]', { hasText: user1.email })
+        .locator('[data-name="userRemove"]')
+        .click();
+      await page.getByRole('button', { name: 'Remove user' }).click();
+      await expect(page.locator('#footerAlert')).toContainText(
+        `User '${user1.email}' removed from the group`
+      );
+
+      const forbiddenPairs = await (
+        await page.request.get('admin/api/forbidden')
+      ).json();
+      expect(forbiddenPairs).toHaveLength(1);
+      expect(forbiddenPairs[0].userId).toEqual(admin.id);
+      expect(forbiddenPairs[0].forbiddenPairId).toEqual(user2.id);
+    });
+
     test('forbidden pairs should not draft each other', async ({ page }) => {
       const groupData = await createNewGroup(page.request);
       const forbiddenPair = {

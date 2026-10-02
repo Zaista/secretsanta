@@ -87,7 +87,6 @@ export async function addUserToGroup(groupId, email, role) {
 
 export async function removeUserFromGroup(userId, groupId) {
   const client = await getClient();
-  const filter = { _id: userId };
   const update = {
     $pull: {
       groups: { groupId: groupId },
@@ -95,13 +94,19 @@ export async function removeUserFromGroup(userId, groupId) {
   };
 
   try {
-    const result = await client.collection('users').updateOne(filter, update);
+    const _id = ObjectId.createFromHexString(userId);
+    const result = await client.collection('users').updateOne({ _id }, update);
     if (result.acknowledged !== true || result.modifiedCount !== 1) {
       log.error(
         'removeUserFromGroup: failed to remove the user from the group'
       );
       return null;
     }
+    // forbidden pairs of a removed user would otherwise be left without a user
+    await client.collection('forbiddenPairs').deleteMany({
+      groupId: groupId,
+      $or: [{ userId: _id }, { forbiddenPairId: _id }],
+    });
     return true;
   } catch (err) {
     log.error('removeUserFromGroup: ' + err);
