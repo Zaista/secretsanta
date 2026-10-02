@@ -7,6 +7,8 @@ import {
   draftSantaPairs,
   revealSantaPairs,
   removeForbiddenPair,
+  removeUserFromGroup,
+  setUserRole,
 } from './helpers/admin.js';
 import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
 
@@ -164,6 +166,101 @@ test.describe('admin tests', () => {
       await page.goto('/admin');
       await expect(
         page.getByRole('heading', { name: 'Group settings' })
+      ).toBeVisible();
+    });
+
+    test('the only admin cannot make himself a user', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const { admin } = groupData.users;
+      await page.goto('/admin');
+
+      const userSettings = page.locator('#user-settings');
+      await userSettings
+        .getByRole('row')
+        .filter({ hasText: admin.email })
+        .getByLabel('Role')
+        .selectOption({ label: 'User' });
+      await userSettings.getByRole('button', { name: 'Save changes' }).click();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'The group needs an admin, make another user an admin first'
+      );
+
+      await page.reload();
+      await expect(
+        userSettings
+          .getByRole('row')
+          .filter({ hasText: admin.email })
+          .getByLabel('Role')
+      ).toHaveValue('admin');
+    });
+
+    test('admin can make himself a user when another admin exists', async ({
+      page,
+    }) => {
+      const groupData = await createNewGroup(page.request);
+      const { admin, user1 } = groupData.users;
+      await setUserRole(page.request, user1.id, 'admin');
+      await page.goto('/admin');
+
+      const userSettings = page.locator('#user-settings');
+      await userSettings
+        .getByRole('row')
+        .filter({ hasText: admin.email })
+        .getByLabel('Role')
+        .selectOption({ label: 'User' });
+      await userSettings.getByRole('button', { name: 'Save changes' }).click();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'Modified 1 user(s)'
+      );
+
+      // the session picks up the new role on the next request
+      await page.goto('/admin');
+      await expect(page).toHaveTitle('Secret Santa');
+      await expect(
+        page.getByRole('heading', { name: 'Group settings' })
+      ).toBeHidden();
+    });
+
+    test('the only admin cannot remove himself from the group', async ({
+      page,
+    }) => {
+      const groupData = await createNewGroup(page.request);
+      const { admin } = groupData.users;
+      await page.goto('/admin');
+
+      await page
+        .getByRole('row')
+        .filter({ hasText: admin.email })
+        .getByRole('button', { name: 'Remove from group' })
+        .click();
+      await page.getByRole('button', { name: 'Remove user' }).click();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'The group needs an admin, make another user an admin first'
+      );
+
+      await page.reload();
+      await expect(
+        page.getByRole('row').filter({ hasText: admin.email })
+      ).toBeVisible();
+    });
+
+    test('user cannot remove users from the group', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const { user1, user2 } = groupData.users;
+      await login(page.request, user1.email, user1.password);
+
+      // users have no UI for this, so the attempt goes through the API
+      const response = await removeUserFromGroup(page.request, user2.id);
+      expect(response.status()).toBe(403);
+
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      await page.goto('/admin');
+      await expect(
+        page.getByRole('row').filter({ hasText: user2.email })
       ).toBeVisible();
     });
 
@@ -338,8 +435,9 @@ test.describe('admin tests', () => {
       await expect(pairRows).toHaveCount(2);
 
       await page
-        .locator('[data-name="userRow"]', { hasText: user1.email })
-        .locator('[data-name="userRemove"]')
+        .getByRole('row')
+        .filter({ hasText: user1.email })
+        .getByRole('button', { name: 'Remove from group' })
         .click();
       await page.getByRole('button', { name: 'Remove user' }).click();
       await expect(page.locator('#footerAlert')).toContainText(

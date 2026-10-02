@@ -45,3 +45,18 @@ export function removeForbiddenPair(request, forbiddenPairId) {
 export function revealSantaPairs(request) {
   return request.put('admin/api/reveal');
 }
+
+export function setUserRole(request, userId, role) {
+  return request.post('admin/api/users', {
+    form: {
+      'usersRoles[0][_id]': userId,
+      'usersRoles[0][role]': role,
+    },
+  });
+}
+
+export function removeUserFromGroup(request, userId) {
+  return request.post('admin/api/user/delete', {
+    form: { _id: userId },
+  });
+}
