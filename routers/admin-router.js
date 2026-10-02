@@ -296,6 +296,12 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
 
   if (temporaryPassword) {
     emailText = emailText.replace(/{{temporaryPassword}}/, temporaryPassword);
+  } else {
+    // existing users already have a password
+    emailText = emailText.replace(
+      /<!--passwordStart-->[\s\S]*?<!--passwordEnd-->/,
+      ''
+    );
   }
 
   const emailTemplate = {
