@@ -219,21 +219,23 @@ $(async () => {
       });
     });
 
-    $.getJSON(`${apiUrl}/draft`, (response) => {
-      if (response.success) {
+    // wait for both, so the reveal status is appended after the draft status
+    Promise.all([
+      $.getJSON(`${apiUrl}/draft`),
+      $.getJSON(`${apiUrl}/reveal`),
+    ]).then(([draftResponse, revealResponse]) => {
+      const nextYear = new Date().getFullYear() + 1;
+      if (draftResponse.success) {
         $('#yearAlert').text(
-          `Santa pairs for year ${new Date().getFullYear() + 1} were not drafted yet`
+          `Santa pairs for year ${nextYear} were not drafted yet`
         );
         $('#draft').removeAttr('disabled');
       } else {
         $('#yearAlert').text(
-          `Santa pairs for year ${new Date().getFullYear() + 1} were already drafted`
+          `Santa pairs for year ${nextYear} were already drafted`
         );
       }
-    });
-
-    $.getJSON(`${apiUrl}/reveal`, (response) => {
-      if (response.success) {
+      if (revealResponse.success) {
         $('#reveal').removeAttr('disabled');
         $('#yearAlert').append(' but the pairs were not yet revealed');
       }

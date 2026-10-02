@@ -10,13 +10,21 @@ import {
 } from './helpers/admin.js';
 import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
 
+// the dialogs open through bootstrap before the page script binds their
+// buttons; the drafting status is shown only after that
+async function waitForAdminPage(page) {
+  await expect(page.getByText(/Santa pairs for year \d+ were/)).toBeVisible();
+}
+
 async function inviteUser(page, email) {
+  await waitForAdminPage(page);
   await page.getByRole('button', { name: 'Invite new users' }).click();
   await page.getByLabel('Email address').fill(email);
   await page.getByRole('button', { name: 'Invite', exact: true }).click();
 }
 
 async function addForbiddenPairInDialog(page, userName, forbiddenUserName) {
+  await waitForAdminPage(page);
   await page.getByRole('button', { name: 'Add new pair' }).click();
   await page.getByLabel('This user').selectOption({ label: userName });
   await page
@@ -148,7 +156,9 @@ test.describe('admin tests', () => {
 
       await page.reload();
       await expect(
-        page.getByText(`Santa pairs for year ${nextYear} were already drafted`)
+        page.getByText(
+          `Santa pairs for year ${nextYear} were already drafted but the pairs were not yet revealed`
+        )
       ).toBeVisible();
     });
 
