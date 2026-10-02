@@ -3,6 +3,7 @@ import { loadEnvironment } from './utils/environment.js';
 import session from 'cookie-session';
 import { renderer } from './utils/renderer.js';
 import { getLogger } from './utils/logger.js';
+import { getVersion } from './utils/version.js';
 
 // routers
 import { santaRouter } from './routers/santa-router.js';
@@ -73,6 +74,10 @@ app.use('/modules/menu', (req, res) => {
 
 app.use('/modules/footer', (req, res) => {
   res.render('modules/footer.html');
+});
+
+app.get('/api/version', (req, res) => {
+  res.send(getVersion());
 });
 
 app.use('/api/setActiveGroup', (req, res) => {
