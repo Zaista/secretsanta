@@ -106,9 +106,11 @@ test.describe('email tests', () => {
     await expect(resultWithUrl).toHaveProperty('emailUrl');
     await page.goto(resultWithUrl.emailUrl);
 
-    await expectEmailScreenshot(page, 'invite-email.png', [
+    // existing users keep their own password, so the email has none
+    const email = page.frameLocator('#message iframe');
+    await expect(email.getByText('temporary password')).toBeHidden();
+    await expectEmailScreenshot(page, 'existing-user-invite-email.png', [
       '#group-placeholder',
-      '#password-placeholder',
     ]);
   });
 });
