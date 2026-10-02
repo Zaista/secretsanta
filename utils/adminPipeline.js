@@ -148,7 +148,8 @@ export async function updateUsersRoles(groupId, usersRoles) {
     for (const userData of usersRoles) {
       const filter = {
         'groups.groupId': groupId,
-        _id: userData._id,
+        // the ids arrive as strings from the form
+        _id: ObjectId.createFromHexString(userData._id),
       };
       const update = {
         $set: { 'groups.$.role': userData.role },
