@@ -6,10 +6,8 @@ import { createNewGroup } from './helpers/setup.js';
 
 test.describe('profile tests', () => {
   let groupData;
-  let page;
 
-  test.beforeAll('setup', async ({ browser }) => {
-    page = await browser.newPage();
+  test.beforeEach(async ({ page }) => {
     groupData = await createNewGroup(page.request);
   });
 
@@ -43,11 +41,14 @@ test.describe('profile tests', () => {
     );
     await expect(page.getByLabel('Email')).toBeDisabled();
 
-    await page.getByPlaceholder('Description').fill(faker.word.words());
+    const description = faker.word.words();
+    await page.getByPlaceholder('Description').fill(description);
     await page.getByRole('button', { name: 'Save changes' }).click();
     await expect(page.locator('#footerAlert')).toHaveText(
       'Profile updated successfully'
     );
+    await page.reload();
+    await expect(page.getByPlaceholder('Description')).toHaveValue(description);
 
     await page.locator('#image').click();
     await page.locator('#uploadImage').setInputFiles('tests/santaGift.jpg');
@@ -59,6 +60,11 @@ test.describe('profile tests', () => {
       'src',
       /data:image\/png/
     );
+    await page.reload();
+    await expect(page.getByAltText('Profile image')).toHaveAttribute(
+      'src',
+      /profile\/api\/image\?id=/
+    );
   });
 
   test('admin can update other profiles', async ({ page }) => {
@@ -67,17 +73,19 @@ test.describe('profile tests', () => {
       groupData.users.admin.email,
       groupData.users.admin.password
     );
-    await page.goto('/friends');
-    await page.getByText(groupData.users.user1.name).click();
+    await page.goto(`/profile?id=${groupData.users.user1.id}`);
 
     await expect(page.getByPlaceholder('Name')).toHaveValue(
       groupData.users.user1.name
     );
-    await page.getByPlaceholder('Description').fill(faker.word.words());
+    const description = faker.word.words();
+    await page.getByPlaceholder('Description').fill(description);
     await page.getByRole('button', { name: 'Save changes' }).click();
     await expect(page.locator('#footerAlert')).toHaveText(
       'Profile updated successfully'
     );
+    await page.reload();
+    await expect(page.getByPlaceholder('Description')).toHaveValue(description);
   });
 
   test('user cannot update other profiles', async ({ page }) => {
@@ -86,8 +94,7 @@ test.describe('profile tests', () => {
       groupData.users.user1.email,
       groupData.users.user1.password
     );
-    await page.goto('/friends');
-    await page.getByText(groupData.users.user2.name).click();
+    await page.goto(`/profile?id=${groupData.users.user2.id}`);
 
     await expect(page.getByPlaceholder('Name')).toHaveValue(
       groupData.users.user2.name

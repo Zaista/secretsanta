@@ -5,12 +5,18 @@ import { login, registerUser } from './helpers/login.js';
 import { sendMessage } from './helpers/chat.js';
 import { createNewGroup } from './helpers/setup.js';
 
+async function deleteMessage(page, message) {
+  await page
+    .locator('.alert', { hasText: message })
+    .locator('[data-name="deleteChatMessage"]')
+    .click();
+  await page.getByRole('button', { name: 'Delete message' }).click();
+}
+
 test.describe('chat tests', () => {
   let groupData;
-  let page;
 
-  test.beforeAll('setup', async ({ browser }) => {
-    page = await browser.newPage();
+  test.beforeEach(async ({ page }) => {
     groupData = await createNewGroup(page.request);
   });
 
@@ -83,22 +89,27 @@ test.describe('chat tests', () => {
       groupData.users.user2.password
     );
     await page.goto('/chat');
-    await page.locator('[data-name="deleteChatMessage"]').click();
-    await page.getByRole('button', { name: 'Delete message' }).click();
+    await deleteMessage(page, message.message);
     await expect(page.locator('#footerAlert')).toHaveText(
       'User not allowed to delete messages!'
     );
+    await page.reload();
+    await expect(page.getByText(message.message)).toBeVisible();
+
     await login(
       page.request,
       groupData.users.admin.email,
       groupData.users.admin.password
     );
     await page.goto('/chat');
-    await page.locator('[data-name="deleteChatMessage"]').click();
-    await page.getByRole('button', { name: 'Delete message' }).click();
+    await deleteMessage(page, message.message);
     await expect(page.locator('#footerAlert')).toHaveText(
       'The message was successfully deleted'
     );
+    await expect(page.getByText(message.message)).toBeHidden();
+    await page.reload();
+    await expect(page.locator('#footerAlert')).toHaveText('No chat activity');
+    await expect(page.getByText(message.message)).toBeHidden();
   });
 
   test('user with no group cannot access chat page', async ({ page }) => {

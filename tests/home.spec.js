@@ -15,32 +15,35 @@ test.describe('home tests', () => {
       'Click the image to reveal your pair'
     );
 
-    const topSecretImage = await page.getByAltText('Top secret image');
-    await expect(await topSecretImage.getAttribute('src')).toEqual(
+    const topSecretImage = page.getByAltText('Top secret image');
+    await expect(topSecretImage).toHaveAttribute(
+      'src',
       '/resources/images/topSecret.png'
     );
 
     await topSecretImage.click();
-    await expect(topSecretImage.getAttribute('src')).not.toEqual(
-      '/resources/images/topSecret.png'
+    // the drafted users have no profile image
+    await expect(topSecretImage).toHaveAttribute(
+      'src',
+      '/resources/images/placeholder.png'
     );
 
     const santa = await getSanta(page.request);
-    expect(await page.locator('#santaName').textContent()).toContain(
-      santa.name
-    );
-    expect(await page.locator('#santaEmail').textContent()).toContain(
-      santa.email
-    );
-    expect(await page.locator('#santaStreet').textContent()).toContain(
-      santa.address.street
-    );
-    expect(await page.locator('#santaCity').textContent()).toContain(
-      santa.address.city
-    );
-    expect(await page.locator('#santaCity').textContent()).toContain(
-      santa.address.postalCode
-    );
+    await expect(
+      page.getByRole('heading', { name: santa.name, exact: true })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: santa.email, exact: true })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: santa.address.street, exact: true })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', {
+        name: `${santa.address.postalCode} ${santa.address.city}`,
+        exact: true,
+      })
+    ).toBeVisible();
   });
 
   test('user can create a new group', async ({ page }) => {
