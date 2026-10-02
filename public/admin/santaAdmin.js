@@ -98,47 +98,57 @@ $(async () => {
     });
 
     // fill up the forbiddenPair table with forbidden pairs
-    $.getJSON(`${apiUrl}/forbidden`, function (result) {
-      $.get('admin/pair.html', (pairTemplate) => {
-        result.forEach((pair, index) => {
-          const _pairElement = $.parseHTML(pairTemplate);
-          $(_pairElement).find('[data-name="pairId"]').val(pair._id);
-          $(_pairElement).find('[data-name="pairIndex"]').text(++index);
-          let santaName = pair.user;
-          if (pair.user === undefined || pair.user === '') {
-            santaName = pair.userEmail;
-          }
-          $(_pairElement).find('[data-name="pairUser"]').text(santaName);
-          let childName = pair.forbiddenPair;
-          if (pair.forbiddenPair === undefined || pair.forbiddenPair === '') {
-            childName = pair.forbiddenPairEmail;
-          }
-          $(_pairElement)
-            .find('[data-name="pairForbiddenPair"]')
-            .text(childName);
+    function loadForbiddenPairs() {
+      $.getJSON(`${apiUrl}/forbidden`, function (result) {
+        $.get('admin/pair.html', (pairTemplate) => {
+          $('#forbiddenPairsTable tbody').empty();
+          result.forEach((pair, index) => {
+            const _pairElement = $.parseHTML(pairTemplate);
+            $(_pairElement).find('[data-name="pairId"]').val(pair._id);
+            $(_pairElement).find('[data-name="pairIndex"]').text(++index);
+            let santaName = pair.user;
+            if (pair.user === undefined || pair.user === '') {
+              santaName = pair.userEmail;
+            }
+            $(_pairElement).find('[data-name="pairUser"]').text(santaName);
+            let childName = pair.forbiddenPair;
+            if (pair.forbiddenPair === undefined || pair.forbiddenPair === '') {
+              childName = pair.forbiddenPairEmail;
+            }
+            $(_pairElement)
+              .find('[data-name="pairForbiddenPair"]')
+              .text(childName);
 
-          $(_pairElement)
-            .find('[data-name="pairDelete"]')
-            .on('click', () => {
-              pairElement = _pairElement;
-            });
-          $('#forbiddenPairsTable tbody').append(_pairElement);
+            $(_pairElement)
+              .find('[data-name="pairDelete"]')
+              .on('click', () => {
+                pairElement = _pairElement;
+              });
+            $('#forbiddenPairsTable tbody').append(_pairElement);
+          });
         });
       });
-    });
+    }
+    loadForbiddenPairs();
 
     // fill up the forbiddenPair modal select elements with usernames
-    $.getJSON('/friends/api/list', function (result) {
-      result.forEach(function (friend) {
-        let name = friend.email;
-        if (friend.name !== undefined && friend.name !== '') {
-          name = friend.name;
-        }
-        $('#forbiddenUser1, #forbiddenUser2').append(
-          `<option value="${friend._id}" data-email="${friend.email}">${name}</option>`
-        );
+    function loadForbiddenPairUsers() {
+      $.getJSON('/friends/api/list', function (result) {
+        $('#forbiddenUser1, #forbiddenUser2')
+          .find('option[value!=""]')
+          .remove();
+        result.forEach(function (friend) {
+          let name = friend.email;
+          if (friend.name !== undefined && friend.name !== '') {
+            name = friend.name;
+          }
+          $('#forbiddenUser1, #forbiddenUser2').append(
+            `<option value="${friend._id}" data-email="${friend.email}">${name}</option>`
+          );
+        });
       });
-    });
+    }
+    loadForbiddenPairUsers();
     $('#forbiddenPairsForm').on('submit', () => {
       const pair = {
         forbiddenUser1Id: $('#forbiddenUser1').val(),
@@ -180,6 +190,9 @@ $(async () => {
       };
       $.post(`${apiUrl}/user`, newUser, (result) => {
         showAlert(result);
+        if (result.success) {
+          loadForbiddenPairUsers();
+        }
         $.get('admin/user.html', (userTemplate) => {
           const _userElement = $.parseHTML(userTemplate);
           const rowIndex = $('#usersTable tr').length;
@@ -274,6 +287,9 @@ $(async () => {
           showAlert(response);
           if (response.success) {
             $(userElement).remove();
+            // the user's forbidden pairs were deleted along with them
+            loadForbiddenPairs();
+            loadForbiddenPairUsers();
           }
         }
       );
