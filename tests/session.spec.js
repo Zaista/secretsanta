@@ -4,6 +4,12 @@ import { faker } from '@faker-js/faker';
 import { login, registerUser } from './helpers/login.js';
 import { createGroup } from './helpers/admin.js';
 
+async function loginWithForm(page, email, password) {
+  await page.getByLabel('Santa email').fill(email);
+  await page.getByLabel('Santa password').fill(password);
+  await page.getByRole('button', { name: 'Login' }).click();
+}
+
 test.describe('session tests', () => {
   test('user can register', async ({ page }) => {
     await page.goto('/');
@@ -33,9 +39,7 @@ test.describe('session tests', () => {
     await registerUser(request, user);
 
     await page.goto('/');
-    await page.getByLabel('Santa email').fill(user.email);
-    await page.getByLabel('Santa password').fill(user.password);
-    await page.getByRole('button', { name: 'Login' }).click();
+    await loginWithForm(page, user.email, user.password);
     await expect(page.locator('#footerAlert')).toHaveText(
       'No Secret Santa group selected'
     );
@@ -81,10 +85,7 @@ test.describe('session tests', () => {
     };
 
     await page.goto('/');
-    await page.getByLabel('Santa email').fill(user.email);
-    await page.getByLabel('Santa password').fill(user.password);
-
-    await page.getByRole('button', { name: 'Login' }).click();
+    await loginWithForm(page, user.email, user.password);
     await expect(page.locator('#footerAlert')).toHaveText(
       'Email or password wrong'
     );

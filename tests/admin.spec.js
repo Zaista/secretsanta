@@ -3,14 +3,34 @@ import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { login, registerUser } from './helpers/login.js';
 import {
-  createGroup,
-  inviteUserToGroup,
   addForbiddenPair,
   draftSantaPairs,
   revealSantaPairs,
   removeForbiddenPair,
 } from './helpers/admin.js';
 import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
+
+async function inviteUser(page, email) {
+  await page.getByRole('button', { name: 'Invite new users' }).click();
+  await page.getByLabel('Email address').fill(email);
+  await page.getByRole('button', { name: 'Invite', exact: true }).click();
+}
+
+async function addForbiddenPairInDialog(page, userName, forbiddenUserName) {
+  await page.getByRole('button', { name: 'Add new pair' }).click();
+  await page.getByLabel('This user').selectOption({ label: userName });
+  await page
+    .getByLabel('Will never be paired with')
+    .selectOption({ label: forbiddenUserName });
+  await page.getByRole('button', { name: 'Forbid' }).click();
+}
+
+function forbiddenPairRow(page, userName, forbiddenUserName) {
+  return page
+    .getByRole('row')
+    .filter({ hasText: userName })
+    .filter({ hasText: forbiddenUserName });
+}
 
 test.describe('admin tests', () => {
   test.describe('group settings tests', () => {
@@ -40,6 +60,18 @@ test.describe('admin tests', () => {
         'Group settings updated'
       );
       await expect(page.locator('#groupName')).toHaveText(updatedName);
+
+      await page.reload();
+      await expect(page.getByLabel('Group name')).toHaveValue(updatedName);
+      await expect(
+        page.getByLabel('Email a user when invited to the group')
+      ).toBeChecked();
+      await expect(
+        page.getByLabel('Email a user when chat message is received')
+      ).toBeChecked();
+      await expect(
+        page.getByLabel('Email users when new year is drafted')
+      ).toBeChecked();
     });
   });
 
@@ -55,11 +87,8 @@ test.describe('admin tests', () => {
       );
       await page.goto('/admin');
 
-      await page.getByRole('button', { name: 'Invite new users' }).click();
-
       const email = faker.internet.email();
-      await page.getByLabel('Email address').fill(email);
-      await page.getByRole('button', { name: 'Invite', exact: true }).click();
+      await inviteUser(page, email);
 
       await expect(
         page.locator('[data-name="userEmail"]').getByText(email)
@@ -89,10 +118,7 @@ test.describe('admin tests', () => {
       );
       await page.goto('/admin');
 
-      await page.getByRole('button', { name: 'Invite new users' }).click();
-
-      await page.getByLabel('Email address').fill(user.email);
-      await page.getByRole('button', { name: 'Invite', exact: true }).click();
+      await inviteUser(page, user.email);
 
       await expect(
         page.locator('[data-name="userEmail"]').getByText(user.email)
@@ -105,30 +131,25 @@ test.describe('admin tests', () => {
 
   test.describe('drafting pairs tests', () => {
     test('admin can draft pairs', async ({ page }) => {
-      const adminUser = {
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-      };
-      await registerUser(page.request, adminUser);
-      await login(page.request, adminUser);
-      const user1 = {
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-      };
-      const user2 = {
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-      };
-      await createGroup(page.request, faker.word.noun());
-      await inviteUserToGroup(page.request, user1.email);
-      await inviteUserToGroup(page.request, user2.email);
+      await createNewGroup(page.request);
+      const nextYear = new Date().getFullYear() + 1;
 
       await page.goto('/admin');
+      await expect(
+        page.getByText(`Santa pairs for year ${nextYear} were not drafted yet`)
+      ).toBeVisible();
 
       await page.getByRole('button', { name: 'Draft' }).click();
       await expect(page.locator('#footerAlert')).toHaveText(
         'Pairs successfully drafted'
       );
+      await expect(page.getByRole('button', { name: 'Draft' })).toBeDisabled();
+      await expect(page.getByRole('button', { name: 'Reveal' })).toBeEnabled();
+
+      await page.reload();
+      await expect(
+        page.getByText(`Santa pairs for year ${nextYear} were already drafted`)
+      ).toBeVisible();
     });
 
     test('admin can reveal drafted pairs', async ({ page }) => {
@@ -167,15 +188,19 @@ test.describe('admin tests', () => {
       );
       await page.goto('/admin');
 
-      await page.getByRole('button', { name: 'Add new pair' }).click();
-      await page.getByLabel('This user').selectOption(groupData.users.user1.id);
-      await page
-        .getByLabel('Will never be paired with')
-        .selectOption(groupData.users.user2.id);
-      await page.getByRole('button', { name: 'Forbid' }).click();
+      const { user1, user2 } = groupData.users;
+      await addForbiddenPairInDialog(page, user1.name, user2.name);
       await expect(page.locator('#footerAlert')).toHaveText(
         'Forbidden pair added'
       );
+      await expect(
+        forbiddenPairRow(page, user1.name, user2.name)
+      ).toBeVisible();
+
+      await page.reload();
+      await expect(
+        forbiddenPairRow(page, user1.name, user2.name)
+      ).toBeVisible();
     });
 
     test('admin cannot add forbidden pair again', async ({ page }) => {
@@ -192,14 +217,13 @@ test.describe('admin tests', () => {
       );
       await page.goto('/admin');
 
-      await page.getByRole('button', { name: 'Add new pair' }).click();
-      await page.getByLabel('This user').selectOption(groupData.users.user1.id);
-      await page
-        .getByLabel('Will never be paired with')
-        .selectOption(groupData.users.user2.id);
-      await page.getByRole('button', { name: 'Forbid' }).click();
+      const { user1, user2 } = groupData.users;
+      await addForbiddenPairInDialog(page, user1.name, user2.name);
       await expect(page.locator('#footerAlert')).toHaveText(
         'Forbidden pair already exists'
+      );
+      await expect(forbiddenPairRow(page, user1.name, user2.name)).toHaveCount(
+        1
       );
     });
 
@@ -210,23 +234,30 @@ test.describe('admin tests', () => {
         groupData.users.admin.email,
         groupData.users.admin.password
       );
-      const forbiddenPair = {
-        forbiddenUser1Id: groupData.users.user1.id,
-        forbiddenUser2Id: groupData.users.user2.id,
-      };
-      await addForbiddenPair(page.request, forbiddenPair);
-      await login(
-        page.request,
-        groupData.users.admin.email,
-        groupData.users.admin.password
-      );
+      const { admin, user1, user2 } = groupData.users;
+      await addForbiddenPair(page.request, {
+        forbiddenUser1Id: user1.id,
+        forbiddenUser2Id: user2.id,
+      });
+      await addForbiddenPair(page.request, {
+        forbiddenUser1Id: admin.id,
+        forbiddenUser2Id: user2.id,
+      });
+      await login(page.request, admin.email, admin.password);
       await page.goto('/admin');
 
-      await page.locator('[data-name="pairDelete"]').click();
+      const deletedPairRow = forbiddenPairRow(page, user1.name, user2.name);
+      await deletedPairRow.locator('[data-name="pairDelete"]').click();
       await page.getByRole('button', { name: 'Delete pair' }).click();
       await expect(page.locator('#footerAlert')).toHaveText(
         'The forbidden pair was successfully deleted'
       );
+      await expect(deletedPairRow).toBeHidden();
+
+      await expect(
+        forbiddenPairRow(page, admin.name, user2.name)
+      ).toBeVisible();
+      await expect(deletedPairRow).toBeHidden();
     });
 
     test('removing a user deletes their forbidden pairs', async ({ page }) => {
@@ -264,12 +295,10 @@ test.describe('admin tests', () => {
         page.locator(`#forbiddenUser1 option[value="${user1.id}"]`)
       ).toHaveCount(0);
 
-      const forbiddenPairs = await (
-        await page.request.get('admin/api/forbidden')
-      ).json();
-      expect(forbiddenPairs).toHaveLength(1);
-      expect(forbiddenPairs[0].userId).toEqual(admin.id);
-      expect(forbiddenPairs[0].forbiddenPairId).toEqual(user2.id);
+      await expect(
+        forbiddenPairRow(page, admin.name, user2.name)
+      ).toBeVisible();
+      await expect(pairRows).toHaveCount(1);
     });
 
     test('forbidden pairs should not draft each other', async ({ page }) => {
