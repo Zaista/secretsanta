@@ -6,7 +6,10 @@ const pageLoaded = new Promise((resolve) => {
       $.get(
         `/api/setActiveGroup?groupId=${$(this).attr('value')}`,
         (response) => {
-          if (response.success) location.reload();
+          // navigate instead of reload, so the browser doesn't restore the
+          // scroll position (which lands below the async-loaded menu)
+          if (response.success)
+            location.replace(location.pathname + location.search);
           else showAlert(response);
         }
       );
