@@ -135,6 +135,58 @@ test.describe('admin tests', () => {
         `User '${user.email}' invited to the group: ${groupData.group.name}`
       );
     });
+
+    test('admin can make a user an admin', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const { user1 } = groupData.users;
+      await page.goto('/admin');
+
+      const userSettings = page.locator('#user-settings');
+      await userSettings
+        .getByRole('row')
+        .filter({ hasText: user1.email })
+        .getByLabel('Role')
+        .selectOption({ label: 'Admin' });
+      await userSettings.getByRole('button', { name: 'Save changes' }).click();
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'Modified 1 user(s)'
+      );
+
+      await page.reload();
+      await expect(
+        userSettings
+          .getByRole('row')
+          .filter({ hasText: user1.email })
+          .getByLabel('Role')
+      ).toHaveValue('admin');
+
+      await login(page.request, user1.email, user1.password);
+      await page.goto('/admin');
+      await expect(
+        page.getByRole('heading', { name: 'Group settings' })
+      ).toBeVisible();
+    });
+
+    test('user cannot change roles', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const { user1 } = groupData.users;
+      await login(page.request, user1.email, user1.password);
+
+      // users have no UI for this, so the attempt goes through the API
+      const response = await page.request.post('admin/api/users', {
+        form: {
+          'usersRoles[0][_id]': user1.id,
+          'usersRoles[0][role]': 'admin',
+        },
+      });
+      expect(response.status()).toBe(403);
+
+      await page.goto('/admin');
+      await expect(page).toHaveTitle('Secret Santa');
+      await expect(
+        page.getByRole('heading', { name: 'Group settings' })
+      ).toBeHidden();
+    });
   });
 
   test.describe('drafting pairs tests', () => {

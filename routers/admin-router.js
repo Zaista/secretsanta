@@ -1,4 +1,5 @@
 import express from 'express';
+import { ObjectId } from 'mongodb';
 import { getLogger } from '../utils/logger.js';
 import {
   getUsers,
@@ -49,10 +50,23 @@ adminRouter.get('/api/users', async (req, res) => {
 
 adminRouter.post('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  if (req.session.activeGroup?.role !== ROLES.admin)
+    return res.status(403).send({ error: 'Only an admin can change roles' });
+  const usersRoles = req.body.usersRoles ?? [];
+  const roles = Object.values(ROLES);
+  if (
+    !usersRoles.every(
+      (userData) =>
+        ObjectId.isValid(userData._id) && roles.includes(userData.role)
+    )
+  )
+    return res.send({ error: 'Invalid user or role' });
   const modifiedCount = await updateUsersRoles(
     req.session.activeGroup._id,
-    req.body.usersRoles
+    usersRoles
   );
+  if (modifiedCount === null)
+    return res.send({ error: 'Error updating user roles' });
   return res.send({ success: `Modified ${modifiedCount} user(s)` });
 });
 
