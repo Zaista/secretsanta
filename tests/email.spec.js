@@ -75,8 +75,14 @@ test.describe('email tests', () => {
     page,
   }) => {
     const groupData = await createNewGroup(page.request);
-    const user1 = faker.internet.email();
-    const user2 = faker.internet.email();
+    const user1 = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+    const user2 = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
     await registerUser(page.request, user1);
     await registerUser(page.request, user2);
 
@@ -85,7 +91,7 @@ test.describe('email tests', () => {
       groupData.users.admin.email,
       groupData.users.admin.password
     );
-    const resultWithoutUrl = await inviteUserToGroup(page.request, user1);
+    const resultWithoutUrl = await inviteUserToGroup(page.request, user1.email);
     await expect(resultWithoutUrl).not.toHaveProperty('emailUrl');
 
     const updatedGroupData = {
@@ -96,7 +102,7 @@ test.describe('email tests', () => {
     };
     await updateGroup(page.request, updatedGroupData);
 
-    const resultWithUrl = await inviteUserToGroup(page.request, user2);
+    const resultWithUrl = await inviteUserToGroup(page.request, user2.email);
     await expect(resultWithUrl).toHaveProperty('emailUrl');
     await page.goto(resultWithUrl.emailUrl);
 
