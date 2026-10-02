@@ -67,6 +67,12 @@ test.describe('admin tests', () => {
       await expect(page.locator('#footerAlert')).toHaveText(
         `User '${email}' invited to the group: ${groupData.group.name}`
       );
+      await expect(page.locator('#forbiddenUser1 option')).toContainText([
+        email,
+      ]);
+      await expect(page.locator('#forbiddenUser2 option')).toContainText([
+        email,
+      ]);
     });
 
     test('admin can invite an existing user to the group', async ({ page }) => {
@@ -235,6 +241,8 @@ test.describe('admin tests', () => {
         forbiddenUser2Id: user2.id,
       });
       await page.goto('/admin');
+      const pairRows = page.locator('[data-name="pairRow"]');
+      await expect(pairRows).toHaveCount(2);
 
       await page
         .locator('[data-name="userRow"]', { hasText: user1.email })
@@ -244,6 +252,17 @@ test.describe('admin tests', () => {
       await expect(page.locator('#footerAlert')).toContainText(
         `User '${user1.email}' removed from the group`
       );
+
+      await expect(pairRows).toHaveCount(1);
+      await expect(pairRows.locator('[data-name="pairUser"]')).toHaveText(
+        admin.name
+      );
+      await expect(
+        pairRows.locator('[data-name="pairForbiddenPair"]')
+      ).toHaveText(user2.name);
+      await expect(
+        page.locator(`#forbiddenUser1 option[value="${user1.id}"]`)
+      ).toHaveCount(0);
 
       const forbiddenPairs = await (
         await page.request.get('admin/api/forbidden')
