@@ -42,6 +42,21 @@ adminRouter.get('/', (req, res) => {
 
 // Secret Santa users
 
+const NO_ADMIN_LEFT_ERROR =
+  'The group needs an admin, make another user an admin first';
+
+// newRoles maps user ids to their new role, or to null for a removed user;
+// returns null when the group users could not be loaded
+async function hasAdminLeft(groupId, newRoles) {
+  const groupUsers = await getUsersAndRoles(groupId);
+  if (groupUsers === null) return null;
+  return groupUsers.some((user) => {
+    const id = user._id.toString();
+    const role = newRoles.has(id) ? newRoles.get(id) : user.groups.role;
+    return role === ROLES.admin;
+  });
+}
+
 adminRouter.get('/api/users', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   const result = await getUsersAndRoles(req.session.activeGroup._id);
@@ -61,6 +76,13 @@ adminRouter.post('/api/users', async (req, res) => {
     )
   )
     return res.send({ error: 'Invalid user or role' });
+  const newRoles = new Map(
+    usersRoles.map((userData) => [userData._id, userData.role])
+  );
+  const adminLeft = await hasAdminLeft(req.session.activeGroup._id, newRoles);
+  if (adminLeft === null)
+    return res.send({ error: 'Error updating user roles' });
+  if (!adminLeft) return res.send({ error: NO_ADMIN_LEFT_ERROR });
   const modifiedCount = await updateUsersRoles(
     req.session.activeGroup._id,
     usersRoles
@@ -134,6 +156,17 @@ adminRouter.post('/api/user', async (req, res) => {
 
 adminRouter.post('/api/user/delete', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  if (req.session.activeGroup?.role !== ROLES.admin)
+    return res.status(403).send({ error: 'Only an admin can remove users' });
+  if (!ObjectId.isValid(req.body._id))
+    return res.send({ error: 'User could not be removed from the group' });
+  const adminLeft = await hasAdminLeft(
+    req.session.activeGroup._id,
+    new Map([[req.body._id, null]])
+  );
+  if (adminLeft === null)
+    return res.send({ error: 'User could not be removed from the group' });
+  if (!adminLeft) return res.send({ error: NO_ADMIN_LEFT_ERROR });
   const result = await removeUserFromGroup(
     req.body._id,
     req.session.activeGroup._id
