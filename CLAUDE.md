@@ -48,3 +48,13 @@ npm run format                # lint + prettier check (what CI runs)
 **Email & images:** `sendEmail()` in `utils/environment.js` uses SendGrid in production and a nodemailer Ethereal sandbox account otherwise (`utils/mail-local.js`). User images are stored in the S3-compatible bucket as `<userId>.png` through the `minio` client (`utils/minio.js`); `user.imageUploaded` indicates whether one exists, and the image routes fall back to a placeholder on any storage error.
 
 **Tests:** Playwright specs drive both the UI and the API via `page.request`. `tests/helpers/setup.js` creates fresh isolated data per test using faker (`createNewGroup`, `createDraftedGroup`, `createRevealedGroup`), so tests don't depend on seeded DB state.
+
+## E2E test strategy
+
+Every e2e test follows **arrange / act / assert**:
+
+- **Arrange** — all setup goes through API calls (`page.request` and the `tests/helpers/` functions), never through the UI. This includes logging in, creating groups and users, drafting, and revealing.
+- **Act** — the behavior under test is done through the UI: clicks, typing, navigation.
+- **Assert** — the result is always checked in the UI, with explicit assertions on what the user sees (`expect(locator)…`). An API response or a database state is not enough on its own.
+
+The goal is for each UI flow to be driven through the UI in exactly one place: either in the body of the test that covers it, or in a shared helper when several tests need it. That keeps one place to maintain per flow. Every other test that needs the flow as a precondition sets it up through the API. When you write a new test, reuse or add API helpers for its arrange step instead of clicking through a flow that another test already covers. If the API endpoint you need doesn't exist yet, add one rather than falling back to the UI.
