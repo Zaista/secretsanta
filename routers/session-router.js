@@ -132,7 +132,11 @@ passport.deserializeUser(async function (req, serializedUser, done) {
   if (user === null || user.length === 0) {
     done(null, null, { error: 'User not found' });
   } else {
-    req.session.activeGroup = user[0].groups[0];
+    // keep the selected group, refreshed from the database so a removed user or changed role is picked up
+    const activeGroupId = req.session.activeGroup?._id?.toString();
+    req.session.activeGroup =
+      user[0].groups.find((group) => group._id.toString() === activeGroupId) ??
+      user[0].groups[0];
     done(null, user[0]);
   }
 });
