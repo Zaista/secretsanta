@@ -139,11 +139,17 @@ $(async () => {
           .remove();
         result.forEach(function (friend) {
           let name = friend.email;
+          let label = friend.email;
           if (friend.name !== undefined && friend.name !== '') {
             name = friend.name;
+            label = `${friend.name} (${friend.email})`;
           }
           $('#forbiddenUser1, #forbiddenUser2').append(
-            `<option value="${friend._id}" data-email="${friend.email}">${name}</option>`
+            $('<option>')
+              .val(friend._id)
+              .attr('data-email', friend.email)
+              .attr('data-name', name)
+              .text(label)
           );
         });
       });
@@ -164,11 +170,11 @@ $(async () => {
             $(_pairElement).find('[data-name="pairIndex"]').text(rowIndex);
             $(_pairElement)
               .find('[data-name="pairUser"]')
-              .text($('#forbiddenUser1 option:selected').text());
+              .text($('#forbiddenUser1 option:selected').attr('data-name'));
 
             $(_pairElement)
               .find('[data-name="pairForbiddenPair"]')
-              .text($('#forbiddenUser2 option:selected').text());
+              .text($('#forbiddenUser2 option:selected').attr('data-name'));
 
             $(_pairElement)
               .find('[data-name="pairDelete"]')

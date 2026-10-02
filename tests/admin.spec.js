@@ -25,13 +25,15 @@ async function inviteUser(page, email) {
   await page.getByRole('button', { name: 'Invite', exact: true }).click();
 }
 
-async function addForbiddenPairInDialog(page, userName, forbiddenUserName) {
+async function addForbiddenPairInDialog(page, user, forbiddenUser) {
   await waitForAdminPage(page);
   await page.getByRole('button', { name: 'Add new pair' }).click();
-  await page.getByLabel('This user').selectOption({ label: userName });
+  await page
+    .getByLabel('This user')
+    .selectOption({ label: `${user.name} (${user.email})` });
   await page
     .getByLabel('Will never be paired with')
-    .selectOption({ label: forbiddenUserName });
+    .selectOption({ label: `${forbiddenUser.name} (${forbiddenUser.email})` });
   await page.getByRole('button', { name: 'Forbid' }).click();
 }
 
@@ -348,7 +350,7 @@ test.describe('admin tests', () => {
       await page.goto('/admin');
 
       const { user1, user2 } = groupData.users;
-      await addForbiddenPairInDialog(page, user1.name, user2.name);
+      await addForbiddenPairInDialog(page, user1, user2);
       await expect(page.locator('#footerAlert')).toHaveText(
         'Forbidden pair added'
       );
@@ -377,7 +379,7 @@ test.describe('admin tests', () => {
       await page.goto('/admin');
 
       const { user1, user2 } = groupData.users;
-      await addForbiddenPairInDialog(page, user1.name, user2.name);
+      await addForbiddenPairInDialog(page, user1, user2);
       await expect(page.locator('#footerAlert')).toHaveText(
         'Forbidden pair already exists'
       );
