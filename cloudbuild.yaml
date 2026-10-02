@@ -18,6 +18,7 @@ steps:
         sed -i "s|##_MINIOSECRETKEY##|${_MINIOSECRETKEY}|" app.yaml
         sed -i "s|##_MINIOBUCKET##|${_MINIOBUCKET}|" app.yaml
         sed -i "s|##_SERVICE##|${_SERVICE}|" app.yaml
+        sed -i "s|##_APPVERSION##|${SHORT_SHA}|" app.yaml
         gcloud app deploy
 timeout: 1800s
 substitutions:

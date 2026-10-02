@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { ROLES } from './roles.js';
+import { getVersionLabel } from './version.js';
 
 export const renderer = (filePath, options, callback) => {
   fs.readFile(filePath, (err, content) => {
@@ -34,6 +35,10 @@ export const renderer = (filePath, options, callback) => {
           options.activeGroup.name
         );
       }
+    }
+
+    if (filePath.includes('footer.html')) {
+      rendered = rendered.replace('<!--appVersion-->', getVersionLabel());
     }
 
     if (filePath.includes('santaProfile.html')) {

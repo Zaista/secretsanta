@@ -17,3 +17,4 @@ env_variables:
   minioAccessKey: ##_MINIOACCESSKEY##
   minioSecretKey: ##_MINIOSECRETKEY##
   minioBucket: ##_MINIOBUCKET##
+  appVersion: '##_APPVERSION##'
