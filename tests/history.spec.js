@@ -69,6 +69,21 @@ test.describe('history tests', () => {
     await expect(page.getByText('Random location')).toBeVisible();
   });
 
+  test('only year has no previous or next year links', async ({ page }) => {
+    const groupData = await createRevealedGroup(page.request);
+    await login(
+      page.request,
+      groupData.users.admin.email,
+      groupData.users.admin.password
+    );
+
+    await page.goto('/history');
+    await page.getByText('N/A').click();
+
+    await expect(page.getByText('santa pairs')).toBeVisible();
+    await expect(page.getByRole('link', { name: /^\d{4}$/ })).toHaveCount(0);
+  });
+
   test('user with no group cannot access history page', async ({ page }) => {
     const user = {
       email: faker.internet.email(),

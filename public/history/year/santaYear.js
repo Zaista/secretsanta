@@ -39,6 +39,14 @@ $(async () => {
       editDescriptionModal.show();
     });
 
+    // years come newest first, so the previous (older) year is the next item
+    $.getJSON('api/list', (years) => {
+      const index = years.findIndex((item) => item._id === year._id);
+      if (index === -1) return;
+      showYearLink($('#previousYear'), years[index + 1]);
+      showYearLink($('#nextYear'), years[index - 1]);
+    });
+
     if (year.imageUploaded) {
       lazyLoadImage(year._id, $('#locationImage')).then((image) => {
         $('#locationImage').attr('src', image.src).attr('hidden', false);
@@ -59,6 +67,12 @@ $(async () => {
       listGifts(gift);
     });
   });
+
+  function showYearLink(link, year) {
+    if (year === undefined) return;
+    link.attr('href', `/history/year?id=${year._id}`).attr('hidden', false);
+    link.find('span').text(year.year);
+  }
 
   function listGifts(gift) {
     const giftElement = $.parseHTML(giftTemplate);
