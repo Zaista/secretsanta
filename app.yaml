@@ -13,6 +13,9 @@ env_variables:
   smtpHost: ##_SMTPHOST##
   smtpUser: ##_SMTPUSER##
   smtpPass: ##_SMTPPASS##
+  smtpPort: '##_SMTPPORT##'
+  smtpSecure: '##_SMTPSECURE##'
+  smtpFrom: '##_SMTPFROM##'
   sessionKey: ##_SESSIONKEY##
   minioEndPoint: ##_MINIOENDPOINT##
   minioUseSSL: ##_MINIOSSL##

@@ -352,7 +352,6 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
   }
 
   const emailTemplate = {
-    from: 'SecretSanta <secretsanta@jovanilic.com>',
     to: email,
     subject: 'Welcome to Secret Santa',
     html: emailText,

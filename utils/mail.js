@@ -4,12 +4,14 @@ import { getLogger } from './logger.js';
 const log = getLogger('mail');
 let mailTransporter;
 
-// SMTP relay (Brevo in production): smtp-relay.brevo.com on port 587 with STARTTLS
+// Any SMTP server (Brevo's smtp-relay.brevo.com in production). Port 587 upgrades
+// to TLS with STARTTLS; set smtpSecure=true for implicit TLS, usually on port 465
 function getTransporter() {
   if (!mailTransporter) {
     mailTransporter = nodemailer.createTransport({
       host: process.env.smtpHost,
-      port: 587,
+      port: Number(process.env.smtpPort) || 587,
+      secure: process.env.smtpSecure === 'true',
       auth: {
         user: process.env.smtpUser,
         pass: process.env.smtpPass,
