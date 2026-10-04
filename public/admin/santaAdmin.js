@@ -1,5 +1,9 @@
 const apiUrl = 'admin/api';
 
+// start reloads at the top: the browser would restore the old scroll position
+// before the async-loaded menu and tables are in place, leaving it offset
+history.scrollRestoration = 'manual';
+
 $(async () => {
   'use strict';
 
