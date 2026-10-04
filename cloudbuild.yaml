@@ -10,7 +10,9 @@ steps:
         sed -i "s|##_PROFILE##|${_PROFILE}|" app.yaml
         sed -i "s|##_ADMINELEVATEDPRIVILEGES##|${_ADMINELEVATEDPRIVILEGES}|" app.yaml
         sed -i "s|##_MONGOURI##|${_MONGOURI}|" app.yaml
-        sed -i "s|##_SENDGRIDAPI##|${_SENDGRIDAPI}|" app.yaml
+        sed -i "s|##_SMTPHOST##|${_SMTPHOST}|" app.yaml
+        sed -i "s|##_SMTPUSER##|${_SMTPUSER}|" app.yaml
+        sed -i "s|##_SMTPPASS##|${_SMTPPASS}|" app.yaml
         sed -i "s|##_SESSIONKEY##|${_SESSIONKEY}|" app.yaml
         sed -i "s|##_MINIOENDPOINT##|${_MINIOENDPOINT}|" app.yaml
         sed -i "s|##_MINIOSSL##|${_MINIOSSL}|" app.yaml
@@ -25,7 +27,9 @@ substitutions:
   _PROFILE: ${_PROFILE}
   _ADMINELEVATEDPRIVILEGES: ${_ADMINELEVATEDPRIVILEGES}
   _MONGOURI: ${_MONGOURI}
-  _SENDGRIDAPI: ${_SENDGRIDAPI}
+  _SMTPHOST: ${_SMTPHOST}
+  _SMTPUSER: ${_SMTPUSER}
+  _SMTPPASS: ${_SMTPPASS}
   _SESSIONKEY: ${_SESSIONKEY}
   _MINIOENDPOINT: ${_MINIOENDPOINT}
   _MINIOSSL: ${_MINIOSSL}
