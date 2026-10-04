@@ -144,3 +144,15 @@
 .gift-image-frame {
   width: 96px;
 }
+
+.year-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.year-link:hover {
+  color: #212529;
+}
