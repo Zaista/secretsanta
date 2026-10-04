@@ -103,17 +103,13 @@ $(async () => {
       });
 
     $(giftElement)
-      .find('[data-id="giftIcon"], [data-id="giftImage"]')
-      .on('click', (e) => {
-        uploadEndpoint = `gift-image?yearId=${searchParams.get('id')}&giftId=${gift.giftId}`;
-        imageElement = $(giftElement).find('[data-id="giftImage"]');
-        iconElement = $(giftElement).find('[data-id="giftIcon"]');
-
-        if (e.currentTarget.src === undefined) {
-          $('#imagePopup').attr('src', '');
-        } else {
-          $('#imagePopup').attr('src', e.currentTarget.src);
-        }
+      .find('[data-bs-target="#imageModal"]')
+      .on('click', () => {
+        prepareImageDialog(
+          `gift-image?yearId=${searchParams.get('id')}&giftId=${gift.giftId}`,
+          $(giftElement).find('[data-id="giftImage"]'),
+          $(giftElement).find('[data-id="giftIcon"]')
+        );
       });
 
     $(giftElement).find('#giftImageUpload').on('change', showCroppie);
@@ -150,17 +146,23 @@ $(async () => {
     });
   }
 
-  $('#locationIcon, #locationImage').on('click', (e) => {
-    uploadEndpoint = 'location-image?id=' + searchParams.get('id');
-    imageElement = $('#locationImage');
-    iconElement = $('#locationIcon');
-
-    if (e.currentTarget.src === undefined) {
-      $('#imagePopup').attr('src', '');
-    } else {
-      $('#imagePopup').attr('src', e.currentTarget.src);
-    }
+  $('.year-location-frame').on('click', () => {
+    prepareImageDialog(
+      'location-image?id=' + searchParams.get('id'),
+      $('#locationImage'),
+      $('#locationIcon')
+    );
   });
+
+  // show the current image in the dialog, or nothing when none is uploaded yet
+  function prepareImageDialog(endpoint, image, icon) {
+    uploadEndpoint = endpoint;
+    imageElement = image;
+    iconElement = icon;
+    const hasImage = !image.prop('hidden') && Boolean(image.attr('src'));
+    $('#imagePopup').attr('src', hasImage ? image.attr('src') : '');
+    $('#imagePopup').parent().prop('hidden', !hasImage);
+  }
 
   // cropping images
   $('#imageUpload').on('change', showCroppie);
