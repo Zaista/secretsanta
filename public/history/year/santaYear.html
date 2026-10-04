@@ -51,23 +51,7 @@
   <body>
     <div id="menu"></div>
     <div class="container-fluid">
-      <div class="row justify-content-center mt-3">
-        <div class="col-md-8 col-12 d-flex">
-          <a id="previousYear" class="btn btn-outline-secondary btn-sm" hidden>
-            <i class="bi bi-chevron-left"></i>
-            <span></span>
-          </a>
-          <a
-            id="nextYear"
-            class="btn btn-outline-secondary btn-sm ms-auto"
-            hidden
-          >
-            <span></span>
-            <i class="bi bi-chevron-right"></i>
-          </a>
-        </div>
-      </div>
-      <div class="row justify-content-center mt-3">
+      <div class="row justify-content-center mt-4">
         <div class="col-md-8 col-12">
           <div class="d-flex flex-wrap align-items-center gap-4">
             <div
@@ -88,7 +72,19 @@
             </div>
             <div>
               <div class="text-secondary">Year</div>
-              <h1 id="yearTitle" class="display-5 mb-1"></h1>
+              <div class="d-flex align-items-center gap-3 mb-1">
+                <a id="previousYear" class="year-link invisible">
+                  <i class="bi bi-chevron-left"></i>
+                  <span class="visually-hidden">Previous year</span>
+                  <span data-id="year"></span>
+                </a>
+                <h1 id="yearTitle" class="display-5 m-0"></h1>
+                <a id="nextYear" class="year-link invisible">
+                  <span class="visually-hidden">Next year</span>
+                  <span data-id="year"></span>
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </div>
               <div>
                 <i class="bi bi-geo-alt text-secondary"></i>
                 <span id="locationTitle"></span>

@@ -70,8 +70,8 @@ $(async () => {
 
   function showYearLink(link, year) {
     if (year === undefined) return;
-    link.attr('href', `/history/year?id=${year._id}`).attr('hidden', false);
-    link.find('span').text(year.year);
+    link.attr('href', `/history/year?id=${year._id}`).removeClass('invisible');
+    link.find('[data-id="year"]').text(year.year);
   }
 
   function listGifts(gift) {

@@ -83,7 +83,10 @@ test.describe('history tests', () => {
     await page.getByText('N/A').click();
 
     await expect(page.getByText('santa pairs')).toBeVisible();
-    await expect(page.getByRole('link', { name: /^\d{4}$/ })).toHaveCount(0);
+    await expect(
+      page.getByRole('link', { name: 'Previous year' })
+    ).toBeHidden();
+    await expect(page.getByRole('link', { name: 'Next year' })).toBeHidden();
   });
 
   test('user with no group cannot access history page', async ({ page }) => {
