@@ -40,6 +40,8 @@ const pageLoaded = new Promise((resolve) => {
   });
 });
 
+let alertTimer;
+
 function showAlert(alert, timeout = 3000) {
   let alertClass;
   let message;
@@ -58,8 +60,10 @@ function showAlert(alert, timeout = 3000) {
   alertElement.addClass(alertClass);
   $('#footerAlert span').text(message);
   alertElement.show();
+  // an earlier alert's timer must not hide this one
+  clearTimeout(alertTimer);
   if (timeout !== 0) {
-    setTimeout(function () {
+    alertTimer = setTimeout(function () {
       $('#footerAlert').hide();
     }, timeout);
   }

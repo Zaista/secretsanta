@@ -19,6 +19,8 @@ test.describe('history tests', () => {
     await expect(page.getByText('N/A')).toBeVisible();
     await page.locator('.bi-image').click();
 
+    // the edit handlers are attached once the year has loaded
+    await expect(page.locator('#locationTitle')).toHaveText('N/A');
     await page.locator('#locationCaptionEdit').click();
     await page.getByLabel('Update description:').fill('Random location');
     await page.getByText('Save').click();
