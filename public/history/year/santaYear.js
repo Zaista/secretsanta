@@ -177,15 +177,13 @@ $(async () => {
   });
 
   $('#imageSubmit').on('click', (e) => {
-    $(e.currentTarget).addClass('loading-image');
     showAlert({ warning: 'Uploading image, please wait...' }, 0);
-    croppie.result({ size: 'original' }).then((croppedImage) => {
-      $.post(
+    const upload = croppie.result({ size: 'original' }).then((croppedImage) => {
+      return $.post(
         `${apiUrl}/${uploadEndpoint}`,
         { image: croppedImage },
         (result) => {
           modal.hide();
-          $(e.currentTarget).removeClass('loading-image');
           showAlert(result);
           if (result.success) {
             imageElement.attr('src', croppedImage).attr('hidden', false);
@@ -194,6 +192,7 @@ $(async () => {
         }
       );
     });
+    showButtonSpinner(e.currentTarget, upload);
   });
 
   function initializeCroppie(imageUrl) {

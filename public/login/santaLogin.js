@@ -37,14 +37,17 @@ $(async function () {
   });
 
   $('#santa-email-form').on('submit', function () {
-    $.post(
-      'api/email',
-      { email: $('#forgot-email').val() },
-      function (result) {
-        $('#forgot-password-dialog').modal('hide');
-        showAlert(result);
-      },
-      'json'
+    showButtonSpinner(
+      '#email-password',
+      $.post(
+        'api/email',
+        { email: $('#forgot-email').val() },
+        function (result) {
+          $('#forgot-password-dialog').modal('hide');
+          showAlert(result);
+        },
+        'json'
+      )
     );
     return false;
   });

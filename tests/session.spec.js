@@ -98,11 +98,26 @@ test.describe('session tests', () => {
     };
     await registerUser(request, user);
 
+    // hold the email response back, so the loading state can be checked
+    let releaseResponse;
+    const responseReleased = new Promise((resolve) => {
+      releaseResponse = resolve;
+    });
+    await page.route('**/session/api/email', async (route) => {
+      await responseReleased;
+      await route.continue();
+    });
+
     await page.goto('/');
 
     await page.getByText('Forgot password').click();
     await page.getByLabel('Enter your email address').fill(user.email);
-    await page.getByRole('button', { name: 'Email' }).click();
+    const emailButton = page.getByRole('button', { name: 'Email' });
+    await emailButton.click();
+
+    await expect(emailButton.getByRole('status')).toHaveText('Loading...');
+    await expect(emailButton).toBeDisabled();
+    releaseResponse();
 
     await expect(page.locator('#footerAlert')).toHaveText(
       `Email successfully sent to ${user.email}`

@@ -68,3 +68,24 @@ function showAlert(alert, timeout = 3000) {
     }, timeout);
   }
 }
+
+// shows a spinner on the button and disables it until the request settles, so
+// slow requests (emails, uploads) don't look unresponsive or get sent twice
+// eslint-disable-next-line no-unused-vars
+function showButtonSpinner(button, request) {
+  const buttonElement = $(button);
+  const spinner = $(
+    '<span data-name="buttonSpinner">' +
+      '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>' +
+      '<span class="visually-hidden" role="status">Loading...</span>' +
+      '</span>'
+  );
+  buttonElement.prop('disabled', true).prepend(spinner);
+  const restore = () => {
+    spinner.remove();
+    buttonElement.prop('disabled', false);
+  };
+  // two callbacks instead of finally(), so a failed request isn't reported as an unhandled rejection
+  Promise.resolve(request).then(restore, restore);
+  return request;
+}
