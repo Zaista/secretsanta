@@ -52,6 +52,9 @@ $(async () => {
       showAlert({ warning: 'No gifts' });
       return;
     }
+    $('#yearSummary').text(
+      `${year.gifts.length} santa pair${year.gifts.length === 1 ? '' : 's'}`
+    );
     year.gifts.forEach((gift) => {
       listGifts(gift);
     });
