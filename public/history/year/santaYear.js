@@ -167,6 +167,15 @@ $(async () => {
   // cropping images
   $('#imageUpload').on('change', showCroppie);
 
+  // start the next opening from scratch, even if a picked image wasn't uploaded
+  $('#imageModal').on('hidden.bs.modal', () => {
+    $('#imageUpload').val('');
+    $('#imageEdit').prop('hidden', false);
+    $('#imageSubmit').prop('hidden', true);
+    // the cropper is sized from its width on first use, so only hide it after
+    if (croppie !== undefined) $('#cropper').prop('hidden', true);
+  });
+
   $('#imageSubmit').on('click', (e) => {
     $(e.currentTarget).addClass('loading-image');
     showAlert({ warning: 'Uploading image, please wait...' }, 0);
@@ -181,10 +190,6 @@ $(async () => {
           if (result.success) {
             imageElement.attr('src', croppedImage).attr('hidden', false);
             iconElement.attr('hidden', true);
-            $('#imagePopup').parent().prop('hidden', false);
-            $('#imageEdit').prop('hidden', false);
-            $('#imageSubmit').prop('hidden', true);
-            $('#cropper').prop('hidden', true);
           }
         }
       );
