@@ -23,7 +23,7 @@ export const renderer = (filePath, options, callback) => {
       );
       let groupOptions = '';
       options.groups.forEach((group) => {
-        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item" href="#">${group.name}</a></li>`;
+        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item text-truncate" href="#">${group.name}</a></li>`;
       });
       rendered = rendered.replace('<!--groupOptions-->', groupOptions);
 
