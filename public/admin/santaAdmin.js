@@ -194,11 +194,11 @@ $(async () => {
       return false;
     });
 
-    $('#userRemoveButton').on('click', () => {
+    $('#userRemoveButton').on('click', function () {
       const newUser = {
         email: $('#newUserEmail').val(),
       };
-      $.post(`${apiUrl}/user`, newUser, (result) => {
+      const request = $.post(`${apiUrl}/user`, newUser, (result) => {
         showAlert(result);
         if (result.success) {
           loadForbiddenPairUsers();
@@ -227,6 +227,7 @@ $(async () => {
           bootstrap.Modal.getInstance(modal).hide();
         });
       });
+      showButtonSpinner(this, request);
     });
 
     // wait for both, so the reveal status is appended after the draft status

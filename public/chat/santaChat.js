@@ -79,7 +79,8 @@ $(async function () {
         email: $('#user option:selected').attr('data-email'),
         message: $('#message').val(),
       };
-      $.post(`${apiUrl}/send`, requestData, function (response) {
+      const submitButton = $(this).find('button[type="submit"]');
+      const request = $.post(`${apiUrl}/send`, requestData, (response) => {
         if (!response.error) {
           $.get('chat/message.html', (chatTemplate) => {
             const chatElement = $.parseHTML(chatTemplate);
@@ -107,6 +108,7 @@ $(async function () {
         }
         showAlert(response);
       });
+      showButtonSpinner(submitButton, request);
       return false;
     });
 

@@ -15,6 +15,7 @@ export default [
         bootstrap: 'readonly',
         Croppie: 'readonly',
         pageLoaded: 'readonly',
+        showButtonSpinner: 'readonly',
       },
     },
     rules: {

@@ -82,18 +82,21 @@ $(async () => {
     modal.show(image);
   });
 
-  $('#submitImage').on('click', () => {
-    croppie.result({ size: 'original' }).then(function (croppedImage) {
-      let updateImageUrl = `${apiUrl}/image`;
-      if (searchParams.has('id')) {
-        updateImageUrl += `?id=${searchParams.get('id')}`;
-      }
-      $.post(updateImageUrl, { image: croppedImage }, (result) => {
-        modal.hide();
-        showAlert(result);
-        $('#image').attr('src', croppedImage);
+  $('#submitImage').on('click', function () {
+    const upload = croppie
+      .result({ size: 'original' })
+      .then(function (croppedImage) {
+        let updateImageUrl = `${apiUrl}/image`;
+        if (searchParams.has('id')) {
+          updateImageUrl += `?id=${searchParams.get('id')}`;
+        }
+        return $.post(updateImageUrl, { image: croppedImage }, (result) => {
+          modal.hide();
+          showAlert(result);
+          $('#image').attr('src', croppedImage);
+        });
       });
-    });
+    showButtonSpinner(this, upload);
   });
 
   function showCroppie(imageUrl) {
