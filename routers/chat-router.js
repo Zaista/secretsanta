@@ -56,7 +56,6 @@ chatRouter.post('/api/send', async (req, res) => {
       emailText = data.toString().replace(/{{question}}/, req.body.message);
 
       const emailTemplate = {
-        from: 'SecretSanta <secretsanta@jovanilic.com>',
         to: req.body.email,
         subject: 'Secret Santa Question',
         html: emailText,

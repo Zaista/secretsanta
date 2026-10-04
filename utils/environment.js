@@ -13,9 +13,13 @@ export async function loadEnvironment() {
 }
 
 export function sendEmail(emailTemplate) {
+  const email = {
+    from: process.env.smtpFrom || 'SecretSanta <secretsanta@jovanilic.com>',
+    ...emailTemplate,
+  };
   if (process.env.profile === 'production') {
-    return sendRealMail(emailTemplate);
+    return sendRealMail(email);
   } else {
-    return sendSandboxMail(emailTemplate);
+    return sendSandboxMail(email);
   }
 }
