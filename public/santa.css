@@ -94,3 +94,28 @@
 }
 
 /* end santaFriends */
+
+/* group menu: keep long group names on screen, ending in an ellipsis */
+
+.group-menu {
+  max-width: calc(100vw - 2rem);
+}
+
+.group-name {
+  display: inline-block;
+  max-width: calc(100vw - 6rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+@media (min-width: 992px) {
+  .group-menu {
+    max-width: 50vw;
+  }
+
+  .group-name {
+    max-width: 30vw;
+  }
+}
