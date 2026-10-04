@@ -93,7 +93,6 @@ sessionRouter.post('/api/email', async (req, res) => {
   }
 
   const emailTemplate = {
-    from: 'SecretSanta <secretsanta@jovanilic.com>',
     to: req.body.email,
     subject: 'Secret Santa Credentials',
     html: emailText,
