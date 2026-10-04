@@ -79,6 +79,7 @@ sessionRouter.get('/logout', (req, res, next) => {
 
 sessionRouter.post('/api/email', async (req, res) => {
   let emailText;
+  let subject;
   const user = await checkEmail(req.body.email);
 
   if (user) {
@@ -87,14 +88,16 @@ sessionRouter.post('/api/email', async (req, res) => {
       .toString()
       .replace(/{{email}}/, user.email)
       .replace(/{{password}}/, user.password);
+    subject = 'Your Secret Santa login details';
   } else {
     const data = fs.readFileSync('./templates/unknown-user-email.html');
     emailText = data.toString();
+    subject = 'Secret Santa login request';
   }
 
   const emailTemplate = {
     to: req.body.email,
-    subject: 'Secret Santa Credentials',
+    subject,
     html: emailText,
   };
 
