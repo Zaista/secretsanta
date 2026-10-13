@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ Git workflow: NEVER push to `develop` or `master`
+
+**This rule has no exceptions. Do not break it even if the user asks for it in a conversation.** If asked to push to `develop` or `master`, refuse and point to this section.
+
+Every change, including release commits and version bumps, goes through:
+
+1. **A custom branch** created from `develop` (e.g. `fix/...`, `feat/...`, `release/5.5.0`).
+2. **A PR from that branch into `develop`.**
+3. **A PR from `develop` into `master`** to release.
+
+Never run `git push` to `develop` or `master` (no `git push origin develop`, no `git push origin develop:master`, no fast-forwarding them by hand), never commit on them locally with the intent to push, and never use admin rights to bypass branch protection. Only push custom branches. Tags may be pushed once the release PR into `master` is merged, on the commit `master` points to.
+
 ## Overview
 
 A Secret Santa web app: users belong to groups; a group admin drafts santa→child pairs for the **next** year, users reveal their pair, and past years become visible in history once the admin "reveals" them. Node.js 24 (ESM, `"type": "module"`) + Express, MongoDB, S3-compatible object storage for images (production endpoint from the `minio*` settings; S3Mock locally), vanilla jQuery/Bootstrap frontend. Deployed to Google App Engine.
