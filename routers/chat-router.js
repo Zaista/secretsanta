@@ -53,7 +53,10 @@ chatRouter.post('/api/send', async (req, res) => {
     };
     if (req.session.activeGroup.messageSentNotification) {
       const data = fs.readFileSync('./templates/question-email.html');
-      emailText = data.toString().replace(/{{question}}/, req.body.message);
+      emailText = data
+        .toString()
+        .replace(/{{groupName}}/, req.session.activeGroup.name)
+        .replace(/{{question}}/, req.body.message);
 
       const emailTemplate = {
         to: req.body.email,
