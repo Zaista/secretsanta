@@ -546,7 +546,7 @@ test.describe('admin tests', () => {
         .click();
       await page.getByRole('button', { name: 'Remove user' }).click();
       await expect(page.locator('#footerAlert')).toContainText(
-        `User '${user1.email}' removed from the group`
+        `User '${user1.email}' removed from the group: ${groupData.group.name}`
       );
 
       await expect(pairRows).toHaveCount(1);

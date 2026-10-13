@@ -189,7 +189,7 @@ adminRouter.post('/api/user/delete', async (req, res) => {
     });
   }
   return res.send({
-    success: `User '${req.body.email}' removed from the group: ${req.session.activeGroup._id}`,
+    success: `User '${req.body.email}' removed from the group: ${req.session.activeGroup.name}`,
   });
 });
 
