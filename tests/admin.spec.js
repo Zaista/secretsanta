@@ -395,6 +395,39 @@ test.describe('admin tests', () => {
       ).toBeVisible();
     });
 
+    test('admin sees a spinner while pairs are being drafted', async ({
+      page,
+    }) => {
+      await createNewGroup(page.request);
+
+      // hold the draft response back, so the loading state can be checked
+      let releaseResponse;
+      const responseReleased = new Promise((resolve) => {
+        releaseResponse = resolve;
+      });
+      await page.route('**/admin/api/draft', async (route) => {
+        if (route.request().method() === 'PUT') {
+          await responseReleased;
+        }
+        await route.continue();
+      });
+
+      await page.goto('/admin');
+      await waitForAdminPage(page);
+      const draftButton = page.getByRole('button', { name: 'Draft' });
+      await draftButton.click();
+
+      await expect(draftButton.getByRole('status')).toHaveText('Loading...');
+      await expect(draftButton).toBeDisabled();
+      releaseResponse();
+
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'Pairs successfully drafted'
+      );
+      await expect(draftButton.getByRole('status')).toBeHidden();
+      await expect(draftButton).toBeDisabled();
+    });
+
     test('admin sees that users were emailed when pairs are drafted', async ({
       page,
     }) => {
