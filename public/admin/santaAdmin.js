@@ -12,6 +12,8 @@ $(async () => {
 
   await $.getScript('/santa.js');
   pageLoaded.then(async () => {
+    setUpSectionNav();
+
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('group-created')) {
       $('#unavailableDiv').show();
@@ -328,3 +330,93 @@ $(async () => {
     });
   });
 });
+
+// Highlights the menu entry of the section being read. Bootstrap's scrollspy
+// works on intersection ratios and skips short sections such as Drafting, so
+// this picks the last section whose top has scrolled past a fixed line.
+function setUpSectionNav() {
+  const nav = document.getElementById('admin-nav');
+  const links = [...nav.querySelectorAll('.nav-link')];
+  const sections = links.map((link) =>
+    document.querySelector(link.getAttribute('href'))
+  );
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // while a click scrolls to its section, keep that link active instead of
+  // whatever the scroll passes by (the last sections may never reach the top)
+  let clickedLink = null;
+  let clickTimer;
+
+  function activate(activeLink) {
+    for (const link of links) {
+      const active = link === activeLink;
+      link.classList.toggle('active', active);
+      if (active) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    }
+    // on phones the menu is a horizontal row: keep the active pill in view
+    if (nav.scrollWidth > nav.clientWidth) {
+      const left =
+        activeLink.offsetLeft -
+        nav.offsetLeft -
+        (nav.clientWidth - activeLink.offsetWidth) / 2;
+      nav.scrollTo({
+        left,
+        behavior: reduceMotion.matches ? 'auto' : 'smooth',
+      });
+    }
+  }
+
+  function update() {
+    if (clickedLink) {
+      return;
+    }
+    const scrollMargin = parseFloat(
+      getComputedStyle(sections[0]).scrollMarginTop
+    );
+    const line = scrollMargin + window.innerHeight / 4;
+    const atBottom =
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 2;
+    let index = 0;
+    if (atBottom) {
+      index = sections.length - 1;
+    } else {
+      sections.forEach((section, i) => {
+        if (section.getBoundingClientRect().top <= line) {
+          index = i;
+        }
+      });
+    }
+    if (!links[index].classList.contains('active')) {
+      activate(links[index]);
+    }
+  }
+
+  function releaseClickLater() {
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => (clickedLink = null), 150);
+  }
+
+  links.forEach((link, i) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      clickedLink = link;
+      activate(link);
+      sections[i].scrollIntoView({
+        behavior: reduceMotion.matches ? 'auto' : 'smooth',
+      });
+      releaseClickLater();
+    });
+  });
+
+  window.addEventListener(
+    'scroll',
+    () => (clickedLink ? releaseClickLater() : update()),
+    { passive: true }
+  );
+  window.addEventListener('resize', update);
+  update();
+}

@@ -156,3 +156,58 @@
 .year-link:hover {
   color: #212529;
 }
+
+/* santaAdmin: section menu is a sticky row of pills on phones and a sticky
+   sidebar from md up */
+
+.admin-nav-column {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  align-self: flex-start;
+  background-color: #fff;
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 1rem;
+}
+
+#admin-nav {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0.5rem 0;
+}
+
+#admin-nav .nav-link {
+  white-space: nowrap;
+  padding: 0.375rem 0.75rem;
+}
+
+.admin-sections > div {
+  scroll-margin-top: 4.5rem;
+}
+
+@media (min-width: 768px) {
+  .admin-nav-column {
+    top: 1rem;
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  #admin-nav {
+    padding: 0;
+  }
+
+  #admin-nav .nav-link {
+    padding: 0.5rem 1rem;
+  }
+
+  .admin-sections > div {
+    scroll-margin-top: 1rem;
+  }
+}
+
+#usersTable select {
+  min-width: 6.5rem;
+}
+
+/* end santaAdmin */
