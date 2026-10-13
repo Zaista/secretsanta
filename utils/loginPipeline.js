@@ -5,7 +5,8 @@ const log = getLogger('loginPipeline');
 
 export function getUserByEmailAndPassword(email, password) {
   const $match = {
-    email: { $regex: new RegExp(email, 'i') },
+    // exact, case-insensitive match: the email is user input, so escape it
+    email: { $regex: new RegExp(`^${RegExp.escape(String(email))}$`, 'i') },
     password,
   };
 
