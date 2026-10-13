@@ -1,22 +1,174 @@
 <!doctype html>
-<html>
-  <body>
-    <p>
-      You have been invited to the SecretSanta group
-      <span id="group-placeholder">'{{groupName}}'</span>
-    </p>
-    <!--passwordStart-->
-    <p>
-      Your temporary password is:
-      <span id="password-placeholder">{{temporaryPassword}}</span>
-    </p>
-    <!--passwordEnd-->
-    <p>
-      Login to
-      <a href="https://secretsanta.jovanilic.com" target="_blank"
-        >SecretSanta</a
-      >
-      website for details
-    </p>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome to Secret Santa</title>
+  </head>
+  <!-- inline styles and table layout only: many email clients drop <style> blocks and modern CSS -->
+  <body style="margin: 0; padding: 0; background-color: #f4f4f4">
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #f4f4f4"
+    >
+      <tr>
+        <td align="center" style="padding: 24px 12px">
+          <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              max-width: 600px;
+              background-color: #ffffff;
+              border: 1px solid #dddddd;
+              border-bottom: 2px solid #009879;
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 14px;
+              line-height: 1.5;
+              color: #212529;
+            "
+          >
+            <tr>
+              <td>
+                <img
+                  src="https://secretsanta.jovanilic.com/resources/images/santa.jpg"
+                  alt="Secret Santa"
+                  width="600"
+                  style="
+                    display: block;
+                    width: 100%;
+                    max-width: 600px;
+                    height: auto;
+                    border: 0;
+                  "
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px 24px 8px">
+                You have been invited to join a Secret Santa group:
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 24px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 14px;
+                    color: #212529;
+                  "
+                >
+                  <tr>
+                    <th
+                      align="left"
+                      width="100"
+                      style="
+                        padding: 10px 12px;
+                        background-color: #dc3545;
+                        color: #ffffff;
+                      "
+                    >
+                      Group:
+                    </th>
+                    <td
+                      style="
+                        padding: 10px 12px;
+                        border: 1px solid #dddddd;
+                        word-break: break-all;
+                      "
+                    >
+                      <span id="group-placeholder">{{groupName}}</span>
+                    </td>
+                  </tr>
+                  <!--passwordStart-->
+                  <tr>
+                    <th
+                      align="left"
+                      width="100"
+                      style="
+                        padding: 10px 12px;
+                        background-color: #dc3545;
+                        color: #ffffff;
+                        border-top: 1px solid #ffffff;
+                      "
+                    >
+                      Password:
+                    </th>
+                    <td
+                      style="
+                        padding: 10px 12px;
+                        border: 1px solid #dddddd;
+                        word-break: break-all;
+                      "
+                    >
+                      <span id="password-placeholder"
+                        >{{temporaryPassword}}</span
+                      >
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="2"
+                      style="padding: 8px 0 0; color: #6c757d; font-size: 13px"
+                    >
+                      This is a temporary password. Log in with this email
+                      address and the password above.
+                    </td>
+                  </tr>
+                  <!--passwordEnd-->
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding: 16px 24px">
+                <a
+                  href="https://secretsanta.jovanilic.com/session/login"
+                  target="_blank"
+                  style="
+                    display: inline-block;
+                    padding: 10px 24px;
+                    background-color: #dc3545;
+                    color: #ffffff;
+                    text-decoration: none;
+                    font-weight: bold;
+                    border-radius: 4px;
+                  "
+                  >Log in to Secret Santa</a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="padding: 8px 24px 20px; color: #6c757d; font-size: 13px"
+              >
+                Log in to see your group and, once the pairs are drafted, who
+                you are buying a gift for.
+              </td>
+            </tr>
+          </table>
+          <p
+            style="
+              margin: 16px 0 0;
+              font-family: Arial, Helvetica, sans-serif;
+              font-size: 14px;
+              color: #212529;
+            "
+          >
+            Merry shopping und Alles Gute zum Gechristmas.
+          </p>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
