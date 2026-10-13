@@ -91,6 +91,37 @@ test.describe('session tests', () => {
     );
   });
 
+  test('user can login with differently cased email', async ({
+    request,
+    page,
+  }) => {
+    const user = {
+      email: faker.internet.email().toLowerCase(),
+      password: faker.internet.password(),
+    };
+    await registerUser(request, user);
+
+    await page.goto('/');
+    await loginWithForm(page, user.email.toUpperCase(), user.password);
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'No Secret Santa group selected'
+    );
+  });
+
+  test('regex email cannot login', async ({ request, page }) => {
+    const user = {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+    await registerUser(request, user);
+
+    await page.goto('/');
+    await loginWithForm(page, '.*', user.password);
+    await expect(page.locator('#footerAlert')).toHaveText(
+      'Email or password wrong'
+    );
+  });
+
   test('user can request password', async ({ request, page }) => {
     const user = {
       email: faker.internet.email(),
