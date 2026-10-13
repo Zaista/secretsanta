@@ -95,6 +95,8 @@ adminRouter.post('/api/users', async (req, res) => {
 
 adminRouter.post('/api/user', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
+  if (req.session.activeGroup?.role !== ROLES.admin)
+    return res.status(403).send({ error: 'Only an admin can invite users' });
   const user = await checkIfUserExists(req.body.email);
   const activeGroup = await getGroup(req.session.activeGroup._id);
   let temporaryPassword = null;
@@ -140,14 +142,23 @@ adminRouter.post('/api/user', async (req, res) => {
     userId: userId,
   };
   if (activeGroup.userAddedNotification === true) {
-    const emailStatus = await sendWelcomeEmail(
-      req.body.email,
-      activeGroup.name,
-      temporaryPassword
-    );
+    // the user is already in the group, so a failed email only turns into a
+    // warning
+    let emailStatus;
+    try {
+      emailStatus = await sendWelcomeEmail(
+        req.body.email,
+        activeGroup.name,
+        temporaryPassword
+      );
+    } catch (error) {
+      emailStatus = { error };
+    }
     if (emailStatus.success !== true) {
+      log.error(`Failed to send the welcome email: ${emailStatus.error}`);
       return res.send({
-        error: `Error inviting user to the group: ${emailStatus.error}`,
+        warning: `User '${req.body.email}' invited to the group: ${activeGroup.name}, but the email could not be sent: ${emailStatus.error}`,
+        userId: userId,
       });
     }
     response.emailUrl = emailStatus.emailUrl;

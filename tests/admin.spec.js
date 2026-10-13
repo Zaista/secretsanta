@@ -142,6 +142,9 @@ test.describe('admin tests', () => {
       await expect(page.locator('#forbiddenUser2 option')).toContainText([
         email,
       ]);
+
+      await page.getByRole('button', { name: 'Invite new users' }).click();
+      await expect(page.getByLabel('Email address')).toBeEmpty();
     });
 
     test('admin can invite an existing user to the group', async ({ page }) => {
@@ -166,6 +169,30 @@ test.describe('admin tests', () => {
       await expect(page.locator('#footerAlert')).toHaveText(
         `User '${user.email}' invited to the group: ${groupData.group.name}`
       );
+    });
+
+    test('admin cannot invite a user already in the group', async ({
+      page,
+    }) => {
+      const groupData = await createNewGroup(page.request);
+      const { user1 } = groupData.users;
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      await page.goto('/admin');
+
+      await inviteUser(page, user1.email);
+
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'User already part of the SecretSanta group'
+      );
+      await expect(
+        page.locator('[data-name="userEmail"]').getByText(user1.email)
+      ).toHaveCount(1);
+      await page.getByRole('button', { name: 'Invite new users' }).click();
+      await expect(page.getByLabel('Email address')).toHaveValue(user1.email);
     });
 
     test('admin can make a user an admin', async ({ page }) => {
@@ -292,6 +319,33 @@ test.describe('admin tests', () => {
       await expect(
         page.getByRole('row').filter({ hasText: user2.email })
       ).toBeVisible();
+    });
+
+    test('user cannot invite users to the group', async ({ page }) => {
+      const groupData = await createNewGroup(page.request);
+      const { user1 } = groupData.users;
+      await login(page.request, user1.email, user1.password);
+      const email = faker.internet.email();
+
+      // users have no UI for this, so the attempt goes through the API
+      const response = await page.request.post('admin/api/user', {
+        form: { email },
+      });
+      expect(response.status()).toBe(403);
+
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      await page.goto('/admin');
+      await waitForAdminPage(page);
+      await expect(
+        page.getByRole('row').filter({ hasText: user1.email })
+      ).toBeVisible();
+      await expect(
+        page.getByRole('row').filter({ hasText: email })
+      ).toBeHidden();
     });
 
     test('user cannot change roles', async ({ page }) => {
