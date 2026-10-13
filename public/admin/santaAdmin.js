@@ -194,15 +194,21 @@ $(async () => {
       return false;
     });
 
-    $('#userRemoveButton').on('click', function () {
+    $('#inviteUserButton').on('click', function () {
       const newUser = {
         email: $('#newUserEmail').val(),
       };
       const request = $.post(`${apiUrl}/user`, newUser, (result) => {
         showAlert(result);
-        if (result.success) {
-          loadForbiddenPairUsers();
+        const modal = $('#newUsersModal');
+        // a warning means the user was invited but the email failed
+        if (!result.success && !result.warning) {
+          // keep the email, so the admin can correct it in the dialog
+          bootstrap.Modal.getInstance(modal).hide();
+          return;
         }
+        loadForbiddenPairUsers();
+        $('#newUserEmail').val('');
         $.get('admin/user.html', (userTemplate) => {
           const _userElement = $.parseHTML(userTemplate);
           const rowIndex = $('#usersTable tr').length;
@@ -223,7 +229,6 @@ $(async () => {
               userElement = _userElement;
             });
           $('#usersTable tbody').append(_userElement);
-          const modal = $('#newUsersModal');
           bootstrap.Modal.getInstance(modal).hide();
         });
       });
