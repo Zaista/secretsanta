@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { ROLES } from './roles.js';
 import { getVersionLabel } from './version.js';
+import { escapeHtml } from './template.js';
 
 export const renderer = (filePath, options, callback) => {
   fs.readFile(filePath, (err, content) => {
@@ -23,16 +24,15 @@ export const renderer = (filePath, options, callback) => {
       );
       let groupOptions = '';
       options.groups.forEach((group) => {
-        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item text-truncate" href="#">${group.name}</a></li>`;
+        groupOptions += `<li class="groupOp" value="${group._id}"><a class="dropdown-item text-truncate" href="#">${escapeHtml(group.name)}</a></li>`;
       });
-      rendered = rendered.replace('<!--groupOptions-->', groupOptions);
+      rendered = rendered.replace('<!--groupOptions-->', () => groupOptions);
 
       if (options.activeGroup === undefined) {
         rendered = rendered.replace('<!--groupName-->', 'N/A');
       } else {
-        rendered = rendered.replace(
-          '<!--groupName-->',
-          options.activeGroup.name
+        rendered = rendered.replace('<!--groupName-->', () =>
+          escapeHtml(options.activeGroup.name)
         );
       }
     }

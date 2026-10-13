@@ -11,6 +11,7 @@ import {
 } from '../utils/loginPipeline.js';
 import { sendEmail } from '../utils/environment.js';
 import { checkIfUserExists, createNewUser } from '../utils/adminPipeline.js';
+import { fillTemplate } from '../utils/template.js';
 
 const sessionRouter = express.Router();
 const log = getLogger('session');
@@ -84,10 +85,10 @@ sessionRouter.post('/api/email', async (req, res) => {
 
   if (user) {
     const data = fs.readFileSync('./templates/forgot-password-email.html');
-    emailText = data
-      .toString()
-      .replace(/{{email}}/, user.email)
-      .replace(/{{password}}/, user.password);
+    emailText = fillTemplate(data.toString(), {
+      email: user.email,
+      password: user.password,
+    });
     subject = 'Your Secret Santa login details';
   } else {
     const data = fs.readFileSync('./templates/unknown-user-email.html');

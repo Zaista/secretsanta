@@ -94,7 +94,7 @@ $(async () => {
         success: (result) => {
           showAlert(result);
           if (result.success) {
-            $('#groupName').html($('#groupNameSettings').val());
+            $('#groupName').text($('#groupNameSettings').val());
           }
         },
       });

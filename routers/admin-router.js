@@ -28,6 +28,7 @@ import {
 import { draftPairs } from '../utils/drafter.js';
 import { ROLES } from '../utils/roles.js';
 import { sendEmail } from '../utils/environment.js';
+import { fillTemplate } from '../utils/template.js';
 
 const log = getLogger('adminRouter');
 const adminRouter = express.Router();
@@ -339,17 +340,16 @@ adminRouter.put('/api/reveal', async (req, res) => {
 
 async function sendWelcomeEmail(email, groupName, temporaryPassword) {
   const data = fs.readFileSync('./templates/user-invite-email.html');
-  let emailText = data.toString().replace(/{{groupName}}/, groupName);
+  let emailText = data.toString();
 
-  if (temporaryPassword) {
-    emailText = emailText.replace(/{{temporaryPassword}}/, temporaryPassword);
-  } else {
+  if (!temporaryPassword) {
     // existing users already have a password
     emailText = emailText.replace(
       /<!--passwordStart-->[\s\S]*?<!--passwordEnd-->/,
       ''
     );
   }
+  emailText = fillTemplate(emailText, { groupName, temporaryPassword });
 
   const emailTemplate = {
     to: email,

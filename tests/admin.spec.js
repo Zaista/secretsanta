@@ -85,6 +85,33 @@ test.describe('admin tests', () => {
         page.getByLabel('Email users when new year is drafted')
       ).toBeChecked();
     });
+
+    test('admin can give the group a name with HTML characters', async ({
+      page,
+    }) => {
+      const groupData = await createNewGroup(page.request);
+      await login(
+        page.request,
+        groupData.users.admin.email,
+        groupData.users.admin.password
+      );
+      await page.goto('/admin');
+
+      // wait for the page to load the current settings, or they overwrite the new name
+      await expect(page.getByLabel('Group name')).toHaveValue(
+        groupData.group.name
+      );
+      const htmlName = '<b>Elves</b> & "co" $\' $&';
+      await page.getByLabel('Group name').fill(htmlName);
+      await page.locator('#groupButton').click();
+
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'Group settings updated'
+      );
+      await expect(page.locator('#groupName')).toHaveText(htmlName);
+      await page.reload();
+      await expect(page.locator('#groupName')).toHaveText(htmlName);
+    });
   });
 
   test.describe('user group tests', () => {

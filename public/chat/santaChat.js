@@ -30,9 +30,7 @@ $(async function () {
         if (friend.name !== undefined && friend.name !== '') {
           name = friend.name;
         }
-        $('#user').append(
-          `<option value="${friend._id}" data-email="${friend.email}">${name}</option>`
-        );
+        $('#user').append($('<option>').val(friend._id).text(name));
       });
     });
 
@@ -76,7 +74,6 @@ $(async function () {
     $('#chat-form').on('submit', function () {
       const requestData = {
         userId: $('#user option:selected').val(),
-        email: $('#user option:selected').attr('data-email'),
         message: $('#message').val(),
       };
       const submitButton = $(this).find('button[type="submit"]');
