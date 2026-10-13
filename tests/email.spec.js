@@ -34,6 +34,21 @@ test.describe('email tests', () => {
     ]);
   });
 
+  test('unknown user should receive an email when forgot password is triggered', async ({
+    page,
+  }) => {
+    const response = await forgotPassword(page.request, faker.internet.email());
+    const responseJson = await response.json();
+    await expect(responseJson).toHaveProperty('emailUrl');
+    await page.goto(responseJson.emailUrl);
+
+    const email = page.frameLocator('#message iframe');
+    await expect(
+      email.getByText('Did you perhaps sign up with a different email')
+    ).toBeVisible();
+    await expectEmailScreenshot(page, 'unknown-user-email.png', []);
+  });
+
   test('new user receives an email when invited to the group', async ({
     page,
   }) => {
@@ -133,7 +148,8 @@ test.describe('chat tests', () => {
     const message = {
       userId: groupData.users.user2.id,
       email: groupData.users.user2.email,
-      message: faker.word.words(10),
+      // fixed text keeps the screenshot stable: random words can wrap onto another line
+      message: 'What size of gloves do you wear?',
     };
     const messageData = await sendMessage(page.request, message);
     await page.goto(messageData.emailUrl);
@@ -145,9 +161,12 @@ test.describe('chat tests', () => {
       '<secretsanta@jovanilic.com>'
     );
     await expect(page.locator('#message-header')).toContainText(message.email);
+    const email = page.frameLocator('#message iframe');
+    await expect(email.getByText(message.message)).toBeVisible();
     await expect(
-      page.frameLocator('#message iframe').locator('body')
-    ).toContainText(message.message);
+      email.getByText(groupData.group.name, { exact: true })
+    ).toBeVisible();
+    await expectEmailScreenshot(page, 'chat-email.png', ['#group-placeholder']);
   });
 
   test('user should not receives a chat email', async ({ page }) => {

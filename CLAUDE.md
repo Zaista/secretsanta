@@ -26,7 +26,7 @@ npm run format                # lint + prettier check (what CI runs)
 - `tests/email.spec.js` screenshots only the email body inside the ethereal.email message iframe (not Ethereal's own page, which changes independently), with per-platform snapshots (`-win32.png`, `-linux.png`). With `docker compose up -d` running, regenerate the Linux ones in the Playwright image matching the installed version:
 
   ```bash
-  MSYS_NO_PATHCONV=1 docker run --rm --network secretsanta_default -v "$(pwd):/work" -v /work/node_modules -w /work -e CI=1 mcr.microsoft.com/playwright:v1.63.0-noble bash -c 'export mongodbUri=$(grep "^mongodbUri=" .env | cut -d= -f2- | sed "s/@localhost/@mongo/") minioEndPoint=s3 minioPort=9090 && npm ci && npx playwright test tests/email.spec.js -g "email tests" --update-snapshots'
+  MSYS_NO_PATHCONV=1 docker run --rm --network secretsanta_default -v "$(pwd):/work" -v /work/node_modules -w /work -e CI=1 mcr.microsoft.com/playwright:v1.63.0-noble bash -c 'export mongodbUri=$(grep "^mongodbUri=" .env | cut -d= -f2- | sed "s/@localhost/@mongo/") minioEndPoint=s3 minioPort=9090 && npm ci && npx playwright test tests/email.spec.js --update-snapshots'
   ```
 
   On Windows Git Bash, use `$(pwd -W)` instead of `$(pwd)`: with `MSYS_NO_PATHCONV=1` the `/c/dev/...` path is passed to Docker unconverted, the container mounts an empty folder, and `npm ci` fails with "no package-lock.json".
