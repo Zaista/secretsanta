@@ -260,10 +260,12 @@ $(async () => {
     });
 
     $('#draft').on('click', function () {
-      $.ajax({
-        url: `${apiUrl}/draft`,
-        method: 'PUT',
-        success: (result) => {
+      const request = $.ajax({ url: `${apiUrl}/draft`, method: 'PUT' });
+      showButtonSpinner(this, request);
+      // chained after showButtonSpinner, so its restore runs first and a
+      // successful draft leaves the button disabled
+      Promise.resolve(request).then(
+        (result) => {
           // a warning means the pairs were drafted but the email failed
           if (result.success || result.warning) {
             $(this).prop('disabled', true);
@@ -271,7 +273,8 @@ $(async () => {
           }
           showAlert(result);
         },
-      });
+        () => {}
+      );
       return false;
     });
 
