@@ -9,6 +9,7 @@ import {
   removeForbiddenPair,
   removeUserFromGroup,
   setUserRole,
+  updateGroup,
 } from './helpers/admin.js';
 import { createNewGroup, createDraftedGroup } from './helpers/setup.js';
 
@@ -338,6 +339,27 @@ test.describe('admin tests', () => {
           `Santa pairs for year ${nextYear} were already drafted but the pairs were not yet revealed`
         )
       ).toBeVisible();
+    });
+
+    test('admin sees that users were emailed when pairs are drafted', async ({
+      page,
+    }) => {
+      const groupData = await createNewGroup(page.request);
+      await updateGroup(page.request, {
+        name: groupData.group.name,
+        userAddedNotification: false,
+        messageSentNotification: false,
+        yearDraftedNotification: true,
+      });
+      await page.goto('/admin');
+      await waitForAdminPage(page);
+
+      await page.getByRole('button', { name: 'Draft' }).click();
+
+      await expect(page.locator('#footerAlert')).toHaveText(
+        'Pairs successfully drafted and users notified by email'
+      );
+      await expect(page.getByRole('button', { name: 'Draft' })).toBeDisabled();
     });
 
     test('admin can reveal drafted pairs', async ({ page }) => {

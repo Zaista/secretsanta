@@ -257,7 +257,8 @@ $(async () => {
         url: `${apiUrl}/draft`,
         method: 'PUT',
         success: (result) => {
-          if (result.success) {
+          // a warning means the pairs were drafted but the email failed
+          if (result.success || result.warning) {
             $(this).prop('disabled', true);
             $('#reveal').prop('disabled', false);
           }

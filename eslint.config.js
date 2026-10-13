@@ -19,7 +19,7 @@ export default [
       },
     },
     rules: {
-      quotes: ['warn', 'single'],
+      quotes: ['warn', 'single', { avoidEscape: true }],
       semi: ['warn', 'always'],
       camelcase: ['warn'],
       'no-console': ['warn'],

@@ -2,7 +2,11 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { forgotPassword, login, registerUser } from './helpers/login.js';
-import { inviteUserToGroup, updateGroup } from './helpers/admin.js';
+import {
+  draftSantaPairs,
+  inviteUserToGroup,
+  updateGroup,
+} from './helpers/admin.js';
 import { createDraftedGroup, createNewGroup } from './helpers/setup.js';
 import { sendMessage } from './helpers/chat.js';
 
@@ -168,6 +172,46 @@ test.describe('email tests', () => {
     await expectEmailScreenshot(page, 'existing-user-invite-email.png', [
       '#group-placeholder',
     ]);
+  });
+
+  test('users receive an email when the year is drafted', async ({ page }) => {
+    const groupData = await createNewGroup(page.request);
+    await login(
+      page.request,
+      groupData.users.admin.email,
+      groupData.users.admin.password
+    );
+    await updateGroup(page.request, {
+      name: groupData.group.name,
+      userAddedNotification: false,
+      messageSentNotification: false,
+      yearDraftedNotification: true,
+    });
+
+    const result = await draftSantaPairs(page.request);
+    await page.goto(result.emailUrl);
+
+    const email = page.frameLocator('#message iframe');
+    await expect(
+      email.getByText(groupData.group.name, { exact: true })
+    ).toBeVisible();
+    await expect(
+      email.getByText(String(new Date().getFullYear() + 1), { exact: true })
+    ).toBeVisible();
+    await expectEmailScreenshot(page, 'year-drafted-email.png', [
+      '#group-placeholder',
+      '#year-placeholder',
+    ]);
+  });
+
+  test('users do not receive an email when the year is drafted with notifications off', async ({
+    page,
+  }) => {
+    await createNewGroup(page.request);
+
+    const result = await draftSantaPairs(page.request);
+
+    await expect(result).toEqual({ success: 'Pairs successfully drafted' });
   });
 });
 

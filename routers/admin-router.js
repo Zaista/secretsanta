@@ -297,11 +297,37 @@ adminRouter.put('/api/draft', async (req, res) => {
     req.session.activeGroup._id,
     santaPairs
   );
-  if (result.acknowledged) {
-    return res.send({ success: 'Pairs successfully drafted' });
-  } else {
+  if (!result?.acknowledged) {
     return res.send({ error: 'Error drafting new pairs' });
   }
+
+  const activeGroup = await getGroup(req.session.activeGroup._id);
+  if (activeGroup?.yearDraftedNotification !== true) {
+    return res.send({ success: 'Pairs successfully drafted' });
+  }
+
+  // one email to all members in bcc; the pairs are already saved, so a
+  // failed email only turns into a warning
+  let emailStatus;
+  try {
+    emailStatus = await sendYearDraftedEmail(
+      users.map((user) => user.email),
+      activeGroup.name,
+      new Date().getFullYear() + 1
+    );
+  } catch (error) {
+    emailStatus = { error };
+  }
+  if (emailStatus.success !== true) {
+    log.error(`Failed to send the year drafted email: ${emailStatus.error}`);
+    return res.send({
+      warning: `Pairs successfully drafted, but the email could not be sent: ${emailStatus.error}`,
+    });
+  }
+  return res.send({
+    success: 'Pairs successfully drafted and users notified by email',
+    emailUrl: emailStatus.emailUrl,
+  });
 });
 
 adminRouter.get('/api/reveal', async (req, res) => {
@@ -355,6 +381,18 @@ async function sendWelcomeEmail(email, groupName, temporaryPassword) {
     to: email,
     subject: 'Welcome to Secret Santa',
     html: emailText,
+  };
+
+  return await sendEmail(emailTemplate);
+}
+
+async function sendYearDraftedEmail(emails, groupName, year) {
+  const data = fs.readFileSync('./templates/year-drafted-email.html');
+
+  const emailTemplate = {
+    bcc: emails,
+    subject: 'Secret Santa pairs drafted',
+    html: fillTemplate(data.toString(), { groupName, year }),
   };
 
   return await sendEmail(emailTemplate);
