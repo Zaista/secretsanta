@@ -5,8 +5,10 @@ import {
   sendMessage,
   deleteChatMessage,
 } from '../utils/chatPipeline.js';
+import { getUsers } from '../utils/adminPipeline.js';
 import { sendEmail } from '../utils/environment.js';
 import { ROLES } from '../utils/roles.js';
+import { fillTemplate } from '../utils/template.js';
 
 const chatRouter = express.Router();
 
@@ -41,6 +43,15 @@ chatRouter.post('/api/delete', async (req, res) => {
 chatRouter.post('/api/send', async (req, res) => {
   if (!req.user) return res.status(401).send({ error: 'User not logged in' });
   let emailText;
+  // the recipient must be in the active group, and their email address comes
+  // from the database, so the request can't send email to an arbitrary address
+  const users = await getUsers(req.session.activeGroup._id);
+  const recipient = users?.find(
+    (user) => user._id.toString() === req.body.userId
+  );
+  if (!recipient) {
+    return res.send({ error: 'User is not a member of this group' });
+  }
   const queryInfo = await sendMessage(
     req.body.message,
     req.body.userId,
@@ -53,13 +64,13 @@ chatRouter.post('/api/send', async (req, res) => {
     };
     if (req.session.activeGroup.messageSentNotification) {
       const data = fs.readFileSync('./templates/question-email.html');
-      emailText = data
-        .toString()
-        .replace(/{{groupName}}/, req.session.activeGroup.name)
-        .replace(/{{question}}/, req.body.message);
+      emailText = fillTemplate(data.toString(), {
+        groupName: req.session.activeGroup.name,
+        question: req.body.message,
+      });
 
       const emailTemplate = {
-        to: req.body.email,
+        to: recipient.email,
         subject: 'Secret Santa Question',
         html: emailText,
       };

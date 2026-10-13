@@ -14,6 +14,9 @@ async function expectEmailScreenshot(page, name, maskedSelectors) {
   });
 }
 
+// user-entered text must show up in emails as typed, not be read as HTML or as $ replacement patterns
+const htmlText = '<b>Elves</b> & "co" $\' $&';
+
 test.describe('email tests', () => {
   test('user should receive an email when forgot password is triggered', async ({
     page,
@@ -47,6 +50,44 @@ test.describe('email tests', () => {
       email.getByText('Did you perhaps sign up with a different email')
     ).toBeVisible();
     await expectEmailScreenshot(page, 'unknown-user-email.png', []);
+  });
+
+  test('password reset email shows a password with HTML characters as typed', async ({
+    page,
+  }) => {
+    const user = { email: faker.internet.email(), password: htmlText };
+    await registerUser(page.request, user);
+    const response = await forgotPassword(page.request, user.email);
+    const responseJson = await response.json();
+    await page.goto(responseJson.emailUrl);
+
+    const email = page.frameLocator('#message iframe');
+    await expect(email.getByText(htmlText, { exact: true })).toBeVisible();
+  });
+
+  test('invite email shows a group name with HTML characters as typed', async ({
+    page,
+  }) => {
+    const groupData = await createNewGroup(page.request);
+    await login(
+      page.request,
+      groupData.users.admin.email,
+      groupData.users.admin.password
+    );
+    await updateGroup(page.request, {
+      name: htmlText,
+      userAddedNotification: true,
+      messageSentNotification: false,
+      yearDraftedNotification: false,
+    });
+    const result = await inviteUserToGroup(
+      page.request,
+      faker.internet.email()
+    );
+    await page.goto(result.emailUrl);
+
+    const email = page.frameLocator('#message iframe');
+    await expect(email.getByText(htmlText, { exact: true })).toBeVisible();
   });
 
   test('new user receives an email when invited to the group', async ({
@@ -167,6 +208,60 @@ test.describe('chat tests', () => {
       email.getByText(groupData.group.name, { exact: true })
     ).toBeVisible();
     await expectEmailScreenshot(page, 'chat-email.png', ['#group-placeholder']);
+  });
+
+  test('chat email shows a message with HTML characters as typed', async ({
+    page,
+  }) => {
+    const groupData = await createNewGroup(page.request);
+    await login(
+      page.request,
+      groupData.users.admin.email,
+      groupData.users.admin.password
+    );
+    await updateGroup(page.request, {
+      name: groupData.group.name,
+      userAddedNotification: false,
+      messageSentNotification: true,
+      yearDraftedNotification: false,
+    });
+    const messageData = await sendMessage(page.request, {
+      userId: groupData.users.user1.id,
+      message: htmlText,
+    });
+    await page.goto(messageData.emailUrl);
+
+    const email = page.frameLocator('#message iframe');
+    await expect(email.getByText(htmlText, { exact: true })).toBeVisible();
+  });
+
+  test('chat email goes to the group member, not to an address in the request', async ({
+    page,
+  }) => {
+    const groupData = await createNewGroup(page.request);
+    await login(
+      page.request,
+      groupData.users.admin.email,
+      groupData.users.admin.password
+    );
+    await updateGroup(page.request, {
+      name: groupData.group.name,
+      userAddedNotification: false,
+      messageSentNotification: true,
+      yearDraftedNotification: false,
+    });
+    const otherEmail = faker.internet.email();
+    const messageData = await sendMessage(page.request, {
+      userId: groupData.users.user1.id,
+      email: otherEmail,
+      message: faker.word.words(10),
+    });
+    await page.goto(messageData.emailUrl);
+
+    await expect(page.locator('#message-header')).toContainText(
+      groupData.users.user1.email
+    );
+    await expect(page.locator('#message-header')).not.toContainText(otherEmail);
   });
 
   test('user should not receives a chat email', async ({ page }) => {

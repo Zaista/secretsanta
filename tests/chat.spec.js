@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { login, registerUser } from './helpers/login.js';
 import { sendMessage } from './helpers/chat.js';
-import { createNewGroup } from './helpers/setup.js';
+import { createNewGroup, getDefaultData } from './helpers/setup.js';
 
 async function deleteMessage(page, message) {
   await page
@@ -39,6 +39,30 @@ test.describe('chat tests', () => {
     await expect(page.getByText('Just now...')).toBeVisible();
   });
 
+  test('user cannot send a message to someone outside the group', async ({
+    page,
+  }) => {
+    const outsider = await registerUser(page.request, {
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    });
+    await login(
+      page.request,
+      groupData.users.user1.email,
+      groupData.users.user1.password
+    );
+    const message = faker.word.words(10);
+    const result = await sendMessage(page.request, {
+      userId: outsider.id,
+      message,
+    });
+    expect(result).toEqual({ error: 'User is not a member of this group' });
+
+    await page.goto('/chat');
+    await expect(page.locator('#footerAlert')).toHaveText('No chat activity');
+    await expect(page.getByText(message)).toBeHidden();
+  });
+
   test('user can see received messages', async ({ page }) => {
     await login(
       page.request,
@@ -68,6 +92,26 @@ test.describe('chat tests', () => {
     await expect(page.locator('[data-name="chatFrom"]')).toHaveText(
       'From: Anonymous'
     );
+  });
+
+  test('user sees a group member name with HTML characters as typed', async ({
+    page,
+  }) => {
+    const htmlName = '<b>Ann</b> & "co"';
+    const htmlGroupData = getDefaultData();
+    htmlGroupData.users.user2.name = htmlName;
+    await createNewGroup(page.request, htmlGroupData);
+    await login(
+      page.request,
+      htmlGroupData.users.user1.email,
+      htmlGroupData.users.user1.password
+    );
+
+    await page.goto('/chat');
+
+    await expect(
+      page.locator('#user').getByRole('option', { name: htmlName, exact: true })
+    ).toBeAttached();
   });
 
   test('user/admin cannot/can delete a message', async ({ page }) => {
